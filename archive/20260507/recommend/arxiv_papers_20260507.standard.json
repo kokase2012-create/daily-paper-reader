@@ -1,0 +1,92 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-07T20:29:13.219208+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2605.00146v1",
+      "source": "arxiv",
+      "title": "Real-Time Frame- and Event-based Object Detection with Spiking Neural Networks on Edge Neuromorphic Hardware: Design, Deployment and Benchmark",
+      "abstract": "Real-time object detection on energy-constrained platforms is critical for applications such as UAV-based inspection, autonomous navigation, and mobile robotics. Spiking neural networks (SNNs) on neuromorphic hardware are believed to be significantly more energy-efficient than conventional artificial neural networks (ANNs). In this work, we present a comprehensive methodology for designing general SNN detection architectures targeting neuromorphic platforms, along with the engineering adaptations required to deploy them on the state-of-the-art Neuromorphic processor, Intel Loihi 2. We benchmark SNN-based object detection on Loihi 2 using both frame-based and event-based datasets, comparing performance with ANN-based detection on the NVIDIA Jetson Orin Nano, NVIDIA Jetson Nano B01, and the Apple M2 CPU. Our results show that SNNs on Loihi 2 can perform real-time detection while achieving the lowest per-inference dynamic energy among all platforms. Also, Loihi 2 outperforms the other platforms in terms of power consumption, though ANNs on Jetson Orin Nano achieve higher inference rates. Furthermore, our ANN-to-SNN distillation-aware training enables SNNs to recover 87-100% of the detection accuracy of their ANN counterparts while maintaining lower inference latency; without distillation, SNNs exhibit an 11-27% accuracy drop. These results highlight the potential of neuromorphic systems for energy-efficient, real-time object detection at the edge.",
+      "authors": [
+        "Udayanga G. W. K. N. Gamage",
+        "Yan Zeng",
+        "Cesar Cadena",
+        "Matteo Fumagalli",
+        "Silvia Tolu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-30T19:07:36+00:00",
+      "link": "https://arxiv.org/pdf/2605.00146v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "real-time object detection for UAV-based inspection on edge hardware",
+      "llm_evidence_cn": "边缘硬件上用于无人机巡检的实时目标检测",
+      "llm_evidence": "边缘硬件上用于无人机巡检的实时目标检测",
+      "canonical_evidence": "边缘硬件上用于无人机巡检的实时目标检测",
+      "llm_tldr_en": "This work benchmarks SNN-based object detection on neuromorphic hardware for UAV and robotic applications.",
+      "llm_tldr_cn": "该工作在类脑硬件上基准测试了用于无人机和机器人的SNN目标检测。",
+      "llm_tldr": "该工作在类脑硬件上基准测试了用于无人机和机器人的SNN目标检测。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.03642v1",
+      "source": "arxiv",
+      "title": "The Detector Teaches Itself: Lightweight Self-Supervised Adaptation for Open-Vocabulary Object Detection",
+      "abstract": "Open-vocabulary object detection aims to recognize objects from an open set of categories, which leverages vision-language models (VLMs) pre-trained on large-scale image-text data. The cooperative paradigm combines an object detector with a VLM to achieve zero-shot recognition of novel objects. However, VLMs pre-trained on full images often struggle to capture local object details, limiting their effectiveness when applied to region-level detection. We present Decoupled Adaptivity Training (DAT), a self-supervised fine-tuning approach to improve VLMs for cooperative model-based object detection. Given a cooperative model consists of a closed-set detector and a VLM, we first construct a region-aware pseudo-labeled dataset using a pre-trained closed-set object detector, in which regions corresponding to novel objects may be present but remain unlabeled or mislabeled. We then fine-tune the visual backbone of the VLM in a decoupled manner, which enhances local feature alignment while preserving global semantic knowledge via weight interpolation. DAT is a plug-and-play module that requires no inference overhead and fine-tunes less than 0.8M parameters. Experiments on the COCO and LVIS datasets show that DAT consistently improves detection performance on both novel and known categories, establishing a new state of the art in cooperative open-vocabulary detection.",
+      "authors": [
+        "Yazhe Wan",
+        "Changjae Oh"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-05T11:14:30+00:00",
+      "link": "https://arxiv.org/pdf/2605.03642v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "capture local object details",
+      "llm_evidence_cn": "捕捉局部物体细节",
+      "llm_evidence": "捕捉局部物体细节",
+      "canonical_evidence": "捕捉局部物体细节",
+      "llm_tldr_en": "Improves vision-language models for region-level detection by capturing local object details.",
+      "llm_tldr_cn": "通过捕捉局部物体细节，改进视觉语言模型在区域级检测中的表现。",
+      "llm_tldr": "通过捕捉局部物体细节，改进视觉语言模型在区域级检测中的表现。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "high resolution feature maps for tiny object detection",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
