@@ -1,0 +1,1040 @@
+Title: 2605.03396v1.pdf
+
+URL Source: https://arxiv.org/pdf/2605.03396v1
+
+Published Time: Wed, 06 May 2026 00:32:43 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+Design and Implementation of BNN -Based Object 
+
+# Detection on FPGA 
+
+Xuyu Zhao 1, Yunpeng Wu 2, Mengyuan  Zhu 3, Haoyu Huang 2, Xiaoyu Xu 4, Yanjing 
+
+Li 2, Gaolong Zhang 1,5 , Baochang Zhang 2
+
+1 School of Physics,  Beihang University , Beijing, China 
+
+2 School of Artificial Intelligence, Beihang University , Beijing, China 
+
+3.  China Information Technology Designing and Consulting Institute Company Ltd., Beijing , 
+
+China 
+
+4.  State Key Laboratory of Radiation Medicine and Protection, School of Radiation Medicine 
+
+and Protection, Collaborative Innovation Center of Radiological Medicine of Jiangsu Higher 
+
+Education Institutions ， Soochow University, Suzhou, China 
+
+5.  State Key Laboratory of Complex & Critical Software Environment (SKLCCSE)  Beihang 
+
+University , Beijing , China 
+
+Abstract.  This paper implements a Binary Neural Network (BNN) based 
+
+YOLOv3 -tiny -like object detector on a low -cost FPGA. The network takes 
+
+320× 320× 3 RGB images as input. Its main convolution layers use 1 -bit weights 
+
+and 8 -bit activations, while Conv1 and the final d etection head use fixed -point 
+
+standard convolutions. From the trained ONNX model, weights, biases, and 
+
+quantization parameters are extracted, converted to fixed point, packed into COE 
+
+files, and stored in Vivado BRAM ROMs. The hardware is written  fully in Ver-
+
+ilog RTL and includes padding, line buffering, binary convolution, quantization 
+
+post -processing, max pooling, and detection -head computation. For layers where 
+
+Mul_prev is indexed by input channel and Div_current by output channel, 
+
+Mul_prev is  fused into the BNN PE so that channel -wise compensation is applied 
+
+during accumulation. On VOC, the model obtains 39.6% mAP50 with 0.098 
+
+GFLOPs and 0.74 M parameters. RTL simulation shows that the final raw detec-
+
+tion output reaches a correlation coefficien t of 0.999964 and a mean absolute 
+
+error of 0.020027 against the corresponding ONNX node .
+
+Keywords: FPGA,  BNN , YOLOv3 -tiny,  Object  Detection, Verilog RTL 
+
+# 1 Introduction 
+
+Convolutional neural networks are widely used in object detection and edge vision [1 -2] .
+
+Because detection networks must preserve high -resolution feature maps, their direct 
+
+deployment on low -cost embedded platforms is bounded by on -chip memory, compute, 
+
+and bandwidth  — motivating low -bit quantization at the hardware level. 
+
+FPGAs provide customizable datapaths and fine -grained parallelism, making them 
+
+well suited to bit -width -specific accelerators that ASIC and GPU pipelines cannot 
+
+match.  For resource -limited boards such as PYNQ -Z2, deployment must control weight 2
+
+storage, activation buffering, DSP usage, and control complexity. Low -bit quantization 
+
+is therefore a practical way to reduce hardware cost. 
+
+Fully binary networks greatly reduce storage and multiplication cost, but their fea-
+
+ture representation can be unstable for detection. W1A8 quantization uses 1 -bit weights 
+
+and 8 -bit activations. It replaces weight multiplication with signed addition or subt rac-
+
+tion while keeping an activation range of 0 to 255, which gives a more suitable accu-
+
+racy -cost trade -off for  object detection deployment on resource -limited FPGAs .
+
+This work  develops  the mapping from a trained ONNX model to FPGA RTL. It 
+
+covers parameter parsing, fixed -point conversion, COE generation, BRAM ROM de-
+
+ployment, streaming convolution, and layer -wise verification. Handwritten Verilog 
+
+RTL is used instead of HLS to control bit  widths, ROM latency, pipeline states, and 
+
+channel -wise scaling. 
+
+This paper presents a complete deployment structure of a YOLOv3 -tiny -like W1A8 
+
+detector on XC7Z020, integrates input -channel scaling compensation into the W1A8 
+
+PE, and verifies the RTL implementation against ONNX Runtime through layer -wise 
+
+comparison, mode l-level metrics, resource use, and detection results. 
+
+# 2 Related Work 
+
+2.1  Object Detection and Lightweight YOLO 
+
+The YOLO family treats detection as one -stage regression and provides a useful bal-
+
+ance between speed and accuracy [3 -5] . YOLOv3 introduces multi -scale prediction, and 
+
+YOLOv3 -tiny reduces layers and channels for edge scenarios. This work adopts a 
+
+YOLOv3 -tiny -like structure, further reduces channel count and weight precision, and 
+
+targets the limited on -chip resources of XC7Z 020. 
+
+2.2  Low -Bit Quantization and Binary Neural Networks 
+
+BinaryConnect, BNN, XNOR -Net, and DoReFa -Net show that low -bit weights and ac-
+
+tivations can compress neural networks effectively [6 -9] . ReActNet, LSQ, and integer -
+
+only inference studies further highlight the roles of activation behavior, learnable steps, 
+
+and fixed -point scaling [10 -12] . This work uses W1A8 to keep the storage benefit of 1 -bit 
+
+weights while reducing the accuracy loss of W1A1 detection. 
+
+2.3  FPGA Acceleration of Neural Networks 
+
+FPGA neural network accelerators usually rely on data reuse, on -chip buffering, paral-
+
+lel computation, and pipeline scheduling [13] . Automated tool chains such as FINN, 
+
+FINN -R, DNNWeaver, and hls4ml support binary, quantized, or high -level deploy-
+
+ment [14 -17] . We instead use handwritten RTL, which exposes ROM -read latency, per -
+
+stage bit widths, and per -channel scaling fusion  — fine -grained controls needed to fit 
+
+the 4.9 Mb BRAM budget of XC7Z020. 2.4  BNN and YOLO Deployment on FPGA 
+
+Prior FPGA studies implement binary convolution accelerators and YOLO -oriented ac-
+
+celerators [18 -22] . This paper focuses on the parameter organization, fixed -point data path, 
+
+and RTL -ONNX numerical alignment of a W1A8 detector on XC7Z020. 
+
+# 3 W1A8 Quantized Model Structure 
+
+3.1  Input, Output, and Layer Structure 
+
+The deployed model is a trained ONNX detector.  Software inference normalizes RGB 
+
+pixel values from  [0, 255 ] to  [0, 1]. RTL approximates the input as Q0.8 fixed -point 
+
+values so that the hardware scale matches the software input. The model input is 
+
+320× 320× 3, and the final output is a 10× 10× 75 tensor in y/x/channel order. 
+
+The model contains eleven main convolution layers from Conv1 to Conv11. Conv2 
+
+to Conv10 use W1A8 quantization. Conv1 and Conv11 use fixed -point standard con-
+
+volution to reduce input -side and output -side errors. MaxPool is used only after Conv1, 
+
+Conv2, Conv3 , Conv4, and Conv7. Table 1 gives the layer configuration. 4
+
+Table 1. Structure and quantization configuration of the main convolution lay-
+
+ers                                                 
+
+> Layer Convolution
+> type Channels Kernel size Following op-
+> eration
+> Fixed -
+> point/quanti-
+> zation format
+> Conv1 Standard con-
+> volution 3→16 3× 3Post + Max-
+> Pool
+> W: Q5.11;
+> B: Q2.14
+> Conv2 W1A8 16→32 3× 3Post + Max-
+> Pool
+> 1-bit W;
+> 8-bit A
+> Conv3 W1A8 32→64 3× 3Post + Max-
+> Pool
+> 1-bit W;
+> 8-bit A
+> Conv4 W1A8 64→128 3× 3Post + Max-
+> Pool
+> 1-bit W;
+> 8-bit A
+> Conv5 W1A8 128→128 3× 3Post
+> 1-bit W;
+> 8-bit A
+> Conv6 W1A8 128→128 3× 3Post
+> 1-bit W;
+> 8-bit A
+> Conv7 W1A8 128→128 3× 3Post + Max-
+> Pool
+> 1-bit W;
+> 8-bit A
+> Conv8 W1A8 128→128 3× 3Post
+> 1-bit W;
+> 8-bit A
+> Conv9 W1A8 128→64 1× 1Post
+> 1-bit W;
+> 8-bit A
+> Conv10 W1A8 64→64 3× 3Post
+> 1-bit W;
+> 8-bit A
+> Conv11 Standard con-
+> volution 64→ 75 1× 1Output
+> W: Q1.15; B:
+> Q4.12
+> Output:
+> signed Q*.15
+
+Table 1 shows that early layers have larger feature maps and higher buffer pressure, 
+
+while later layers reduce the feature -map size to 10× 10. Weights, biases, and quantiza-
+
+tion parameters are converted to COE files and stored in BRAM ROMs. Line buffers 
+
+and  outputs are organized by window size, channel count, and parallelism. 
+
+Table 2 estimates the storage pressure of each layer. The estimates are based on 
+
+feature -map size, channel count, data precision, and kernel size. Actual BRAM usage 
+
+also depends on ROM packing, memory -depth alignment, port organization, and con-
+
+trol logic. Table 2. Estimated deployment storage cost of each layer 
+
+Lay 
+
+er  Type  Input→Output  Kernel 
+
+size  H× W
+
+Estimated 
+
+output/line 
+
+buffer 
+
+Weight 
+
+storage 
+
+L0  Standard con-
+
+volution 
+
+[3,320,320] 
+
+→
+
+[16,320,320] 
+
+3× 3 320× 320  2× 320× 16 = 
+
+10.0KB  2.0KB 
+
+L1  MaxPool 
+
+[16,320,320] 
+
+→
+
+[16,160,160] 
+
+2× 2 160× 160  3× 160× 16 = 
+
+7.5KB  0
+
+L2  W1A8 Conv 
+
+[16,160,160] 
+
+→
+
+[32,160,160] 
+
+3× 3 160× 160  2× 160× 32 = 
+
+10.0KB  1.3KB 
+
+L3  MaxPool 
+
+[32,160,160] 
+
+→
+
+[32,80,80] 
+
+2× 2 80× 80  3× 80× 32 = 
+
+7.5KB  0
+
+L4  W1A8 Conv 
+
+[32,80,80] 
+
+→
+
+[64,80,80] 
+
+3× 3 80× 80  2× 80× 64 = 
+
+10.0KB  3.8KB 
+
+L5  MaxPool 
+
+[64,80,80] 
+
+→
+
+[64,40,40] 
+
+2× 2 40× 40  3× 40× 64 = 
+
+7.5KB  0
+
+L6  W1A8 Conv 
+
+[64,40,40] 
+
+→
+
+[128,40,40] 
+
+3× 3 40× 40  2× 40× 128 = 
+
+10.0KB  12.0KB 
+
+L7  MaxPool 
+
+[128,40,40] 
+
+→
+
+[128,20,20] 
+
+2× 2 20× 20  3× 20× 128 = 
+
+7.5KB  0
+
+L8 -
+
+L10  W1A8 Conv 
+
+[128,20,20] 
+
+→
+
+[128/64,20/10,20/10] 
+
+3× 3/1× 1 20× 20/10× 
+
+10  5.0 -7.5KB 
+
+2.5 -
+
+21.0KB 
+
+/layer 
+
+L11 
+
+-
+
+L15 
+
+Max-
+
+Pool/Conv/De 
+
+tect 
+
+[128,10,10] 
+
+→
+
+[75,10,10] 
+
+2× 2/3× 3/ 
+
+1× 1 10× 10  640B -
+
+29.3KB 
+
+0-
+
+21.0KB 
+
+/layer 
+
+Table 2 shows that early layers mainly consume buffers, whereas later layers increase 
+
+weight -ROM pressure. W1A8 quantization reduces main -layer weight storage, and the 
+
+streaming data path reduces the need to store complete intermediate feature maps. 
+
+3.2  W1A8 Quantization and Fixed -Point Inference Mapping 
+
+The main convolution layers use W1A8 quantization to reduce storage and computa-
+
+tion. The 1 -bit weights reduce ROM capacity and bandwidth, while 8 -bit activations 
+
+preserve a useful dynamic range for detection features. Conv1 and Conv11 remain 
+
+fixed -point st andard convolutions to reduce errors at the input and output sides. 6
+
+For weight quantization, the weights in the main convolution layers are binarized 
+
+into {−1,+1}. Let the real -valued weight be  𝑤  and the binary weight be  𝑤 𝑏  . The bina-
+
+rization is written as 
+
+𝑤 𝑏  = 𝑠𝑖𝑔𝑛 (𝑤 ), 𝑤 𝑏  ∈ −1, +1 (3 − 1)
+
+Training keeps real -valued weights and uses binary weights in the forward pass. The 
+
+straight -through estimator approximates the gradient of the sign function. During infer-
+
+ence, only binary weights are stored, reducing the theoretical weight storage of the  main 
+
+convolution layers to 1/32 of 32 -bit precision. Because the design is W1A8 rather than 
+
+W1A1, convolution uses sign -controlled accumulation instead of XNOR -popcount. 
+
+For W1A8 convolution, let  𝑎 𝑖  be an 8 -bit non -negative activation and  𝑠 𝑜 ,𝑖  be the bi-
+
+nary weight sign corresponding to output channel o. The convolution accumulation is 
+
+expressed as 
+
+𝑦 𝑜  = ∑
+
+> 𝑖
+
+𝑠 𝑜 ,𝑖 𝑎 𝑖 , 𝑠 𝑜 ,𝑖  ∈ −1, +1, 𝑎 𝑖  ∈ [0,255 ] (3 − 2)
+
+Index  𝑖  covers both input channels and kernel positions. W1A8 convolution therefore 
+
+replaces general multiplication with sign -controlled addition and subtraction. This form 
+
+maps to LUTs, adders, and registers and helps reduce DSP usage. 
+
+For activation quantization, this work adopts learned step -size quantization to map 
+
+ReLU activations to 8 -bit unsigned integers. Because ReLU outputs are non -negative, 
+
+the activation range is set to [0,255]. Let the floating -point activation be  𝑥  and the quan-
+
+tization step size be  𝑠 𝑎 . The activation quantization is written as 
+
+𝑞 𝑎  = clip  (round  ( 𝑥 
+
+𝑠 𝑎 
+
+) , 0,255 ) (3 − 3)
+
+Here,  𝑞 𝑎  is the 8 -bit activation, round denotes rounding, and clip denotes clipping. Dur-
+
+ing training, the step size  𝑠 𝑎  is optimized with the network parameters. During infer-
+
+ence, the learned step size becomes fixed -point scaling, rounding, and clipping in RTL. 
+
+Floating -point scales in the inference graph are converted to fixed -point operations. 
+
+For W1A8 layers, accumulation results pass through scaling, bias correction, rounding, 
+
+and clipping to generate the next 8 -bit activation. The final detection head keeps  the 
+
+raw tensor for comparison with ONNX. 
+
+The hardware does not merge all scales into one constant. In several layers, 
+
+Mul_prev is indexed by input channel, while Div_current is indexed by output channel. 
+
+A single scale would ignore input -channel contribution differences and introduce addi-
+
+tional e rror. 
+
+To avoid this problem, Mul_prev is integrated into the W1A8 PE so that input -chan-
+
+nel compensation is completed during accumulation. Let  𝑚 𝑖  be the previous scale cor-
+
+responding to the i -th input channel. The compensated accumulation is written as 
+
+𝑦 𝑜  = ∑
+
+> 𝑖
+
+𝑠 𝑜 ,𝑖 (𝑚 𝑖 𝑎 𝑖 ) (3 − 4)
+
+In RTL,  𝑚 𝑖  is fixed -point and participates in PE accumulation, preserving input -chan-
+
+nel scaling differences. Div_current is handled in post -processing for output -channel 
+
+scaling, rounding, and clipping. This split improves consistency with ONNX without 
+
+greatly incre asing post -processing complexity. 4 Parameter Extraction and Fixed -Point Deployment 
+
+The extraction script reads weights, biases, Div tensors, Mul tensors, and related pa-
+
+rameters from the ONNX model. It rearranges them according to the channel order and 
+
+ROM access order used by RTL, then performs fixed -point conversion and COE pack-
+
+ing. 
+
+Conv1 uses Q5.11 weights and Q2.14 biases. Conv2 to Conv10 use 1 -bit weights 
+
+and 8 -bit activations. Conv11 uses Q1.15 weights and Q4.12 biases and outputs 32 -bit 
+
+signed fixed -point values with 15 fractional bits, recovered as signed_int32 / 2^15. The 
+
+forma ts are chosen according to parameter ranges and output ranges, and the packed 
+
+parameters follow the RTL ROM address order. 
+
+All weights, biases, and quantization parameters are stored in BRAM ROMs. Be-
+
+cause the Vivado BRAM ROM core does not enable Primitives Output Register, the 
+
+RTL state machine schedules address issue, data latch, and computation start according 
+
+to the actual  ROM read latency. 
+
+Table 3. Parameter extraction and COE generation configuration                 
+
+> Parameter type Source Fixed -point/pro-
+> cessing method Hardware use
+> Conv1 weights and bi-
+> ases ONNX initializer Q5.11 / Q2.14 First 3× 3 standard con-
+> volution
+> W1A8 weights ONNX initializer 1-bit sign packing
+> Sign -controlled
+> add/sub accumulation
+> from Conv2 to Conv10
+> Div_current ONNX quantization -re-
+> lated tensor Fixed -point scale Current -layer post -pro-
+> cessing
+> Mul_prev ONNX quantization -re-
+> lated tensor
+> Fixed point by input
+> channel and fused
+> Internal compensation
+> in the W1A8 PE
+> Conv11 weights and
+> biases ONNX initializer Q1.15 / Q4.12 Final 1× 1 detection
+> head
+> COE files Parameter extraction
+> script output
+> Written in ROM ad-
+> dress order
+> BRAM ROM initiali-
+> zation
+
+# 5 FPGA Hardware Architecture and Datapath Design 
+
+5.1  Overall Data Flow 
+
+The top module Yolo3 -tiny_Top receives an RGB stream through a valid/ready hand-
+
+shake and outputs 32 -bit serial detection results. The design follows a streaming style, 
+
+and ready signals provide backpressure between modules, reducing dependence on ex-
+
+ternal  storage. 
+
+The image passes through the RGB adapter, Padding Adapter, and LineBuffer_3x3 
+
+to form 3× 3 windows. Standard or W1A8 PEs process the windows, followed by post -
+
+processing, clipping, and optional 2× 2 MaxPool. Conv11 uses PE_NUM=5 and serial-
+
+izes the final 10× 10× 75 tensor in y/x/channel order. 8
+
+Fig. 1. RTL data -flow diagram of the W1A8 YOLOv3 -tiny -like detector on 
+
+PYNQ -Z2 
+
+5.2  Core Modules Table 4. Main RTL modules and implementation points               
+
+> Module Function Implementation point
+> RGB input interface Receives a 320× 320 RGB im-
+> age stream valid/ready handshake
+> Padding Adapter Generates convolution boundary
+> padding
+> Supports 3× 3 convolution with
+> unchanged spatial size
+> LineBuffer_3x3 Forms a 3× 3 sliding window Reuses line buffers and reduces
+> external memory access
+> W1A8 convolution PE Performs binary -weight convo-
+> lution accumulation
+> Replaces multiplication with
+> sign -controlled add/sub accu-
+> mulation and fuses Mul_prev
+> Standard convolution PE Performs Conv1 and Conv11
+> standard convolution
+> Supports specified Q -format
+> weights and biases
+> Post -process Performs scaling, bias correc-
+> tion, and clipping
+> Aligns with ONNX quantized
+> activations
+> MaxPool Performs 2× 2 downsampling Enabled only after specified lay-
+> ers
+> BRAM ROM Stores COE -initialized parame-
+> ters
+> State machine is designed ac-
+> cording to ROM read latency
+> Conv11 PE Computes the final detection
+> head
+> Computes 5 output channels in
+> parallel each time
+
+The Padding Adapter and LineBuffer_3x3 generate padded 3× 3 sliding windows in a 
+
+streaming manner. This avoids repeated full -feature -map access and reduces external -
+
+memory pressure. 
+
+The W1A8 convolution PE accumulates or subtracts 8 -bit activations according to 
+
+the binary weight sign. When Mul_prev is indexed by input channel, the PE also per-
+
+forms channel -wise compensation during accumulation. 
+
+The post -processing module performs fixed -point scaling, bias correction, rounding, 
+
+and clipping to align activations with ONNX quantization nodes. MaxPool is enabled 
+
+only after specified layers. Parameters are initialized into BRAM ROMs through COE 
+
+files,  and the state machine follows ROM read latency. 
+
+The final Conv11 detection head computes 75 output channels with PE_NUM=5. It 
+
+processes channels in groups and serializes 10× 10× 75 raw detection values in y/x/chan-
+
+nel order. 
+
+# 6 Experiments and Results 
+
+6.1  Model Accuracy and Complexity 
+
+Table 5 compares the proposed W1A8 quantized YOLO model with representative 
+
+lightweight detectors on the PASCAL VOC 2007 test set. The metrics include mAP50, 
+
+GFLOPs, parameter count, and input size. Because the models use different input sizes 
+
+and structur es, the table mainly reflects their accuracy -complexity trade -off. 
+
+The proposed model uses 0.098 GFLOPs and 0.74 M parameters. Compared with 
+
+YOLOv5n, it uses about 1/45.9 of the computation and 1/2.6 of the parameters.  Its 10 
+
+mAP50 is 39.6%, which is lower than most recent lightweight detectors in Table 5, but 
+
+still higher than the early YOLOv2 -tiny model by 4.2 percentage points. This result 
+
+indicates that the proposed model sacrifices part of the detection accuracy for extrem ely 
+
+low computational and storage costs, while still retaining a basic detection capability 
+
+under severe FPGA resource constraints. 
+
+Figure 2 compares Params -mAP50 and FLOPs -mAP50. The proposed model lies in 
+
+the lower -left region of both planes, indicating very low storage and computation while 
+
+preserving basic detection capability. This makes it suitable for memory - and compute -
+
+limited  FPGA platforms. 
+
+Table 5. Accuracy and complexity comparison of lightweight object detection 
+
+models                                 
+
+> Model mAP50 (%) ↑ GFLOPs ↓ Params (M) ↓ Input size
+> MobileNet -
+> SSD [23] 68.0 2.3 5.8 300× 300
+> YOLOv5s [24] 74.4 16.5 7.2 640× 640
+> YOLOv5n [25] 67.8 4.5 1.9 640× 640
+> YOLOv3 -tiny [26] 50.8 5.6 8.7 416× 416
+> YOLOv4 -tiny [27] 59.2 6.9 6.0 416× 416
+> YOLOv 2-tiny [4] 35.4 7.0 15.86 416 ×416
+> Ours 39.6 0.098 0.74 320× 320
+
+Fig. 2.  Accuracy -complexity comparison of lightweight object detection models: 
+
+(a) GFLOPs versus mAP50; (b) parameters versus mAP50. 6.2  Detection Results 
+
+Figure 3 visualizes detection results from the FPGA RTL data path after decoding, con-
+
+fidence filtering, and NMS. With 0.74 M parameters, the model detects medium and 
+
+large objects such as persons, vehicles, and animals. The single 10× 10 detection head 
+
+limi ts small -object localization and recall, and binary weights with 8 -bit activations can 
+
+lead to low -confidence boxes or occasional false detections. 
+
+Fig. 3. Visualization of W1A8 quantized detection results based on FPGA RTL 
+
+output 
+
+6.3  Numerical Consistency Verification Between RTL and ONNX 
+
+To verify RTL computation and parameter packing, a Vivado simulation testbench is 
+
+built with a 320× 320 RGB input sample. ONNX Runtime provides the software refer-
+
+ence. RTL outputs are converted to floating point according to their Q formats and 
+
+compared wit h ONNX intermediate nodes layer by layer. 12 
+
+Table 6. Numerical consistency comparison between RTL outputs and ONNX 
+
+intermediate nodes                          
+
+> Verifica-
+> tion target
+> Software refer-
+> ence position Data format max abs mean abs corr.
+> Conv1 raw
+> Conv1
+> pre -activation
+> output DUT/2^19 0.132158 0.001345 corr=0.999999
+> Conv1 post
+> Conv1
+> post -quantiza-
+> tion output
+> 8-bit quan-
+> tized value 40.121686 98.8094% of out-
+> puts within 1 LSB
+> Conv2 post
+> Conv2
+> post -quantiza-
+> tion output
+> 8-bit quan-
+> tized value 60.231006 98.7648% of out-
+> puts within 1 LSB
+> Final raw
+> conv
+> Conv11
+> detection -head
+> output
+> 32 -bit,
+> 15 frac-
+> tional bits
+> 0.10889649 0.020027 corr=0.999964
+
+Table 6 reports Conv1 pre -activation, Conv1 post -quantization, Conv2 post -quantiza-
+
+tion, and Conv11 detection -head outputs. The RTL results are highly consistent with 
+
+ONNX. The final raw output reaches a correlation coefficient of 0.999964 and a mean 
+
+absolu te error of 0.020027, confirming the correctness of parameter extraction, fixed -
+
+point conversion, ROM access, and RTL computation. 
+
+6.4  FPGA Resources and Performance 
+
+The design is synthesized and implemented in Vivado  to evaluate resource use on 
+
+PYNQ -Z2. The reported metrics include LUT, LUTRAM, FF, BRAM, DSP, IO, 
+
+BUFG, MMCM, power, and performance. Table 7 gives the implementation results. Table 7. FPGA resource utilization and power estimate 
+
+Category  Metric  Value  Description 
+
+Resource  LUT  61%  Mainly used for control logic, add/sub accu-
+
+mulation, and data paths 
+
+Resource  LUTRAM  32%  Used for small buffers or distributed storage 
+
+Resource  FF  14%  Used for pipeline registers and state registers 
+
+Resource  BRAM  73%  Mainly used for parameter ROMs, line buff-
+
+ers, and intermediate buffers 
+
+Resource  DSP  91%  Mainly used for standard convolution, the 
+
+detection head, and fixed -point scaling 
+
+Resource  IO  13%  Input and output interface usage 
+
+Resource  BUFG  16%  Global clock resource usage 
+
+Resource  MMCM  25%  Clock -management resource usage 
+
+Power  Total On -Chip Power  2.047 W  Vivado power estimate 
+
+Power  Dynamic Power  1.881 W  92% of total on -chip power 
+
+Power  Static Power  0.166 W  8% of total on -chip power 
+
+Tempera-
+
+ture  Junction Temperature  48.6 ℃  Vivado  estimated junction temperature 
+
+Perfor-
+
+mance 
+
+Maximum clock fre-
+
+quency  30 MHz  Determined by post -implementation timing 
+
+Perfor-
+
+mance  Cycles per frame  23.79 M  Measured from runtime statistics 
+
+Perfor-
+
+mance  PL inference latency  793.17 ms  Converted from cycle count and 30 MHz 
+
+clock 
+
+Perfor-
+
+mance  PS processing latency  2.41 ms  Includes input -output and post -processing 
+
+overhead 
+
+Perfor-
+
+mance  Latency per frame  795.58 ms  Sum of PL inference latency and PS pro-
+
+cessing latency 
+
+Perfor-
+
+mance  FPS  1.26 
+
+frames/s  Converted from latency per frame 
+
+Table 7 shows that BRAM and DSP are the tightest resources. BRAM utilization is 
+
+73%, mainly from parameter ROMs, line buffers, and intermediate buffers. DSP utili-
+
+zation is 91%, mainly from Conv1, Conv11, and fixed -point scaling. W1A8 reduces 
+
+DSP pressure i n the main body, but fixed -point standard convolution and post -pro-
+
+cessing still consume many DSPs. 
+
+The maximum frequency is 30 MHz, and one frame requires 23.79 M cycles. The 
+
+PL inference latency is 793.17 ms, the PS processing latency is 2.41 ms, and the end -
+
+to -end latency is 795.58 ms, corresponding to 1.26 frames/s. This result demonstrates 
+
+the feasi bility of the full RTL deployment and end -to -end execution on the target 
+
+FPGA. Nevertheless, the current throughput remains limited by the 30 MHz timing 14 
+
+closure, PE parallelism, the detection -head critical path, and inter -layer scheduling. 
+
+These bottlenecks will be addressed in future optimization passes .
+
+# 7 Conclusion and Future Work 
+
+This paper implements an RTL data path for a W1A8 quantized YOLOv3 -tiny -like 
+
+detector on a low -cost FPGA. From a trained ONNX model, the design completes pa-
+
+rameter extraction, fixed -point conversion, channel -wise scale fusion, COE generation, 
+
+and BRAM ROM  deployment. The Verilog RTL includes input adaptation, padding, 
+
+line buffering, W1A8 convolution, post -processing, max pooling, and the final detec-
+
+tion head. 
+
+Experiments show 39.6% mAP50 on VOC with 0.098 GFLOPs and 0.74 M param-
+
+eters. RTL verification gives a correlation coefficient of 0.999964 and a mean absolute 
+
+error of 0.020027 for the final raw output against ONNX.  The implementation closes 
+
+timing on XC7Z020 with BRAM and DSP utilization at 73% and 91% respectively; 
+
+frequency and throughput remain the principal optimization targets for future work. 
+
+Future work will improve both the model and the hardware. A lighter multi -scale 
+
+detection head or feature -fusion structure can improve small -object recall. Higher PE 
+
+parallelism, better fixed -point scaling, improved BRAM allocation, and more efficient 
+
+inte r-layer scheduling can further reduce resource pressure and improve throughput. 
+
+# 8 References 
+
+[1]  Ren, S., He, K., Girshick , R., Sun, J.: Faster R -CNN: Towards Real -Time Object Detection 
+
+with Region Proposal Networks. In: Advances in Neural Information Processing Systems 
+
+(2015). 
+
+[2]  Liu, W., Anguelov, D., Erhan, D., et al.: SSD: Single Shot MultiBox Detector. In: Euro-
+
+pean Conference on Computer Vision, pp. 21 -37 (2016). 
+
+[3]  Redmon, J., Divvala, S., Girshick, R., Farhadi, A.: You Only Look Once: Unified, Real -
+
+Time Object Detection. In: CVPR, pp. 779 -788 (2016). 
+
+[4]  Redmon, J., Farhadi, A.: YOLO9000: Better, Faster, Stronger. In: CVPR, pp. 7263 -7271 
+
+(2017). 
+
+[5]  Redmon, J., Farhadi, A.: YOLOv3: An Incremental Improvement. arXiv:1804.02767 
+
+(2018). 
+
+[6]  Courbariaux, M., Bengio, Y., David, J.P.: BinaryConnect: Training Deep Neural Networks 
+
+with Binary Weights during Propagations. In: NeurIPS (2015). 
+
+[7]  Hubara, I., Courbariaux, M., Soudry, D., et al.: Binarized Neural Networks. 
+
+arXiv:1602.02830 (2016). 
+
+[8]  Rastegari, M., Ordonez, V., Redmon, J., Farhadi, A.: XNOR -Net: ImageNet Classification 
+
+Using Binary Convolutional Neural Networks. In: ECCV, pp. 525 -542 (2016). 
+
+[9]  Zhou, S., Wu, Y., Ni, Z., et al.: DoReFa -Net: Training Low Bitwidth Convolutional Neural 
+
+Networks with Low Bitwidth Gradients. arXiv:1606.06160 (2016). 
+
+[10]  Liu, Z., Shen, Z., Savvides, M., Cheng, K.T.: ReActNet: Towards Precise Binary Neural 
+
+Network with Generalized Activation Functions. arXiv:2003.03488 (2020). [11]  Esser, S.K., McKinstry, J.L., Bablani, D., et al.: Learned Step Size Quantization. In: ICLR 
+
+(2020). 
+
+[12]  Jacob, B., Kligys, S., Chen, B., et al.: Quantization and Training of Neural Networks for 
+
+Efficient Integer -Arithmetic -Only Inference. In: CVPR, pp. 2704 -2713 (2018). 
+
+[13]  Sze, V., Chen, Y.H., Yang, T.J., Emer, J.: Efficient Processing of Deep Neural Networks: 
+
+A Tutorial and Survey. Proceedings of the IEEE 105(12), 2295 -2329 (2017). 
+
+[14]  Umuroglu, Y., Fraser, N.J., Gambardella, G., et al.: FINN: A Framework for Fast, Scalable 
+
+Binarized Neural Network Inference. In: FPGA, pp. 65 -74 (2017). 
+
+[15]  Blott, M., Preusser, T.B., Fraser, N.J., et al.: FINN -R: An End -to -End Deep -Learning 
+
+Framework for Fast Exploration of Quantized Neural Networks. ACM TRETS 11(3), Ar-
+
+ticle 16 (2018). 
+
+[16]  Sharma, H., Park, J., Mahajan, D., et al.: From High -Level Deep Neural Models to FPGAs. 
+
+In: MICRO (2016). 
+
+[17]  Duarte, J., Han, S., Harris, P., et al.: Fast Inference of Deep Neural Networks in FPGAs 
+
+for Particle Physics. Journal of Instrumentation 13(07), P07027 (2018). 
+
+[18]  Zhao, R., Song, W., Zhang, W., et al.: Accelerating Binarized Convolutional Neural Net-
+
+works with Software -Programmable FPGAs. In: FPGA, pp. 15 -24 (2017). 
+
+[19]  Su, Y., Seng, K.P., Ang, L.M., Smith, J.: Binary Neural Networks in FPGAs: Architec-
+
+tures, Tool Flows and Hardware Comparisons. Sensors 23(22), 9254 (2023). 
+
+[20]  Ji, M., Al -Ars, Z., Chang, Y., Zhang, B.: Fully Pipelined FPGA Acceleration of Binary 
+
+Convolutional Neural Networks with Neural Architecture Search. Journal of Circuits, Sys-
+
+tems and Computers 33(10), 2450170 (2024). 
+
+[21]  Qian, W., Zhu, Z., Zhu, C., Zhu, Y.: FPGA -Based Accelerator for YOLOv5 Object Detec-
+
+tion with Optimized Computation and Data Access for Edge Deployment. Parallel Com-
+
+puting, 103138 (2025). 
+
+[22]  Wen, C.J., Wang, L.T., Wang, Q., Jiang, S.: Design and Implementation of FPGA Accel-
+
+eration for YOLOv3 -tiny. Computer Applications and Software 42(9) (2025). 
+
+[23]  Wang, R.J., Li, X., Ling, C.X.: Pelee: A Real -Time Object Detection System on Mobile 
+
+Devices. In: Advances in Neural Information Processing Systems 31 (NeurIPS 2018) 
+
+(2018). 
+
+[24]  Zhang, X., Liu, C., Yang, D., Song, T., Ye, Y., Li, K., Song, Y.: RFAConv: Receptive -
+
+Field Attention Convolution for Improving Convolutional Neural Networks. 
+
+arXiv:2304.03198 (2023). 
+
+[25]  Jocher, G.: YOLOv5 by Ultralytics. Zenodo  (2020). https://doi.org/10.5281/ze-
+
+nodo.3908559, last accessed 2026/04/28 .
+
+[26]  Su, C., Zhu, L., Dai, W., Zhou, J., Wang, J., Mao, Y., Sun, J.: Nav -YOLO: A Lightweight 
+
+and Efficient Object Detection Model for Real -Time Indoor Navigation on Mobile Plat-
+
+forms. ISPRS International Journal of Geo -Information 14(9), 364 (2025) .
+
+[27]  El Hamdouni, S., Hdioud, B., El Fkihi, S.: Enhanced Lightweight Object Detection Model 
+
+in Complex Scenes: An Improved YOLOv8n Approach. Information 16(10), 871 (2025) .

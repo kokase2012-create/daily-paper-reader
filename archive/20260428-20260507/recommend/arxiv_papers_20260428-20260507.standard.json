@@ -1,0 +1,486 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-07T03:30:47.835532+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 9,
+    "quick_skim_target": 11,
+    "quick_selected": 9
+  },
+  "deep_dive": [
+    {
+      "id": "2604.25300v1",
+      "source": "arxiv",
+      "title": "DenseScout: Algorithm-System Co-design for Budgeted Tiny Object Selection on Edge Platforms",
+      "abstract": "Deploying tiny object perception on edge platforms is challenging because practical systems must satisfy both strict compute budgets and end-to-end latency constraints. A common strategy is to first select a small number of candidate patches from a high-resolution image and then apply downstream processing only to the selected regions. However, existing detector-based frontends are not well aligned with this setting: strong offline detection accuracy does not necessarily yield effective low-budget patch prioritization, nor does it guarantee usable performance once transport and inference delays are considered. In this work, we study budgeted tiny object selection on edge platforms from a joint algorithm--system perspective. We present DenseScout, a lightweight dense-response selector with only 1.01M parameters, which directly ranks candidate patch locations from a high-resolution scene via a lightweight proxy input and is better aligned with low-budget tiny-object prioritization than detector-style frontends. To bridge offline selector quality and deployable utility, we further develop a transport-aware runtime realization on heterogeneous edge devices and adopt QoS-constrained recall, which counts a target as successfully perceived only if it is covered by the selected regions and the end-to-end processing finishes before the deadline. Experiments show that DenseScout consistently outperforms detector-based baselines in offline budgeted patch-selection evaluation, especially in low-budget regimes, while cross-platform results on RK3588 and Jetson Orin NX show that deployable performance depends jointly on selector quality and runtime realization efficiency. These results suggest that edge tiny object perception should be optimized as an algorithm--system co-design problem rather than as isolated model selection.",
+      "authors": [
+        "Xiong Zhouzhi",
+        "Zimo Zeng",
+        "Yi Chen",
+        "Shuqi Xu",
+        "Yunfeng Yan",
+        "Donglian Qi"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "published": "2026-04-28T07:09:57+00:00",
+      "link": "https://arxiv.org/pdf/2604.25300v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "budgeted tiny object selection on edge platforms for high-resolution images",
+      "llm_evidence_cn": "边缘平台上高分辨率图像的预算受限微小目标选择",
+      "llm_evidence": "边缘平台上高分辨率图像的预算受限微小目标选择",
+      "canonical_evidence": "边缘平台上高分辨率图像的预算受限微小目标选择",
+      "llm_tldr_en": "Explores algorithm-system co-design for efficient tiny object selection and perception on edge devices.",
+      "llm_tldr_cn": "探索边缘设备上高效微小目标选择与感知的算法-系统协同设计。",
+      "llm_tldr": "探索边缘设备上高效微小目标选择与感知的算法-系统协同设计。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.26806v1",
+      "source": "arxiv",
+      "title": "ViCrop-Det: Spatial Attention Entropy Guided Cropping for Training-Free Small-Object Detection",
+      "abstract": "Transformer-based architectures have established a dominant paradigm in global semantic perception; however, they remain fundamentally constrained by the profound spatial heterogeneity inherent in natural images. Specifically, the imposition of a uniform global receptive field across regions of varying information density inevitably leads to local feature degradation, particularly in dense conflict zones populated by microscopic targets. To address this mechanistic limitation, we propose ViCrop-Det, a training-free inference framework that introduces adaptive spatial trust region shrinkage. Inspired by the use of attention entropy in anomaly segmentation, ViCrop-Det leverages the detection decoder's cross-attention distribution as an endogenous probe. By utilizing Spatial Attention Entropy (SAE) to heuristically evaluate local spatial ambiguity, the framework executes dynamic spatial routing, allocating a fixed computational budget exclusively to regions exhibiting both high target saliency and high cognitive uncertainty. By shrinking the spatial trust region and injecting high-frequency localized observations, ViCrop-Det actively resolves spatial ambiguity and recovers fine-grained features without requiring architectural modifications. Extensive evaluations on VisDrone and DOTA-v1.5 demonstrate that ViCrop-Det yields competitive performance enhancements, consistently adding +1-3 mAP@50 to RT-DETR-R50 and Deformable DETR with a marginal 20-23\\% latency overhead. On MS COCO, $AP_{S}$ improves while $AP_{M}/AP_{L}$ remains stable, indicating precise fine-scale refinement without compromising the global spatial prior. Under compute-matched settings, our adaptive routing strategy comprehensively surpasses uniform slicing baselines, achieving a highly optimized accuracy-speed trade-off.",
+      "authors": [
+        "Hui Wang",
+        "Hongze Li",
+        "Wei Chen",
+        "Xiaojin Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-29T15:35:03+00:00",
+      "link": "https://arxiv.org/pdf/2604.26806v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "training-free inference framework for microscopic targets",
+      "llm_evidence_cn": "针对微小目标的免训练推理框架",
+      "llm_evidence": "针对微小目标的免训练推理框架",
+      "canonical_evidence": "针对微小目标的免训练推理框架",
+      "llm_tldr_en": "Introduces ViCrop-Det, a training-free framework using spatial attention entropy for small-object detection.",
+      "llm_tldr_cn": "引入ViCrop-Det，一种利用空间注意力熵进行小目标检测的免训练框架。",
+      "llm_tldr": "引入ViCrop-Det，一种利用空间注意力熵进行小目标检测的免训练框架。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.00722v1",
+      "source": "arxiv",
+      "title": "Exploring the Limits of End-to-End Feature-Affinity Propagation for Single-Point Supervised Infrared Small Target Detection",
+      "abstract": "Single-point supervised infrared small target detection (IRSTD) drastically reduces dense annotation costs. Current state-of-the-art (SOTA) methods achieve high precision by recovering mask supervision through explicit, offline pseudo-label construction, such as multi-stage active learning and physics-driven mask generation. In this paper, we study a minimalist alternative: generating point-to-mask supervision online through in-batch, point-anchored feature-affinity propagation. We instantiate this paradigm as GSACP, an end-to-end testbed that directly supervises the detector using hard-margin feature affinity gated by local image priors, entirely eliminating external label-evolution loops.   This compact design, however, exposes an optimization bottleneck. Because the affinity target is generated from the same feature representation being optimized, training forms a self-referential loop. We theoretically formalize this as \\emph{Self-Referential Propagation Drift}, a representation-supervision entanglement that can sharpen true boundaries or distort the feature space to satisfy its own targets. To systematically isolate these failure modes, we apply a protocolized single-variable ablation procedure spanning local EMA teacher decoupling, hard-background contrastive separation, and adaptive support geometry.   On the SIRST3 dataset, GSACP-Final establishes a new ultra-low false-alarm operating regime, achieving a highly competitive $0.6674$ mIoU while demonstrating a $38\\% relative reduction in false-positive artifacts ($\\mathrm{Fa}$) compared with PAL. By systematically deconstructing the end-to-end paradigm, we map its performance boundaries and show that in-batch feature propagation provides a compact alternative for deployment scenarios where false-alarm suppression is paramount.",
+      "authors": [
+        "Qiancheng Zhou",
+        "Wenhua Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-01T15:08:46+00:00",
+      "link": "https://arxiv.org/pdf/2605.00722v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "single-point supervised infrared small target detection",
+      "llm_evidence_cn": "单点监督的红外小目标检测",
+      "llm_evidence": "单点监督的红外小目标检测",
+      "canonical_evidence": "单点监督的红外小目标检测",
+      "llm_tldr_en": "Explores end-to-end feature-affinity propagation for efficient infrared small target detection with minimal labels.",
+      "llm_tldr_cn": "探索端到端特征亲和力传播，实现极简标注下的红外小目标检测。",
+      "llm_tldr": "探索端到端特征亲和力传播，实现极简标注下的红外小目标检测。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "papers focused on small object detection methods and datasets",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.26893v1",
+      "source": "arxiv",
+      "title": "Graph-based Semantic Calibration Network for Unaligned UAV RGBT Image Semantic Segmentation and A Large-scale Benchmark",
+      "abstract": "Fine-grained RGBT image semantic segmentation is crucial for all-weather unmanned aerial vehicle (UAV) scene understanding. However, UAV RGBT semantic segmentation faces two coupled challenges: cross-modal spatial misalignment caused by sensor parallax and platform vibration, and severe semantic confusion among fine-grained ground objects under top-down aerial views. To address these issues, we propose a Graph-based Semantic Calibration Network (GSCNet) for unaligned UAV RGBT image semantic segmentation. Specifically, we design a Feature Decoupling and Alignment Module (FDAM) that decouples each modality into shared structural and private perceptual components and performs deformable alignment in the shared subspace, enabling robust spatial correction with reduced modality appearance interference. Moreover, we propose a Semantic Graph Calibration Module (SGCM) that explicitly encodes the hierarchical taxonomy and co-occurrence regularities among ground-object categories in UAV scenes into a structured category graph, and incorporates these priors into graph-attention reasoning to calibrate predictions of visually similar and rare categories.In addition, we construct the Unaligned RGB-Thermal Fine-grained (URTF) benchmark, to the best of our knowledge, the largest and most fine-grained benchmark for unaligned UAV RGBT image semantic segmentation, containing over 25,000 image pairs across 61 categories with realistic cross-modal misalignment. Extensive experiments on URTF demonstrate that GSCNet significantly outperforms state-of-the-art methods, with notable gains on fine-grained categories. The dataset is available at https://github.com/mmic-lcl/Datasets-and-benchmark-code.",
+      "authors": [
+        "Fangqiang Fan",
+        "Zhicheng Zhao",
+        "Xiaoliang Ma",
+        "Chenglong Li",
+        "Jin Tang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-29T17:01:38+00:00",
+      "link": "https://arxiv.org/pdf/2604.26893v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "fine-grained ground objects under top-down aerial views in UAV scenes",
+      "llm_evidence_cn": "无人机场景下俯视航空视角下的细粒度地面目标",
+      "llm_evidence": "无人机场景下俯视航空视角下的细粒度地面目标",
+      "canonical_evidence": "无人机场景下俯视航空视角下的细粒度地面目标",
+      "llm_tldr_en": "Addresses semantic confusion of fine-grained objects in UAV RGBT imagery using a calibration network.",
+      "llm_tldr_cn": "使用校准网络解决了无人机RGBT图像中细粒度目标的语义混淆问题。",
+      "llm_tldr": "使用校准网络解决了无人机RGBT图像中细粒度目标的语义混淆问题。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.03968v1",
+      "source": "arxiv",
+      "title": "Label-Efficient School Detection from Aerial Imagery via Weakly Supervised Pretraining and Fine-Tuning",
+      "abstract": "Accurate school detection is essential for supporting education initiatives, including infrastructure planning and expanding internet connectivity to underserved areas. However, many regions around the world face challenges due to outdated, incomplete, or unavailable official records. Manual mapping efforts, while valuable, are labor-intensive and lack scalability across large geographic areas. To address this, we propose a weakly supervised framework for school detection from aerial imagery that minimizes the need for human annotations while supporting global mapping efforts. Our method is specifically designed for low-data regimes, where manual annotations are extremely scarce. We introduce an automatic labeling pipeline that leverages sparse location points and semantic segmentation to generate infrastructure masks from which we generate bounding boxes. Using these automatically labeled images, we train our detectors on a first training stage to learn a representation of what schools look like, then using a small set of manually labeled images, we fine-tune the previously trained models on this clean dataset. This two stage training pipeline enables large-scale and strong detection in low-data setting of school infrastructure with minimal supervision. Our results demonstrate strong object detection performance, particularly in the low-data regime, where the models achieve promising results using only 50 manually labeled images, significantly reducing the need for costly annotations. This framework supports education and connectivity initiatives worldwide by providing an efficient and extensible approach to mapping schools from space. All models, training code and auto-labeled data will be publicly released to foster future research and real-world impact.",
+      "authors": [
+        "Zakarya Elmimouni",
+        "Fares Fourati",
+        "Mohamed-Slim Alouini"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-05-05T16:51:28+00:00",
+      "link": "https://arxiv.org/pdf/2605.03968v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "school detection from aerial imagery via weakly supervised framework",
+      "llm_evidence_cn": "通过弱监督框架从航空图像中进行学校检测",
+      "llm_evidence": "通过弱监督框架从航空图像中进行学校检测",
+      "canonical_evidence": "通过弱监督框架从航空图像中进行学校检测",
+      "llm_tldr_en": "Proposes a weakly supervised framework for detecting specific structures like schools from aerial imagery.",
+      "llm_tldr_cn": "提出了一种弱监督框架，用于从航空图像中检测学校等特定结构。",
+      "llm_tldr": "提出了一种弱监督框架，用于从航空图像中检测学校等特定结构。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.25319v1",
+      "source": "arxiv",
+      "title": "Edge-Cloud Collaborative Reconstruction via Structure-Aware Latent Diffusion for Downstream Remote Sensing Perception",
+      "abstract": "The exponential surge in high-resolution remote sensing data faces a severe bottleneck in satellite-to-ground transmission. Limited downlink bandwidth forces the use of extreme high-ratio compression, which irreversibly destroys high-frequency structural details essential for downstream machine perception tasks like object detection. While current super-resolution techniques attempt to recover these details, regression-based methods often yield over-smoothed textures, and generative diffusion models frequently introduce structural hallucinations that mislead detection systems. To address this trade-off, we propose the Structure-Aware Latent Diffusion (SALD) framework, an asymmetric edge-cloud collaborative SR system. At the resource-constrained edge, the system decouples imagery into a highly compressed low-frequency payload and a lightweight soft structural prior. Transmitting this decoupled representation minimizes bandwidth consumption. On the powerful cloud side, we introduce a Structure-Gated Large Kernel (SGLK) module and a Semantic-Guidance Engine (SGE) within the diffusion backbone. These modules leverage the transmitted structural priors to gate large-kernel convolutions, effectively capturing long-range dependencies inherent in aerial scenes while actively suppressing generative hallucinations. Extensive experiments on both the MSCM and UCMerced datasets demonstrate that, even under extreme bandwidth constraints, SALD achieves superior perceptual quality (LPIPS) and significantly enhances downstream performance in both scene classification and small-target detection.",
+      "authors": [
+        "Yun Li",
+        "Xianju Li"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-28T07:28:39+00:00",
+      "link": "https://arxiv.org/pdf/2604.25319v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "recovering high-frequency structural details for remote sensing object detection",
+      "llm_evidence_cn": "恢复遥感目标检测中的高频结构细节",
+      "llm_evidence": "恢复遥感目标检测中的高频结构细节",
+      "canonical_evidence": "恢复遥感目标检测中的高频结构细节",
+      "llm_tldr_en": "Proposes a diffusion framework to recover structural details in compressed remote sensing data for detection.",
+      "llm_tldr_cn": "提出一种扩散框架，用于恢复压缩遥感数据中的结构细节以支持检测。",
+      "llm_tldr": "提出一种扩散框架，用于恢复压缩遥感数据中的结构细节以支持检测。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "high resolution feature maps for tiny object detection",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.26893v2",
+      "source": "arxiv",
+      "title": "Graph-based Semantic Calibration Network for Unaligned UAV RGBT Image Semantic Segmentation and A Large-scale Benchmark",
+      "abstract": "Fine-grained RGBT image semantic segmentation is crucial for all-weather unmanned aerial vehicle (UAV) scene understanding. However, UAV RGBT image semantic segmentation faces two coupled challenges: cross-modal spatial misalignment caused by sensor parallax and platform vibration, and severe semantic confusion among fine-grained ground objects under top-down aerial views. To address these issues, we propose a Graph-based Semantic Calibration Network (GSCNet) for unaligned UAV RGBT image semantic segmentation. Specifically, we design a Feature Decoupling and Alignment Module (FDAM) that decouples each modality into shared structural and private perceptual components and performs deformable alignment in the shared subspace, enabling robust spatial correction with reduced modality appearance interference. Moreover, we propose a Semantic Graph Calibration Module (SGCM) that explicitly encodes the hierarchical taxonomy and co-occurrence regularities among ground-object categories in UAV scenes into a structured category graph, and incorporates these priors into graph-attention reasoning to calibrate predictions of visually similar and rare categories. In addition, we construct the Unaligned RGB-Thermal Fine-grained (URTF) benchmark, to the best of our knowledge, the largest and most fine-grained benchmark for unaligned UAV RGBT image semantic segmentation, containing over 25,000 image pairs across 61 semantic categories with realistic cross-modal misalignment. Extensive experiments on URTF demonstrate that GSCNet significantly outperforms state-of-the-art methods, with notable gains on fine-grained categories. The dataset is available at https://github.com/mmic-lcl/Datasets-and-benchmark-code.",
+      "authors": [
+        "Fangqiang Fan",
+        "Zhicheng Zhao",
+        "Xiaoliang Ma",
+        "Chenglong Li",
+        "Jin Tang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-29T17:01:38+00:00",
+      "link": "https://arxiv.org/pdf/2604.26893v2",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "fine-grained ground objects under top-down aerial views in UAV scenes",
+      "llm_evidence_cn": "无人机俯视场景下的细粒度地面目标",
+      "llm_evidence": "无人机俯视场景下的细粒度地面目标",
+      "canonical_evidence": "无人机俯视场景下的细粒度地面目标",
+      "llm_tldr_en": "Introduces GSCNet for UAV RGBT semantic segmentation to handle spatial misalignment and fine-grained confusion.",
+      "llm_tldr_cn": "针对无人机RGBT图像分割，提出GSCNet以解决空间对齐和细粒度地物混淆问题。",
+      "llm_tldr": "针对无人机RGBT图像分割，提出GSCNet以解决空间对齐和细粒度地物混淆问题。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.26353v1",
+      "source": "arxiv",
+      "title": "GateMOT: Q-Gated Attention for Dense Object Tracking",
+      "abstract": "While large models demonstrate the strong representational power of vanilla attention, this core mechanism cannot be directly applied to Dense Object Tracking: its quadratic all-to-all interactions are computationally prohibitive for dense motion estimation on high-resolution features. This mismatch prevents Dense Object Tracking from fully leveraging attention-based modeling in crowded and occlusion-heavy scenes. To address this challenge, we introduce GateMOT, an online tracking framework centered on Q-Gated Attention (Q-Attention), an efficient and spatially aware attention variant. Our key idea is to repurpose the Query from a similarity-conditioning term into a learnable gating unit. This Gating-Query (Gating-Q) produces a probabilistic gate that modulates Key features in an element-wise manner, enabling explicit relevance selection instead of costly global aggregation. Built on this mechanism, parallel Q-Attention heads transform one shared feature map into task-specific yet consistent representations for detection, motion, and re-identification, yielding a tightly coupled multi-task decoder with linear-complexity gating operations. GateMOT achieves state-of-the-art HOTA of 48.4, MOTA of 67.8, and IDF1 of 64.5 on BEE24, and demonstrates strong performance on additional Dense Object Tracking benchmarks. These results show that Q-Attention is a simple, effective, and transferable building block for attention-based tracking in dense tracking scenarios.",
+      "authors": [
+        "Mingjin Lv",
+        "Zelin Liu",
+        "Feifei Shao",
+        "Yi-Ping Phoebe Chen",
+        "Junqing Yu",
+        "Wei Yang",
+        "Zikai Song"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-29T07:04:29+00:00",
+      "link": "https://arxiv.org/pdf/2604.26353v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "efficient attention on high-resolution features for dense tracking",
+      "llm_evidence_cn": "高分辨率特征上的高效注意力机制用于密集跟踪",
+      "llm_evidence": "高分辨率特征上的高效注意力机制用于密集跟踪",
+      "canonical_evidence": "高分辨率特征上的高效注意力机制用于密集跟踪",
+      "llm_tldr_en": "Introduces GateMOT with Q-Gated Attention to enable efficient dense tracking on high-resolution feature maps.",
+      "llm_tldr_cn": "提出GateMOT，通过Q门控注意力机制在高分辨率特征图上实现高效的密集目标跟踪。",
+      "llm_tldr": "提出GateMOT，通过Q门控注意力机制在高分辨率特征图上实现高效的密集目标跟踪。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "high resolution feature maps for tiny object detection",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.02764v1",
+      "source": "arxiv",
+      "title": "FoR-Net: Learning to Focus on Hard Regions for Efficient Semantic Segmentation",
+      "abstract": "We present FoR-Net, a lightweight architecture for semantic segmentation that focuses on identifying and enhancing hard regions. Instead of relying on heavy global modeling, FoR-Net adopts an efficient strategy that selectively emphasizes informative regions through a learned importance map and a Top-K activation mechanism. Specifically, a selector module predicts region-wise importance, enabling the model to focus on challenging areas such as thin structures and object boundaries. Multi-scale reasoning is achieved using convolutional branches with different receptive fields, allowing diverse spatial context aggregation. We evaluate FoR-Net on the Cityscapes benchmark under limited computational resources. Despite its lightweight design and standard training configuration, FoR-Net achieves competitive performance and demonstrates improved consistency in challenging regions. These results suggest that region-focused reasoning provides a simple yet effective inductive bias for efficient semantic segmentation.",
+      "authors": [
+        "Hsin-Jui Pan",
+        "Sheng-Wei Chan",
+        "Meng-Qian Li",
+        "Chun-Po Shen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-04T16:05:37+00:00",
+      "link": "https://arxiv.org/pdf/2605.02764v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "focusing on thin structures and object boundaries via importance maps",
+      "llm_evidence_cn": "通过重要性图关注细微结构和物体边界",
+      "llm_evidence": "通过重要性图关注细微结构和物体边界",
+      "canonical_evidence": "通过重要性图关注细微结构和物体边界",
+      "llm_tldr_en": "A lightweight segmentation network that enhances hard regions like thin structures using importance maps.",
+      "llm_tldr_cn": "一种轻量级分割网络，通过重要性图增强细微结构等困难区域。",
+      "llm_tldr": "一种轻量级分割网络，通过重要性图增强细微结构等困难区域。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "high resolution feature maps for tiny object detection",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "biorxiv-10-64898-2026-04-24-720764-v1",
+      "source": "biorxiv",
+      "title": "Multi-Scale Contextual Attention for Robust Crop and Pest Image Classification",
+      "abstract": "Image-based crop and pest recognition is considered useful for reducing the delay and cost of manual field scouting, therefore supporting timely intervention in precision-agriculture workflows. However, the real field imagery remains challenging due to the cluttered backgrounds, occlusions, illumination changes, and strong scale variation that are frequently observed across crops. The symptoms are often small or low-contrast, and pests may be partially hidden, which reduces the reliability when the setting is outside controlled environments. A unified multi-class crop-pest/condition recognition framework is presented, where a ResNet-50 backbone is utilized and enhanced with a Multi-Scale Contextual Attention (MSCA) module. The novelty is mainly considered to be achieved through the integration of explicit multi-scale contextual aggregation with lightweight joint channel and spatial attention by means of residual fusion, while the empirical evaluation was kept controlled under a fixed and reproducible protocol. A curated dataset of 21,404 field-style images covering 15 crop and pest/condition classes was compiled, and a leakage-aware fixed split with a held-out test set was adopted to support reproducibility. Augmentation was applied only to the training subset to improve robustness, although the validation data was not augmented in the same manner. On the held-out test set, balanced performance was achieved by the proposed approach, with about 0.93 accuracy and a macro-F1 score close to 0.94 being obtained, while established baselines such as EfficientNet, Vision Transformer, and attention-based CNN models were outperformed under identical evaluation settings. Controlled ablations were used to isolate the contribution of MSCA and augmentation under the same training configuration. These results indicate that lightweight multi-scale contextual attention is effective for crop and pest recognition under realistic field conditions, although some visually similar classes remained difficult.",
+      "authors": [
+        "Majid, M.",
+        "Tariq, H.",
+        "Mumtaz, I.",
+        "Kashif, M."
+      ],
+      "primary_category": "plant biology",
+      "categories": [
+        "plant biology"
+      ],
+      "published": "2026-04-28T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.64898/2026.04.24.720764v1.full.pdf",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "recognition of small or low-contrast symptoms and pests",
+      "llm_evidence_cn": "识别微小或低对比度的病虫害特征",
+      "llm_evidence": "识别微小或低对比度的病虫害特征",
+      "canonical_evidence": "识别微小或低对比度的病虫害特征",
+      "llm_tldr_en": "Proposes a Multi-Scale Contextual Attention module to improve classification of small pests in cluttered backgrounds.",
+      "llm_tldr_cn": "提出多尺度上下文注意力模块，旨在提升复杂背景下微小病虫害的分类性能。",
+      "llm_tldr": "提出多尺度上下文注意力模块，旨在提升复杂背景下微小病虫害的分类性能。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.03396v1",
+      "source": "arxiv",
+      "title": "Design and Implementation of BNN-Based Object Detection on FPGA",
+      "abstract": "This paper implements a Binary Neural Network (BNN) based YOLOv3-tiny-like object detector on a low-cost FPGA. The network takes 320*320*3 RGB images as input. Its main convolution layers use 1-bit weights and 8-bit activations, while Conv1 and the final detection head use fixed-point standard convolutions. From the trained ONNX model, weights, biases, and quantization parameters are extracted, converted to fixed point, packed into COE files, and stored in Vivado BRAM ROMs. The hardware is written fully in Verilog RTL and includes padding, line buffering, binary convolution, quantization post-processing, max pooling, and detection-head computation. For layers where Mul_prev is indexed by input channel and Div_current by output channel, Mul_prev is fused in-to the BNN PE so that channel-wise compensation is applied during accumulation. On VOC, the model obtains 39.6% mAP50 with 0.098 GFLOPs and 0.74 M parameters. RTL simulation shows that the final raw detection output reaches a correlation coefficient of 0.999964 and a mean absolute error of 0.020027 against the corresponding ONNX node.",
+      "authors": [
+        "Xuyu Zhao",
+        "Yunpeng Wu",
+        "Mengyuan Zhu",
+        "Haoyu Huang",
+        "Xiaoyu Xu",
+        "Yanjing Li",
+        "Gaolong Zhang",
+        "Baochang Zhang"
+      ],
+      "primary_category": "cs.AR",
+      "categories": [
+        "cs.AR"
+      ],
+      "published": "2026-05-05T06:16:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.03396v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "YOLOv3-tiny-like object detector implementation",
+      "llm_evidence_cn": "类YOLOv3-tiny目标检测器实现",
+      "llm_evidence": "类YOLOv3-tiny目标检测器实现",
+      "canonical_evidence": "类YOLOv3-tiny目标检测器实现",
+      "llm_tldr_en": "Implements a lightweight YOLOv3-tiny-like object detector on FPGA using Binary Neural Networks.",
+      "llm_tldr_cn": "使用二进制神经网络在FPGA上实现了一个轻量级的类YOLOv3-tiny目标检测器。",
+      "llm_tldr": "使用二进制神经网络在FPGA上实现了一个轻量级的类YOLOv3-tiny目标检测器。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "biorxiv-10-1101-2024-06-24-600405-v4",
+      "source": "biorxiv",
+      "title": "Pushing the ceiling of species-level mapping in a hyperdiverse tropical forest with multi-temporal segmentation and airborne hyperspectral classification",
+      "abstract": "Species-level maps of tropical forest canopies are needed for biodiversity monitoring, conservation planning, and carbon accounting, yet the structural complexity and species richness of these forests make remote classification challenging. Here we evaluate the limits and possibilities of a two-step mapping approach applied to hyperdiverse moist forest at the Paracou Field Station, French Guiana. First, we delineate individual tree crowns from ten repeat UAV RGB surveys using a CNN (Mask R-CNN) and combine predictions across dates via a temporal consensus-fusion method, improving mean segmentation F1 from 0.68 (single date) to 0.78 (ten dates) and covering approximately 86% of canopy area. Second, we classify the species of each crown from a single airborne hyperspectral acquisition (416--2500 nm, 1 m resolution) using several machine learning classifiers trained and tested on 3,186 field-verified crowns spanning 169 species (drawn from a labelled pool of 3,256 crowns across 239 species; see \\cref{sec:representative_tree_species_classificati}). Linear Discriminant Analysis (LDA) achieved the highest accuracy (weighted F1 = 0.75), though performance was uneven: repeated cross-validation (20 x 5-fold) showed that on average 50 species (95% CI: 41--63) attained F1 >= 0.7 in any given fold, with 38 maintaining this level on average and 15 doing so reliably (>= 80% of folds), while many rare species with few training examples remained unclassifiable (macro-average F1 = 0.48). Combining segmentation and classification, we estimate that approximately 70% of the landscape's canopy area was correctly mapped to species. Band-importance and ablation analyses identified the far-red edge (748--775 nm) as the most informative spectral region, with secondary contributions from the red, green, and SWIR. While these results represent a substantial advance over previous studies limited to fewer than 20 species, we caution that accuracy is strongly conditioned by training data availability, site-specific spectral conditions, and the single-acquisition design, and that generalization to other sites and sensors remains to be demonstrated.",
+      "authors": [
+        "Ball, J. G. C.",
+        "Jaffer, S.",
+        "Laybros, A.",
+        "Prieur, C.",
+        "Jackson, T. D.",
+        "Madhavapeddy, A.",
+        "Barbier, N.",
+        "Vincent, G.",
+        "Coomes, D."
+      ],
+      "primary_category": "ecology",
+      "categories": [
+        "ecology"
+      ],
+      "published": "2026-05-05T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.1101/2024.06.24.600405v4.full.pdf",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "delineate individual tree crowns from UAV RGB surveys",
+      "llm_evidence_cn": "从无人机RGB调查中描绘单个树冠",
+      "llm_evidence": "从无人机RGB调查中描绘单个树冠",
+      "canonical_evidence": "从无人机RGB调查中描绘单个树冠",
+      "llm_tldr_en": "Evaluates a two-step mapping approach using Mask R-CNN on UAV imagery for species-level forest canopy segmentation.",
+      "llm_tldr_cn": "利用Mask R-CNN对无人机影像进行处理，实现热带森林树冠的物种级分割与制图。",
+      "llm_tldr": "利用Mask R-CNN对无人机影像进行处理，实现热带森林树冠的物种级分割与制图。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

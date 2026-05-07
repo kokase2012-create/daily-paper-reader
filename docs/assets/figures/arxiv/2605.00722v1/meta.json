@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-001.webp",
+      "caption": "Figure 5: Training dynamics expose self-referential propagation drift. PAL improves robustly over a long outer-loop window. In contrast, GSACP variants peak earlier and subsequently roll back. When the foreground/background margin (cosine distance) drops below zero, the mask overlap degrades despite propagation loss stagnating at a low level, which is a key signature of representation-supervision entanglement.",
+      "page": 6,
+      "index": 1,
+      "width": 1056,
+      "height": 291
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-002.webp",
+      "caption": "Figure 1: Operational motivation. The left panel illustrates the qualitative trade-off: PAL recovers fuller masks but may activate off-target clutter, while GSACP-Final is conservative and cleaner. The right panel shows why this matters operationally: false positives propagate into track clutter and downstream decision load.",
+      "page": 2,
+      "index": 2,
+      "width": 1076,
+      "height": 254
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-003.webp",
+      "caption": "Figure 6: Protocolized ablation as a mechanism decision tree. The constructive trunk (green) compounds successful stabilization variants toward GSACP-Final. The dead-end branches (red) document critical insights into why certain straightforward interventions collapse.",
+      "page": 7,
+      "index": 3,
+      "width": 948,
+      "height": 329
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-004.webp",
+      "caption": "Table 2: The failure map of end-to-end propagation. Extracted from over 100 automated ablations, these negative results define the geometric and representational boundaries that cause in-batch supervision to fail.",
+      "page": 7,
+      "index": 4,
+      "width": 1072,
+      "height": 276
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-005.webp",
+      "caption": "Figure 8: GSACP-Final target-size stratification (1,079 SIRST3 val. images). The ultra-low false alarm rate is not achieved trivially by dropping small targets (Pd remains high across tiny and small bins). The residual accuracy gap is predominantly explained by the conservative compact support generated for large targets.",
+      "page": 10,
+      "index": 5,
+      "width": 968,
+      "height": 286
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-006.webp",
+      "caption": "Table 3: Zero-shot cross-dataset transfer on external SIRST benchmarks. Both models are trained solely on SIRST3 and evaluated at the source threshold 0.55; ‘Best mIoU’ indicates a diagnostic threshold sweep without target-domain fine-tuning.",
+      "page": 10,
+      "index": 6,
+      "width": 768,
+      "height": 206
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-007.webp",
+      "caption": "Figure 7: SIRST3 qualitative comparison: masks, error focus, and 3D response surfaces. Red marks denote false-positive artifacts; blue annotations indicate conservative under-fill. As evidenced by the rightmost 3D probability landscapes, PAL aggressively expands masks but activates off-target bright clutter peaks. GSACP-Final exhibits highly compact, single-peak responses, preserving system integrity against false alarms.",
+      "page": 8,
+      "index": 7,
+      "width": 1022,
+      "height": 710
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-008.webp",
+      "caption": "Figure 2: PAL versus GSACP: The Gradient Flow Perspective. PAL separates pseudo-mask construction from detector training through an offline outer loop (temporal regularization). GSACP generates the affinity target in-batch from the same representation that consumes the gradient, creating a vulnerable, self-coupled supervision loop that leads to representation-supervision entanglement.",
+      "page": 4,
+      "index": 8,
+      "width": 1022,
+      "height": 402
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-009.webp",
+      "caption": "Figure 3: GSACP deconstruction architecture. Point seeds extract normalized seed features; hard-margin cosine affinity is multiplied by spatial/color priors. To untangle self-referential drift, we introduce Local Teacher Decoupling (LTD), Hard-Background Contrastive (HBC) branches, and Adaptive Support Gates (ASG) as independent intervention axes.",
+      "page": 4,
+      "index": 9,
+      "width": 1056,
+      "height": 362
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-010.webp",
+      "caption": "Figure 4: Accuracy/False-Alarm Pareto frontier. The dashed line represents the empirical operational frontier. GSACP establishes an ultra-low Fa deployment regime completely orthogonal to PAL’s aggressive mask expansion.",
+      "page": 5,
+      "index": 10,
+      "width": 531,
+      "height": 292
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00722v1/fig-011.webp",
+      "caption": "Table 1: Main SIRST3/MSDA comparison. Reported rows are taken from the PAL supplement; local rows are controlled runs selected from the late plateau. PAL maximizes mask overlap via multi-stage outer loops, while GSACP-Final delineates a compact single-stage paradigm that sacrifices a marginal mIoU but substantially reduces false alarms.",
+      "page": 5,
+      "index": 11,
+      "width": 768,
+      "height": 264
+    }
+  ]
+}
