@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-07T20:29:13.219788+00:00",
-  "updated_date": "20260507",
+  "generated_at": "2026-05-08T20:28:22.735617+00:00",
+  "updated_date": "20260508",
   "carryover_days": 9,
   "tag_states": {
     "SmallDet": {
-      "updated_date": "20260507",
+      "updated_date": "20260508",
       "carryover_days": 9,
       "items": []
     }

@@ -6,29 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-07
-- 运行时间：2026-05-07 20:29:46 UTC
+- 最新运行日期：2026-05-08
+- 运行时间：2026-05-08 20:29:49 UTC
 - 运行状态：成功
 - 本次总论文数：2
-- 精读区：0
-- 速读区：2
+- 精读区：1
+- 速读区：1
 
 ### 今日简报（AI）
-今日聚焦目标检测新趋势，速读两篇涵盖神经形态硬件和自监督适应方法的论文。  
-重点关注实时脉冲神经网络在边缘设备的部署，以及开放词汇检测的轻量自学习机制。  
-建议关注这些技术在低功耗设备与复杂场景中的潜在整合应用。
-- 详情：[/202605/07/README](/202605/07/README)
+聚焦目标检测前沿，今日精读红外小目标识别新方法，速读昆虫通用检测研究。  
+红外检测论文提出原生分辨率特征选取与融合策略，显著提升小目标识别精度。  
+建议继续关注跨模态目标检测方法在复杂背景下的普适性能改进。
+- 详情：[/202605/08/README](/202605/08/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Na-IRSTD: Enhancing Infrared Small Target Detection via Native-Resolution Feature Selection and Fusion](/202605/08/2605.05804v1-na-irstd-enhancing-infrared-small-target-detection-via-native-resolution-feature-selection-and-fusion)  
+   标签：评分：10.0/10、query:smalldet
+   evidence：原生分辨率特征提取以保留小目标的细微线索
 
 ### 速读区论文标签
-1. [Real-Time Frame- and Event-based Object Detection with Spiking Neural Networks on Edge Neuromorphic Hardware: Design, Deployment and Benchmark](/202605/07/2605.00146v1-real-time-frame--and-event-based-object-detection-with-spiking-neural-networks-on-edge-neuromorphic-hardware-design-deployment-and-benchmark)  
+1. [Towards a general Detector of terrestrial Arthropods in Natural backgrounds](/202605/08/biorxiv-10-64898-2026-05-06-723207-v1-towards-a-general-detector-of-terrestrial-arthropods-in-natural-backgrounds)  
    标签：评分：7.0/10、query:smalldet
-   evidence：边缘硬件上用于无人机巡检的实时目标检测
-2. [The Detector Teaches Itself: Lightweight Self-Supervised Adaptation for Open-Vocabulary Object Detection](/202605/07/2605.03642v1-the-detector-teaches-itself-lightweight-self-supervised-adaptation-for-open-vocabulary-object-detection)  
-   标签：评分：6.0/10、query:smalldet
-   evidence：捕捉局部物体细节
+   evidence：在自然背景下检测小型陆生节肢动物
 
 
 <div class="dpr-home-promo-card">

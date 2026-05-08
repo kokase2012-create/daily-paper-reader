@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-08T20:28:22.735039+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2605.05804v1",
+      "source": "arxiv",
+      "title": "Na-IRSTD: Enhancing Infrared Small Target Detection via Native-Resolution Feature Selection and Fusion",
+      "abstract": "Infrared small target detection (IRSTD) faces the inherent challenge of precisely localizing dim targets amid complex background clutter. While progress has been made, existing methods usually follow conventional strategies to downsample features and discard small targets' details, resulting in suboptimal performance. In this paper, we present Na-IRSTD, a native-resolution feature extraction and fusion framework for IRSTD. This framework elegantly incorporates native-resolution features to preserve subtle target cues, overcoming the resolution limitations of existing infrared approaches and significantly improving the model's ability to localize small targets. We also introduce an effective token reduction and selection strategy, which selects target patches with high accuracy and confidence, boosting the low-level details of the feature while effectively reducing native-resolution patch tokens compared to dense processing, thereby avoiding imposing an unbearable computational burden. Extensive experiments demonstrate the robustness and effectiveness of our token reduction and selection strategy across multiple public datasets. Ultimately, our Na-IRSTD model achieves state-of-the-art performance on four benchmarks.",
+      "authors": [
+        "Qian Xu",
+        "Chi Zhang",
+        "Qiming Zhang",
+        "Xi Li",
+        "Haojuan Yuan",
+        "Mingjin Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-07T07:42:03+00:00",
+      "link": "https://arxiv.org/pdf/2605.05804v1",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "native-resolution feature extraction to preserve subtle target cues for small targets",
+      "llm_evidence_cn": "原生分辨率特征提取以保留小目标的细微线索",
+      "llm_evidence": "原生分辨率特征提取以保留小目标的细微线索",
+      "canonical_evidence": "原生分辨率特征提取以保留小目标的细微线索",
+      "llm_tldr_en": "Proposes Na-IRSTD using native-resolution features to improve localization of dim infrared small targets.",
+      "llm_tldr_cn": "提出Na-IRSTD，利用原生分辨率特征提升红外弱小目标的定位精度。",
+      "llm_tldr": "提出Na-IRSTD，利用原生分辨率特征提升红外弱小目标的定位精度。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "high resolution feature maps for tiny object detection",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "biorxiv-10-64898-2026-05-06-723207-v1",
+      "source": "biorxiv",
+      "title": "Towards a general Detector of terrestrial Arthropods in Natural backgrounds",
+      "abstract": "Widespread arthropod declines pose risks to ecosystem functioning and agriculture. Assessing this decline or potential remediation implies the need for standardized and scalable population monitoring. Image-based methods, including camera traps and citizen science programs, are increasingly used, but the volume of data collected requires automated analysis. Robust arthropod detection is essential for individual counting or fine-grained classification, yet current datasets and algorithms do not address the vast morphological diversity across arthropod species and often overlook the variety of photographic contexts, such as differences in background, lighting, and image composition, in which arthropods are captured. To address this gap, we developed an arthropod detection dataset, covering all terrestrial families present in France with available validated images on the iNaturalist platform (749 families). To achieve this, we employed an iterative workflow in which a YOLOv11 model pre-annotated images - using one representative species per family - followed by manual correction and model retraining. Repeating this process progressively reduced annotation effort and improved model accuracy. The final outcome consists of a publicly available curated detection dataset and a robust arthropod detector for natural background scenes. The detector achieves an F1-score of 0.91, demonstrating strong performance despite substantial interspecific morphological variation and heterogeneity in photographic contexts. We further demonstrated the taxonomical universality of the model showing high F1-score and IoU averaged at the class (0.79, 0.85) and order level (0.82, 0.86) and also a good detection generalizability (F1-score>0.90, IoU>0.83) on species, genera and families never encountered by the model during training. Finally, we show how this model can be improved to generalize to new datasets using data augmentation, complementary training data or fine-tuning and increase detection of small objects. In particular, we report performance of the improved models on three use cases largely used in non lethal insect monitoring: (i) diurnal pollinator monitoring through citizen science or (ii) flower and nocturnal insects monitoring through smartphone time-lapse of a UV-illuminated white panel. These results mark an important step toward automated analysis of arthropod images in natural contexts, from both large-scale automated monitoring approaches or from citizen science monitoring programs.",
+      "authors": [
+        "Remy, E.",
+        "Carlier, A.",
+        "Massol, E.",
+        "Kacimi, R.",
+        "Chaine, A. S.",
+        "Cauchoix, M."
+      ],
+      "primary_category": "ecology",
+      "categories": [
+        "ecology"
+      ],
+      "published": "2026-05-08T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.64898/2026.05.06.723207v1.full.pdf",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "detection of small terrestrial arthropods in natural backgrounds",
+      "llm_evidence_cn": "在自然背景下检测小型陆生节肢动物",
+      "llm_evidence": "在自然背景下检测小型陆生节肢动物",
+      "canonical_evidence": "在自然背景下检测小型陆生节肢动物",
+      "llm_tldr_en": "Develops a general detector for small arthropods in diverse natural environments.",
+      "llm_tldr_cn": "开发了一种用于在多种自然环境中检测小型节肢动物的通用检测器。",
+      "llm_tldr": "开发了一种用于在多种自然环境中检测小型节肢动物的通用检测器。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
