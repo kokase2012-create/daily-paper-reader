@@ -6,28 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-08
-- 运行时间：2026-05-08 20:29:49 UTC
+- 最新运行日期：2026-05-09
+- 运行时间：2026-05-09 19:59:55 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
+- 本次总论文数：1
+- 精读区：0
 - 速读区：1
 
 ### 今日简报（AI）
-聚焦目标检测前沿，今日精读红外小目标识别新方法，速读昆虫通用检测研究。  
-红外检测论文提出原生分辨率特征选取与融合策略，显著提升小目标识别精度。  
-建议继续关注跨模态目标检测方法在复杂背景下的普适性能改进。
-- 详情：[/202605/08/README](/202605/08/README)
+聚焦细胞层级分析，速读了最新的高通量深度学习框架研究。  
+该研究提出CenSegNet，可在异质组织中实现单细胞分辨率的中心体表型识别。  
+建议关注该模型在癌症或发育异常检测中的扩展应用潜力。
+- 详情：[/202605/09/README](/202605/09/README)
 
 ### 精读区论文标签
-1. [Na-IRSTD: Enhancing Infrared Small Target Detection via Native-Resolution Feature Selection and Fusion](/202605/08/2605.05804v1-na-irstd-enhancing-infrared-small-target-detection-via-native-resolution-feature-selection-and-fusion)  
-   标签：评分：10.0/10、query:smalldet
-   evidence：原生分辨率特征提取以保留小目标的细微线索
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Towards a general Detector of terrestrial Arthropods in Natural backgrounds](/202605/08/biorxiv-10-64898-2026-05-06-723207-v1-towards-a-general-detector-of-terrestrial-arthropods-in-natural-backgrounds)  
+1. [CenSegNet: a generalist high-throughput deep learning framework for centrosome phenotyping at spatial and single-cell resolution in heterogeneous tissues](/202605/09/biorxiv-10-1101-2025-09-15-676250-v3-censegnet-a-generalist-high-throughput-deep-learning-framework-for-centrosome-phenotyping-at-spatial-and-single-cell-resolution-in-heterogeneous-tissues)  
    标签：评分：7.0/10、query:smalldet
-   evidence：在自然背景下检测小型陆生节肢动物
+   evidence：对中心体（微小细胞结构）进行高分辨率分割
 
 
 <div class="dpr-home-promo-card">

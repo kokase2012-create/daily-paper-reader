@@ -1,0 +1,64 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-09T19:59:38.967973+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "biorxiv-10-1101-2025-09-15-676250-v3",
+      "source": "biorxiv",
+      "title": "CenSegNet: a generalist high-throughput deep learning framework for centrosome phenotyping at spatial and single-cell resolution in heterogeneous tissues",
+      "abstract": "Centrosome abnormalities (CA) are a hallmark of epithelial cancers, yet their spatial complexity and phenotypic heterogeneity remain poorly resolved due to limitations in conventional image analysis. We present CenSegNet (Centrosome Segmentation Network), a modular deep learning framework for high-resolution, context-aware segmentation of centrosomes and epithelial architecture across diverse tissue types. Integrating a dual-branch architecture with uncertainty-guided refinement, CenSegNet achieves state-of-the-art performance and generalisability across both immunofluorescence and immunohistochemistry modalities, outperforming existing models in accuracy and morphological fidelity. Applied to tissue microarrays (TMAs) containing 911 breast cancer sample cores from 127 patients, CenSegNet enables the first large-scale, spatially resolved quantification of numerical and structural CA at single-cell resolution. These CA subtypes are mechanistically uncoupled, exhibiting distinct spatial distributions, age-dependent dynamics, and associations with histological tumour grade, hormone receptor status, genomic alterations, and nodal involvement. Structural CA levels are additionally associated with overall survival, supporting the clinical relevance of spatially resolved CA patterns. Discordant CA profiles at tumour margins are linked to local aggressiveness and stromal remodelling. To support broad adoption and reproducibility, CenSegNet is released as an open-source Python library. Together, our findings establish CenSegNet as a scalable, generalisable platform for spatially resolved centrosome phenotyping in intact tissues, enabling systematic dissection of the biology of this organelle and its dysregulation in cancer and other epithelial diseases.",
+      "authors": [
+        "Cheng, J.",
+        "Fan, K.",
+        "Bailey, M.",
+        "Du, X.",
+        "Jena, R.",
+        "Savva, C.",
+        "Reed, E.",
+        "Gou, M.",
+        "Zuo, P.",
+        "Beers, S.",
+        "Cutress, R.",
+        "Cai, X.",
+        "Elias, S."
+      ],
+      "primary_category": "cell biology",
+      "categories": [
+        "cell biology"
+      ],
+      "published": "2026-05-04T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.1101/2025.09.15.676250v3.full.pdf",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "high-resolution segmentation of centrosomes which are tiny cellular structures",
+      "llm_evidence_cn": "对中心体（微小细胞结构）进行高分辨率分割",
+      "llm_evidence": "对中心体（微小细胞结构）进行高分辨率分割",
+      "canonical_evidence": "对中心体（微小细胞结构）进行高分辨率分割",
+      "llm_tldr_en": "CenSegNet provides high-resolution segmentation for tiny centrosomes in complex biological tissues.",
+      "llm_tldr_cn": "CenSegNet为复杂生物组织中的微小中心体提供高分辨率分割。",
+      "llm_tldr": "CenSegNet为复杂生物组织中的微小中心体提供高分辨率分割。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
