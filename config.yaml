@@ -241,7 +241,7 @@ subscriptions:
           enabled: true
           source: manual
           note: ''
-      updated_at: '2026-05-10T10:00:06.013Z'
+      updated_at: '2026-05-10T10:00:40.872Z'
 source_backends:
   arxiv:
     papers_table: arxiv_papers
