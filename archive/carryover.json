@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-10T09:52:54.967229+00:00",
+  "generated_at": "2026-05-10T10:05:05.179466+00:00",
   "updated_date": "20260411-20260510",
   "carryover_days": 9,
   "tag_states": {
@@ -13,43 +13,285 @@
       "carryover_days": 9,
       "items": [
         {
-          "id": "2605.00884v1",
+          "id": "2604.26893v2",
           "source": "arxiv",
-          "title": "LiteVLA-H: Dual-Rate Vision-Language-Action Inference for Onboard Aerial Guidance and Semantic Perception",
-          "abstract": "Vision-language-action (VLA) models have shown strong semantic grounding and task generalization in manipulation, but aerial deployment remains difficult because drones require low-latency closed-loop guidance under strict onboard compute and communication constraints. We present LiteVLA-H, a compact 256M-parameter VLA system designed for dual-rate operation on an NVIDIA Jetson AGX Orin: a fast outer-loop guidance mode for short action-token outputs and a slower semantic mode for scene understanding, hazard description, and operator-facing narration. The central empirical observation is that, in this compact edge regime, end-to-end latency is dominated by multimodal pre-fill rather than by the marginal cost of decoding a few extra tokens. This motivates a scheduler that issues reactive action tokens at 50.65,ms (19.74,Hz) while still supporting sentence-level semantic outputs at 149.90--164.57\\ms (6.08--6.67,Hz) on the same embedded platform. To specialize the model without collapsing its descriptive competence, we use a knowledge-preserving fine-tuning recipe that mixes reactive flight data, aerial semantic data, and generic caption/VQA supervision. Beyond reporting current latency measurements, we position the system against recent state-of-the-art architectures, including AnywhereVLA, FutureVLA, and ReMem-VLA, showing that the measured action branch reaches a higher edge inference rate under our deployment conditions while retaining periodic semantic awareness.",
+          "title": "Graph-based Semantic Calibration Network for Unaligned UAV RGBT Image Semantic Segmentation and A Large-scale Benchmark",
+          "abstract": "Fine-grained RGBT image semantic segmentation is crucial for all-weather unmanned aerial vehicle (UAV) scene understanding. However, UAV RGBT image semantic segmentation faces two coupled challenges: cross-modal spatial misalignment caused by sensor parallax and platform vibration, and severe semantic confusion among fine-grained ground objects under top-down aerial views. To address these issues, we propose a Graph-based Semantic Calibration Network (GSCNet) for unaligned UAV RGBT image semantic segmentation. Specifically, we design a Feature Decoupling and Alignment Module (FDAM) that decouples each modality into shared structural and private perceptual components and performs deformable alignment in the shared subspace, enabling robust spatial correction with reduced modality appearance interference. Moreover, we propose a Semantic Graph Calibration Module (SGCM) that explicitly encodes the hierarchical taxonomy and co-occurrence regularities among ground-object categories in UAV scenes into a structured category graph, and incorporates these priors into graph-attention reasoning to calibrate predictions of visually similar and rare categories. In addition, we construct the Unaligned RGB-Thermal Fine-grained (URTF) benchmark, to the best of our knowledge, the largest and most fine-grained benchmark for unaligned UAV RGBT image semantic segmentation, containing over 25,000 image pairs across 61 semantic categories with realistic cross-modal misalignment. Extensive experiments on URTF demonstrate that GSCNet significantly outperforms state-of-the-art methods, with notable gains on fine-grained categories. The dataset is available at https://github.com/mmic-lcl/Datasets-and-benchmark-code.",
           "authors": [
-            "Justn williams",
-            "Kishor Datta Gupta",
-            "Roy George",
-            "Mrinmoy Sarkar"
+            "Fangqiang Fan",
+            "Zhicheng Zhao",
+            "Xiaoliang Ma",
+            "Chenglong Li",
+            "Jin Tang"
           ],
           "primary_category": "cs.CV",
           "categories": [
             "cs.CV"
           ],
-          "published": "2026-04-27T06:42:50+00:00",
-          "link": "https://arxiv.org/pdf/2605.00884v1",
+          "published": "2026-04-29T17:01:38+00:00",
+          "link": "https://arxiv.org/pdf/2604.26893v2",
           "tags": [
-            "keyword:visdrone",
-            "query:SmallDet",
             "query:visdrone"
           ],
           "llm_score": 8.0,
-          "llm_evidence_en": "onboard aerial guidance and semantic perception for drones",
-          "llm_evidence_cn": "无人机机载引导与语义感知",
-          "llm_evidence": "无人机机载引导与语义感知",
-          "canonical_evidence": "无人机机载引导与语义感知",
-          "llm_tldr_en": "LiteVLA-H is a compact VLA system for low-latency drone guidance and scene understanding on edge devices.",
-          "llm_tldr_cn": "LiteVLA-H是一个紧凑的VLA系统，用于边缘设备上的低延迟无人机引导和场景理解。",
-          "llm_tldr": "LiteVLA-H是一个紧凑的VLA系统，用于边缘设备上的低延迟无人机引导和场景理解。",
+          "llm_evidence_en": "UAV RGBT image semantic segmentation and aerial views",
+          "llm_evidence_cn": "无人机RGBT图像语义分割与航拍视角",
+          "llm_evidence": "无人机RGBT图像语义分割与航拍视角",
+          "canonical_evidence": "无人机RGBT图像语义分割与航拍视角",
+          "llm_tldr_en": "Proposes GSCNet for unaligned UAV RGBT image semantic segmentation to improve aerial scene understanding.",
+          "llm_tldr_cn": "提出GSCNet用于非对齐无人机RGBT图像语义分割，提升航拍场景理解。",
+          "llm_tldr": "提出GSCNet用于非对齐无人机RGBT图像语义分割，提升航拍场景理解。",
+          "llm_tags": [
+            "query:visdrone"
+          ],
+          "matched_query_tag": "query:visdrone",
+          "matched_query_text": "无人机航拍图像处理",
+          "matched_requirement_id": "req-4",
+          "selection_source": "carryover_cache",
+          "paper_id": "2604.26893v2",
+          "carry_days": 1
+        },
+        {
+          "id": "2604.26201v1",
+          "source": "arxiv",
+          "title": "Lights Out: A Nighttime UAV Localization Framework Using Thermal Imagery and Semantic 3D Maps",
+          "abstract": "Reliable backup localization for unmanned aerial vehicles (UAVs) operating in GNSS-denied nighttime conditions remains an open challenge due to the severe modality gap between daytime RGB maps and nighttime thermal imagery. This work presents a semantic reprojection framework for map-relative nighttime UAV localization by aligning segmented thermal observations with a globally referenced, semantically labeled 3D map constructed from daytime RGB data. Rather than relying on appearance-based correspondence, localization is formulated in a shared semantic domain and solved via a symmetric bidirectional reprojection objective with confusion-aware weighting to improve robustness under segmentation uncertainty. The approach is evaluated offline across 6.5 km of nighttime, real-world UAV flight trajectories in urban and semi-structured environments. Relative to RTK GNSS ground truth, the system achieves a bias-corrected RMSE2D of 2.18 m and a median RMSE2D of 1.52 m. Results show that localization performance is strongly correlated with the availability of semantic edge evidence and that large-error events are spatially localized to semantically ambiguous areas rather than uniformly distributed. These findings indicate that semantic reprojection offers a promising pathway toward globally referenced nighttime UAV localization using thermal imagery alone.",
+          "authors": [
+            "Ryan Allen",
+            "Melissa Greeff"
+          ],
+          "primary_category": "cs.RO",
+          "categories": [
+            "cs.RO"
+          ],
+          "published": "2026-04-29T01:08:50+00:00",
+          "link": "https://arxiv.org/pdf/2604.26201v1",
+          "tags": [
+            "keyword:visdrone",
+            "query:visdrone"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "nighttime UAV localization using thermal imagery and semantic maps",
+          "llm_evidence_cn": "利用热成像和语义地图进行夜间无人机定位",
+          "llm_evidence": "利用热成像和语义地图进行夜间无人机定位",
+          "canonical_evidence": "利用热成像和语义地图进行夜间无人机定位",
+          "llm_tldr_en": "Proposes a semantic reprojection framework for robust nighttime UAV localization in GNSS-denied environments.",
+          "llm_tldr_cn": "提出一种语义重投影框架，用于GNSS受限环境下的鲁棒夜间无人机定位。",
+          "llm_tldr": "提出一种语义重投影框架，用于GNSS受限环境下的鲁棒夜间无人机定位。",
           "llm_tags": [
             "query:visdrone"
           ],
           "matched_query_tag": "query:visdrone",
           "matched_query_text": "无人机视觉感知研究",
-          "matched_requirement_id": "req-7",
+          "matched_requirement_id": "req-3",
           "selection_source": "carryover_cache",
-          "paper_id": "2605.00884v1",
+          "paper_id": "2604.26201v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2605.03968v1",
+          "source": "arxiv",
+          "title": "Label-Efficient School Detection from Aerial Imagery via Weakly Supervised Pretraining and Fine-Tuning",
+          "abstract": "Accurate school detection is essential for supporting education initiatives, including infrastructure planning and expanding internet connectivity to underserved areas. However, many regions around the world face challenges due to outdated, incomplete, or unavailable official records. Manual mapping efforts, while valuable, are labor-intensive and lack scalability across large geographic areas. To address this, we propose a weakly supervised framework for school detection from aerial imagery that minimizes the need for human annotations while supporting global mapping efforts. Our method is specifically designed for low-data regimes, where manual annotations are extremely scarce. We introduce an automatic labeling pipeline that leverages sparse location points and semantic segmentation to generate infrastructure masks from which we generate bounding boxes. Using these automatically labeled images, we train our detectors on a first training stage to learn a representation of what schools look like, then using a small set of manually labeled images, we fine-tune the previously trained models on this clean dataset. This two stage training pipeline enables large-scale and strong detection in low-data setting of school infrastructure with minimal supervision. Our results demonstrate strong object detection performance, particularly in the low-data regime, where the models achieve promising results using only 50 manually labeled images, significantly reducing the need for costly annotations. This framework supports education and connectivity initiatives worldwide by providing an efficient and extensible approach to mapping schools from space. All models, training code and auto-labeled data will be publicly released to foster future research and real-world impact.",
+          "authors": [
+            "Zakarya Elmimouni",
+            "Fares Fourati",
+            "Mohamed-Slim Alouini"
+          ],
+          "primary_category": "cs.CV",
+          "categories": [
+            "cs.CV",
+            "cs.AI",
+            "cs.LG"
+          ],
+          "published": "2026-05-05T16:51:28+00:00",
+          "link": "https://arxiv.org/pdf/2605.03968v1",
+          "tags": [
+            "keyword:visdrone",
+            "query:visdrone"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "school detection from aerial imagery via weakly supervised learning",
+          "llm_evidence_cn": "通过弱监督学习从航拍图像中检测学校",
+          "llm_evidence": "通过弱监督学习从航拍图像中检测学校",
+          "canonical_evidence": "通过弱监督学习从航拍图像中检测学校",
+          "llm_tldr_en": "Develops a weakly supervised framework for efficient object detection from large-scale aerial imagery.",
+          "llm_tldr_cn": "开发了一种弱监督框架，用于从大规模航拍图像中进行高效的目标检测。",
+          "llm_tldr": "开发了一种弱监督框架，用于从大规模航拍图像中进行高效的目标检测。",
+          "llm_tags": [
+            "query:visdrone"
+          ],
+          "matched_query_tag": "query:visdrone",
+          "matched_query_text": "无人机航拍图像处理",
+          "matched_requirement_id": "req-4",
+          "selection_source": "carryover_cache",
+          "paper_id": "2605.03968v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2605.00146v1",
+          "source": "arxiv",
+          "title": "Real-Time Frame- and Event-based Object Detection with Spiking Neural Networks on Edge Neuromorphic Hardware: Design, Deployment and Benchmark",
+          "abstract": "Real-time object detection on energy-constrained platforms is critical for applications such as UAV-based inspection, autonomous navigation, and mobile robotics. Spiking neural networks (SNNs) on neuromorphic hardware are believed to be significantly more energy-efficient than conventional artificial neural networks (ANNs). In this work, we present a comprehensive methodology for designing general SNN detection architectures targeting neuromorphic platforms, along with the engineering adaptations required to deploy them on the state-of-the-art Neuromorphic processor, Intel Loihi 2. We benchmark SNN-based object detection on Loihi 2 using both frame-based and event-based datasets, comparing performance with ANN-based detection on the NVIDIA Jetson Orin Nano, NVIDIA Jetson Nano B01, and the Apple M2 CPU. Our results show that SNNs on Loihi 2 can perform real-time detection while achieving the lowest per-inference dynamic energy among all platforms. Also, Loihi 2 outperforms the other platforms in terms of power consumption, though ANNs on Jetson Orin Nano achieve higher inference rates. Furthermore, our ANN-to-SNN distillation-aware training enables SNNs to recover 87-100% of the detection accuracy of their ANN counterparts while maintaining lower inference latency; without distillation, SNNs exhibit an 11-27% accuracy drop. These results highlight the potential of neuromorphic systems for energy-efficient, real-time object detection at the edge.",
+          "authors": [
+            "Udayanga G. W. K. N. Gamage",
+            "Yan Zeng",
+            "Cesar Cadena",
+            "Matteo Fumagalli",
+            "Silvia Tolu"
+          ],
+          "primary_category": "cs.CV",
+          "categories": [
+            "cs.CV"
+          ],
+          "published": "2026-04-30T19:07:36+00:00",
+          "link": "https://arxiv.org/pdf/2605.00146v1",
+          "tags": [
+            "keyword:visdrone",
+            "query:visdrone"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "object detection for UAV-based inspection",
+          "llm_evidence_cn": "基于无人机的巡检目标检测",
+          "llm_evidence": "基于无人机的巡检目标检测",
+          "canonical_evidence": "基于无人机的巡检目标检测",
+          "llm_tldr_en": "Develops real-time SNN-based object detection for energy-constrained platforms like UAVs using neuromorphic hardware.",
+          "llm_tldr_cn": "针对无人机等功耗受限平台，开发了基于脉冲神经网络的实时目标检测方法。",
+          "llm_tldr": "针对无人机等功耗受限平台，开发了基于脉冲神经网络的实时目标检测方法。",
+          "llm_tags": [
+            "query:visdrone"
+          ],
+          "matched_query_tag": "query:visdrone",
+          "matched_query_text": "无人机视觉感知研究",
+          "matched_requirement_id": "req-3",
+          "selection_source": "carryover_cache",
+          "paper_id": "2605.00146v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2604.20190v1",
+          "source": "arxiv",
+          "title": "WildFireVQA: A Large-Scale Radiometric Thermal VQA Benchmark for Aerial Wildfire Monitoring",
+          "abstract": "Wildfire monitoring requires timely, actionable situational awareness from airborne platforms, yet existing aerial visual question answering (VQA) benchmarks do not evaluate wildfire-specific multimodal reasoning grounded in thermal measurements. We introduce WildFireVQA, a large-scale VQA benchmark for aerial wildfire monitoring that integrates RGB imagery with radiometric thermal data. WildFireVQA contains 6,097 RGB-thermal samples, where each sample includes an RGB image, a color-mapped thermal visualization, and a radiometric thermal TIFF, and is paired with 34 questions, yielding a total of 207,298 multiple-choice questions spanning presence and detection, classification, distribution and segmentation, localization and direction, cross-modal reasoning, and flight planning for operational wildfire intelligence. To improve annotation reliability, we combine multimodal large language model (MLLM)-based answer generation with sensor-driven deterministic labeling, manual verification, and intra-frame and inter-frame consistency checks. We further establish a comprehensive evaluation protocol for representative MLLMs under RGB, Thermal, and retrieval-augmented settings using radiometric thermal statistics. Experiments show that across task categories, RGB remains the strongest modality for current models, while retrieved thermal context yields gains for stronger MLLMs, highlighting both the value of temperature-grounded reasoning and the limitations of existing MLLMs in safety-critical wildfire scenarios. The dataset and benchmark code are open-source at https://github.com/mobiiin/WildFire_VQA.",
+          "authors": [
+            "Mobin Habibpour",
+            "Niloufar Alipour Talemi",
+            "John Spodnik",
+            "Camren J. Khoury",
+            "Fatemeh Afghah"
+          ],
+          "primary_category": "cs.CV",
+          "categories": [
+            "cs.CV",
+            "cs.LG"
+          ],
+          "published": "2026-04-22T05:11:02+00:00",
+          "link": "https://arxiv.org/pdf/2604.20190v1",
+          "tags": [
+            "keyword:visdrone",
+            "query:visdrone"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "Aerial wildfire monitoring using RGB and thermal imagery",
+          "llm_evidence_cn": "利用RGB和热成像进行无人机林火监测",
+          "llm_evidence": "利用RGB和热成像进行无人机林火监测",
+          "canonical_evidence": "利用RGB和热成像进行无人机林火监测",
+          "llm_tldr_en": "A large-scale benchmark for aerial wildfire monitoring combining RGB and radiometric thermal data.",
+          "llm_tldr_cn": "一个结合RGB和辐射热数据的无人机林火监测大规模基准测试。",
+          "llm_tldr": "一个结合RGB和辐射热数据的无人机林火监测大规模基准测试。",
+          "llm_tags": [
+            "query:visdrone"
+          ],
+          "matched_query_tag": "query:visdrone",
+          "matched_query_text": "无人机视觉感知研究",
+          "matched_requirement_id": "req-3",
+          "selection_source": "carryover_cache",
+          "paper_id": "2604.20190v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2604.23019v1",
+          "source": "arxiv",
+          "title": "Understanding Representation Gaps Across Scales in Tropical Tree Species Classification from Drone Imagery",
+          "abstract": "Accurate classification of tropical tree species from unoccupied aerial vehicle (UAV) imagery remains challenging due to high species diversity and strong visual similarity among species at typical image resolutions (centimeters per pixel). In contrast, models trained on close-up citizen science photographs captured with smartphones achieve strong plant species classification performance. Recent advances in UAV data acquisition now enable the collection of close-up images that are spatially registered with top-view aerial imagery and approach the level of visual detail found in smartphone photographs, with the trade-off that such high-resolution photos cannot be acquired for many trees. In this work, we evaluate the performance of existing methods using paired top-view and close-up UAV imagery collected in a species-rich tropical forest. Through fine-tuning experiments, we quantify the performance gap between vision foundation models and in-domain generalist plant recognition models across both image types (high-resolution close-up versus coarser-resolution top-view imagery). We show that classification performance is consistently higher on close-up images than on top-view aerial imagery, and that this performance gap widens for rare species. Finally, we propose that self-supervised representation alignment across these two spatial scales offers a promising approach for integrating fine-grained visual information into canopy-level species classification models based on top-view UAV imagery. Leveraging high-resolution close-up UAV imagery to enhance canopy-level species classification could substantially improve large-scale monitoring of tropical forest biodiversity.",
+          "authors": [
+            "Sulagna Saha",
+            "Arthur Ouaknine",
+            "Etienne Laliberté",
+            "Carol Altimas",
+            "Evan M. Gora",
+            "Adriane Esquivel Muelbert",
+            "Ian R. McGregor",
+            "Cesar Gutierrez",
+            "Vanessa E. Rubio",
+            "David Rolnick"
+          ],
+          "primary_category": "cs.CV",
+          "categories": [
+            "cs.CV",
+            "cs.LG"
+          ],
+          "published": "2026-04-24T21:11:09+00:00",
+          "link": "https://arxiv.org/pdf/2604.23019v1",
+          "tags": [
+            "keyword:visdrone",
+            "query:visdrone"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "tree species classification from drone imagery across scales",
+          "llm_evidence_cn": "无人机图像中跨尺度的树种分类研究",
+          "llm_evidence": "无人机图像中跨尺度的树种分类研究",
+          "canonical_evidence": "无人机图像中跨尺度的树种分类研究",
+          "llm_tldr_en": "Evaluates representation gaps in drone-based tree classification across different image resolutions and scales.",
+          "llm_tldr_cn": "评估了无人机树木分类中不同图像分辨率和尺度之间的表征差异。",
+          "llm_tldr": "评估了无人机树木分类中不同图像分辨率和尺度之间的表征差异。",
+          "llm_tags": [
+            "query:visdrone"
+          ],
+          "matched_query_tag": "query:visdrone",
+          "matched_query_text": "无人机视觉感知研究",
+          "matched_requirement_id": "req-3",
+          "selection_source": "carryover_cache",
+          "paper_id": "2604.23019v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2604.25316v1",
+          "source": "arxiv",
+          "title": "Towards Robust Deep Learning-based Rumex Obtusifolius Detection from Drone Images",
+          "abstract": "Domain adaptation (DA) addresses the challenge of transferring a machine learning model trained on a source domain to a target domain with a different data distribution. In this work, we study DA for the task of Rumex obtusifolius (Rumex) image classification. We train models on a published, ground vehicle-based dataset (source) and evaluate their performance on a custom target dataset acquired by unmanned aerial vehicles (UAVs). We find that Convolutional Neural Network (CNN) models, specifically ResNets, generalize poorly to the target domain, even after fine-tuning on the source data. Applying moment-matching and maximum classifier discrepancy, two established DA techniques, substantially improves target-domain performance. However, Vision Transformer (ViT) models pretrained with self-supervised objectives (DINOv2, DINOv3) handle domain shifts intrinsically well, surpassing even moment-matching-trained ResNets, likely due to the rich, general-purpose representations acquired during large-scale pretraining. Using ViTs fine-tuned on the source dataset, we demonstrate high classification performances in the range of F1=0.8 on our target dataset. To support further research on DA for weed detection in grassland systems, we publicly release our UAV-based target dataset AGSMultiRumex, comprising data from 15 flights over Swiss meadows.",
+          "authors": [
+            "Fabian Dionys Schrag",
+            "Mehmet Ozgur Turkoglu",
+            "Konrad Schindler",
+            "Ralph Lukas Stoop"
+          ],
+          "primary_category": "cs.CV",
+          "categories": [
+            "cs.CV"
+          ],
+          "published": "2026-04-28T07:26:23+00:00",
+          "link": "https://arxiv.org/pdf/2604.25316v1",
+          "tags": [
+            "keyword:visdrone",
+            "query:visdrone"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "detection from drone images using deep learning and domain adaptation",
+          "llm_evidence_cn": "利用深度学习和领域自适应进行无人机图像检测",
+          "llm_evidence": "利用深度学习和领域自适应进行无人机图像检测",
+          "canonical_evidence": "利用深度学习和领域自适应进行无人机图像检测",
+          "llm_tldr_en": "Investigates robust deep learning methods for specific object detection using UAV-acquired datasets.",
+          "llm_tldr_cn": "研究了利用无人机获取的数据集进行特定目标检测的鲁棒深度学习方法。",
+          "llm_tldr": "研究了利用无人机获取的数据集进行特定目标检测的鲁棒深度学习方法。",
+          "llm_tags": [
+            "query:visdrone"
+          ],
+          "matched_query_tag": "query:visdrone",
+          "matched_query_text": "无人机视觉感知研究",
+          "matched_requirement_id": "req-3",
+          "selection_source": "carryover_cache",
+          "paper_id": "2604.25316v1",
           "carry_days": 1
         }
       ]
