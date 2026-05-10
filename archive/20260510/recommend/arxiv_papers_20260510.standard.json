@@ -1,0 +1,676 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-10T19:41:41.722987+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 4,
+    "deep_cap": 7,
+    "deep_selected": 4,
+    "quick_candidates": 19,
+    "quick_skim_target": 12,
+    "quick_selected": 12
+  },
+  "deep_dive": [
+    {
+      "id": "2604.20190v1",
+      "source": "arxiv",
+      "title": "WildFireVQA: A Large-Scale Radiometric Thermal VQA Benchmark for Aerial Wildfire Monitoring",
+      "abstract": "Wildfire monitoring requires timely, actionable situational awareness from airborne platforms, yet existing aerial visual question answering (VQA) benchmarks do not evaluate wildfire-specific multimodal reasoning grounded in thermal measurements. We introduce WildFireVQA, a large-scale VQA benchmark for aerial wildfire monitoring that integrates RGB imagery with radiometric thermal data. WildFireVQA contains 6,097 RGB-thermal samples, where each sample includes an RGB image, a color-mapped thermal visualization, and a radiometric thermal TIFF, and is paired with 34 questions, yielding a total of 207,298 multiple-choice questions spanning presence and detection, classification, distribution and segmentation, localization and direction, cross-modal reasoning, and flight planning for operational wildfire intelligence. To improve annotation reliability, we combine multimodal large language model (MLLM)-based answer generation with sensor-driven deterministic labeling, manual verification, and intra-frame and inter-frame consistency checks. We further establish a comprehensive evaluation protocol for representative MLLMs under RGB, Thermal, and retrieval-augmented settings using radiometric thermal statistics. Experiments show that across task categories, RGB remains the strongest modality for current models, while retrieved thermal context yields gains for stronger MLLMs, highlighting both the value of temperature-grounded reasoning and the limitations of existing MLLMs in safety-critical wildfire scenarios. The dataset and benchmark code are open-source at https://github.com/mobiiin/WildFire_VQA.",
+      "authors": [
+        "Mobin Habibpour",
+        "Niloufar Alipour Talemi",
+        "John Spodnik",
+        "Camren J. Khoury",
+        "Fatemeh Afghah"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-22T05:11:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.20190v1",
+      "tags": [
+        "keyword:visdrone",
+        "query:visdrone"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Aerial wildfire monitoring using RGB and thermal imagery",
+      "llm_evidence_cn": "利用RGB和热成像进行无人机林火监测",
+      "llm_evidence": "利用RGB和热成像进行无人机林火监测",
+      "canonical_evidence": "利用RGB和热成像进行无人机林火监测",
+      "llm_tldr_en": "A large-scale benchmark for aerial wildfire monitoring combining RGB and radiometric thermal data.",
+      "llm_tldr_cn": "一个结合RGB和辐射热数据的无人机林火监测大规模基准测试。",
+      "llm_tldr": "一个结合RGB和辐射热数据的无人机林火监测大规模基准测试。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-3",
+      "selection_source": "carryover_cache",
+      "paper_id": "2604.20190v1"
+    },
+    {
+      "id": "2604.23019v1",
+      "source": "arxiv",
+      "title": "Understanding Representation Gaps Across Scales in Tropical Tree Species Classification from Drone Imagery",
+      "abstract": "Accurate classification of tropical tree species from unoccupied aerial vehicle (UAV) imagery remains challenging due to high species diversity and strong visual similarity among species at typical image resolutions (centimeters per pixel). In contrast, models trained on close-up citizen science photographs captured with smartphones achieve strong plant species classification performance. Recent advances in UAV data acquisition now enable the collection of close-up images that are spatially registered with top-view aerial imagery and approach the level of visual detail found in smartphone photographs, with the trade-off that such high-resolution photos cannot be acquired for many trees. In this work, we evaluate the performance of existing methods using paired top-view and close-up UAV imagery collected in a species-rich tropical forest. Through fine-tuning experiments, we quantify the performance gap between vision foundation models and in-domain generalist plant recognition models across both image types (high-resolution close-up versus coarser-resolution top-view imagery). We show that classification performance is consistently higher on close-up images than on top-view aerial imagery, and that this performance gap widens for rare species. Finally, we propose that self-supervised representation alignment across these two spatial scales offers a promising approach for integrating fine-grained visual information into canopy-level species classification models based on top-view UAV imagery. Leveraging high-resolution close-up UAV imagery to enhance canopy-level species classification could substantially improve large-scale monitoring of tropical forest biodiversity.",
+      "authors": [
+        "Sulagna Saha",
+        "Arthur Ouaknine",
+        "Etienne Laliberté",
+        "Carol Altimas",
+        "Evan M. Gora",
+        "Adriane Esquivel Muelbert",
+        "Ian R. McGregor",
+        "Cesar Gutierrez",
+        "Vanessa E. Rubio",
+        "David Rolnick"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-24T21:11:09+00:00",
+      "link": "https://arxiv.org/pdf/2604.23019v1",
+      "tags": [
+        "keyword:visdrone",
+        "query:visdrone"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "tree species classification from drone imagery across scales",
+      "llm_evidence_cn": "无人机图像中跨尺度的树种分类研究",
+      "llm_evidence": "无人机图像中跨尺度的树种分类研究",
+      "canonical_evidence": "无人机图像中跨尺度的树种分类研究",
+      "llm_tldr_en": "Evaluates representation gaps in drone-based tree classification across different image resolutions and scales.",
+      "llm_tldr_cn": "评估了无人机树木分类中不同图像分辨率和尺度之间的表征差异。",
+      "llm_tldr": "评估了无人机树木分类中不同图像分辨率和尺度之间的表征差异。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-3",
+      "selection_source": "carryover_cache",
+      "paper_id": "2604.23019v1"
+    },
+    {
+      "id": "2604.25316v1",
+      "source": "arxiv",
+      "title": "Towards Robust Deep Learning-based Rumex Obtusifolius Detection from Drone Images",
+      "abstract": "Domain adaptation (DA) addresses the challenge of transferring a machine learning model trained on a source domain to a target domain with a different data distribution. In this work, we study DA for the task of Rumex obtusifolius (Rumex) image classification. We train models on a published, ground vehicle-based dataset (source) and evaluate their performance on a custom target dataset acquired by unmanned aerial vehicles (UAVs). We find that Convolutional Neural Network (CNN) models, specifically ResNets, generalize poorly to the target domain, even after fine-tuning on the source data. Applying moment-matching and maximum classifier discrepancy, two established DA techniques, substantially improves target-domain performance. However, Vision Transformer (ViT) models pretrained with self-supervised objectives (DINOv2, DINOv3) handle domain shifts intrinsically well, surpassing even moment-matching-trained ResNets, likely due to the rich, general-purpose representations acquired during large-scale pretraining. Using ViTs fine-tuned on the source dataset, we demonstrate high classification performances in the range of F1=0.8 on our target dataset. To support further research on DA for weed detection in grassland systems, we publicly release our UAV-based target dataset AGSMultiRumex, comprising data from 15 flights over Swiss meadows.",
+      "authors": [
+        "Fabian Dionys Schrag",
+        "Mehmet Ozgur Turkoglu",
+        "Konrad Schindler",
+        "Ralph Lukas Stoop"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-28T07:26:23+00:00",
+      "link": "https://arxiv.org/pdf/2604.25316v1",
+      "tags": [
+        "keyword:visdrone",
+        "query:visdrone"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "detection from drone images using deep learning and domain adaptation",
+      "llm_evidence_cn": "利用深度学习和领域自适应进行无人机图像检测",
+      "llm_evidence": "利用深度学习和领域自适应进行无人机图像检测",
+      "canonical_evidence": "利用深度学习和领域自适应进行无人机图像检测",
+      "llm_tldr_en": "Investigates robust deep learning methods for specific object detection using UAV-acquired datasets.",
+      "llm_tldr_cn": "研究了利用无人机获取的数据集进行特定目标检测的鲁棒深度学习方法。",
+      "llm_tldr": "研究了利用无人机获取的数据集进行特定目标检测的鲁棒深度学习方法。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-3",
+      "selection_source": "carryover_cache",
+      "paper_id": "2604.25316v1"
+    },
+    {
+      "id": "2604.26201v1",
+      "source": "arxiv",
+      "title": "Lights Out: A Nighttime UAV Localization Framework Using Thermal Imagery and Semantic 3D Maps",
+      "abstract": "Reliable backup localization for unmanned aerial vehicles (UAVs) operating in GNSS-denied nighttime conditions remains an open challenge due to the severe modality gap between daytime RGB maps and nighttime thermal imagery. This work presents a semantic reprojection framework for map-relative nighttime UAV localization by aligning segmented thermal observations with a globally referenced, semantically labeled 3D map constructed from daytime RGB data. Rather than relying on appearance-based correspondence, localization is formulated in a shared semantic domain and solved via a symmetric bidirectional reprojection objective with confusion-aware weighting to improve robustness under segmentation uncertainty. The approach is evaluated offline across 6.5 km of nighttime, real-world UAV flight trajectories in urban and semi-structured environments. Relative to RTK GNSS ground truth, the system achieves a bias-corrected RMSE2D of 2.18 m and a median RMSE2D of 1.52 m. Results show that localization performance is strongly correlated with the availability of semantic edge evidence and that large-error events are spatially localized to semantically ambiguous areas rather than uniformly distributed. These findings indicate that semantic reprojection offers a promising pathway toward globally referenced nighttime UAV localization using thermal imagery alone.",
+      "authors": [
+        "Ryan Allen",
+        "Melissa Greeff"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-29T01:08:50+00:00",
+      "link": "https://arxiv.org/pdf/2604.26201v1",
+      "tags": [
+        "keyword:visdrone",
+        "query:visdrone"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "nighttime UAV localization using thermal imagery and semantic maps",
+      "llm_evidence_cn": "利用热成像和语义地图进行夜间无人机定位",
+      "llm_evidence": "利用热成像和语义地图进行夜间无人机定位",
+      "canonical_evidence": "利用热成像和语义地图进行夜间无人机定位",
+      "llm_tldr_en": "Proposes a semantic reprojection framework for robust nighttime UAV localization in GNSS-denied environments.",
+      "llm_tldr_cn": "提出一种语义重投影框架，用于GNSS受限环境下的鲁棒夜间无人机定位。",
+      "llm_tldr": "提出一种语义重投影框架，用于GNSS受限环境下的鲁棒夜间无人机定位。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-3",
+      "selection_source": "carryover_cache",
+      "paper_id": "2604.26201v1"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.05941v1",
+      "source": "arxiv",
+      "title": "RAWild: Sensor-Agnostic RAW Object Detection via Physics-Guided Curve and Grid Modeling",
+      "abstract": "Camera sensor RAW data offers intrinsic advantages for object detection, including deeper bit depth, preserved physical information, and freedom from image signal processor (ISP) distortions. However, varying exposure conditions, spectral sensitivities, and bit depths across devices introduce substantially larger domain gaps than sRGB, making sensor-agnostic generalization a fundamental challenge. In this study, we present \\textbf{RAWild}, a physics-guided global-local tone mapping framework for sensor-agnostic RAW object detection. By factoring sensor-induced variations into a global tonal correction and a spatially adaptive local color adjustment, both driven by RAW distribution priors, our framework enables a single network to train jointly across heterogeneous sensors. To further support cross-sensor generalization, we construct a physics-based RAW simulation pipeline that synthesizes realistic sensor outputs spanning diverse spectral sensitivities, illuminants, and sensor non-idealities. Extensive experiments across multiple RAW benchmarks covering bit depths from 10 to 24 demonstrate state-of-the-art (SOTA) performance under single-dataset, mixed-dataset, and challenging robustness settings.",
+      "authors": [
+        "Shuhong Liu",
+        "Gengjia Chang",
+        "Jun Liu",
+        "Xuangeng Chu",
+        "Yinqiang Zheng",
+        "Tatsuya Harada",
+        "Ziteng Cui"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-07T09:51:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.05941v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "sensor-agnostic RAW object detection framework",
+      "llm_evidence_cn": "传感器无关的RAW图像目标检测框架",
+      "llm_evidence": "传感器无关的RAW图像目标检测框架",
+      "canonical_evidence": "传感器无关的RAW图像目标检测框架",
+      "llm_tldr_en": "Proposes RAWild for sensor-agnostic RAW object detection using physics-guided tone mapping.",
+      "llm_tldr_cn": "提出RAWild框架，通过物理引导的色调映射实现传感器无关的RAW图像目标检测。",
+      "llm_tldr": "提出RAWild框架，通过物理引导的色调映射实现传感器无关的RAW图像目标检测。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.02135v1",
+      "source": "arxiv",
+      "title": "Robotic Desk Organization: A Multi-Primitive Approach to Manipulating Heterogeneous Objects via Environmental Constraints",
+      "abstract": "Desktop organization remains challenging for service robots because of heterogeneous objects and diverse manipulation objectives, such as collection and stacking. In this article, a task-oriented framework is presented for organizing planar rigid and deformable objects on desks. A perception pipeline was developed that augments existing datasets with uncommon desktop items and makes geometry-based pose and keypoint estimation possible, along with the detection of environmental constraints, such as table edges. To handle diverse manipulation requirements, environment-assisted primitives are used, including contact-based grasping for small objects, edge-based push-grasping for planar rigid objects, and levering-based grasping for planar deformable objects. These primitives leverage environmental and interobject constraints to improve robustness. A task planner was designed to integrate these primitives into multiobject organization. Sufficient real-world experiments demonstrate the effectiveness and robustness of the proposed framework. This research provides practical manipulation primitives for planar rigid and deformable objects, highlighting the role of environmental and interobject constraints in complex multiobject manipulation tasks. Code and video are available online.",
+      "authors": [
+        "Yi Dong. Yangjun Liu",
+        "Jinjun Duan",
+        "Yang Li",
+        "Zhendong Dai"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-04T01:31:06+00:00",
+      "link": "https://arxiv.org/pdf/2605.02135v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "contact-based grasping for small objects in robotic perception",
+      "llm_evidence_cn": "机器人感知中针对小物体的接触式抓取",
+      "llm_evidence": "机器人感知中针对小物体的接触式抓取",
+      "canonical_evidence": "机器人感知中针对小物体的接触式抓取",
+      "llm_tldr_en": "A robotic framework for desk organization using perception pipelines to handle small and planar objects.",
+      "llm_tldr_cn": "一种用于桌面整理的机器人框架，利用感知流水线处理小物体和平面物体。",
+      "llm_tldr": "一种用于桌面整理的机器人框架，利用感知流水线处理小物体和平面物体。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.06084v1",
+      "source": "arxiv",
+      "title": "AMIEOD: Adaptive Multi-Experts Image Enhancement for Object Detection in Low-Illumination Scenes",
+      "abstract": "In multimedia application scenarios, images captured under low-illumination conditions often lead to lower accuracy in visual perception tasks compared to those taken in well-lit environments.   To tackle this challenge, we propose AMIEOD, an image enhancement-enabled object detection framework for low-illumination scenes, where the two tasks are jointly optimized in a detection performance-oriented manner.   Specifically, to fully exploit the information in poorly lit images, a Multi-Experts Image Enhancement Module (MEIEM) is proposed, which leverages diverse enhancement strategies.   On this basis, aiming to better align the MEIEM with the detection task, we propose a Detection-Guided Regression Loss (DGRL) that utilizes the detection result to decide the regression target.   Moreover, to dynamically select the most suitable enhancement strategy from MEIEM during inference, we construct an Expert Selection Module (ESM) guided by the proposed Detection-Guided Cross-Entropy (DGCE) loss, which formulates the optimization of ESM as a classification task.   The improved method is well-matched with current detection algorithms to improve their performance in dim scenes.   Extensive experiments on multiple datasets demonstrate that the proposed method significantly improves object detection accuracy in low-illumination conditions. Our code has been released at https://github.com/scujayfantasy/AMIEOD",
+      "authors": [
+        "Xiaochen Huang",
+        "Honggang Chen",
+        "Weicheng Zhang",
+        "Xiaobo Dai",
+        "Yongyi Li",
+        "Linbo Qing",
+        "Xiaohai He"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-07T12:06:21+00:00",
+      "link": "https://arxiv.org/pdf/2605.06084v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "image enhancement for object detection in low-illumination scenes",
+      "llm_evidence_cn": "低光照场景下的图像增强与目标检测",
+      "llm_evidence": "低光照场景下的图像增强与目标检测",
+      "canonical_evidence": "低光照场景下的图像增强与目标检测",
+      "llm_tldr_en": "Proposes AMIEOD to jointly optimize image enhancement and object detection for low-light environments.",
+      "llm_tldr_cn": "提出AMIEOD框架，通过联合优化图像增强与检测任务提升低光照环境下的目标检测性能。",
+      "llm_tldr": "提出AMIEOD框架，通过联合优化图像增强与检测任务提升低光照环境下的目标检测性能。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.03294v1",
+      "source": "arxiv",
+      "title": "FACTOR: Counterfactual Training-Free Test-Time Adaptation for Open-Vocabulary Object Detection",
+      "abstract": "Open-vocabulary object detection often fails under distribution shifts, as it can be misled by spurious correlations between non-causal visual attributes (e.g., brightness, texture) and object categories. Existing test-time adaptation (TTA) methods either depend on costly online optimization or perform global calibration, overlooking the attribute-specific nature of these failures. To address this, we propose FACTOR (counterFACtual training-free Test-time adaptation for Open-vocabulaRy object detection), a lightweight framework grounded in counterfactual reasoning. By perturbing test images along non-causal attributes and comparing region-level predictions between original and counterfactual views, FACTOR quantifies attribute sensitivity, semantic relevance, and prediction variation to selectively suppress attribute-dependent predictions-without parameter updates. Experiments on PASCAL-C, COCO-C, and FoggyCityscapes show that FACTOR consistently outperforms prior TTA methods, demonstrating that explicit counterfactual reasoning effectively improves robustness under distribution shifts.",
+      "authors": [
+        "Kaixiang Zhao",
+        "Mao Ye",
+        "Lihua Zhou",
+        "Hu Wang",
+        "Luping Ji",
+        "Song Tang",
+        "Xiatian Zhu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-05T02:31:18+00:00",
+      "link": "https://arxiv.org/pdf/2605.03294v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "open-vocabulary object detection and region-level predictions",
+      "llm_evidence_cn": "开放词汇目标检测与区域级预测",
+      "llm_evidence": "开放词汇目标检测与区域级预测",
+      "canonical_evidence": "开放词汇目标检测与区域级预测",
+      "llm_tldr_en": "Proposes FACTOR, a training-free framework for robust open-vocabulary object detection using counterfactual reasoning.",
+      "llm_tldr_cn": "提出FACTOR框架，利用因果推理增强开放词汇目标检测在分布偏移下的鲁棒性。",
+      "llm_tldr": "提出FACTOR框架，利用因果推理增强开放词汇目标检测在分布偏移下的鲁棒性。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.02471v1",
+      "source": "arxiv",
+      "title": "Multispectral Blind Image Super-Resolution for Standing Dead Tree Segmentation",
+      "abstract": "Mapping standing dead trees is crucial for acquiring information on the effects of climate change on forests and forest biodiversity. However, leveraging high-quality aerial imagery for dead tree segmentation poses challenges due to limitations in sensor availability and the scarcity of annotated data. In this study, we propose a generic blind super-resolution framework that incorporates Attention-Guided Domain Adaptation Networks (ADA-Nets) to learn the mapping from low-resolution to high-resolution multispectral image domains. Our approach operates solely on unpaired samples, mimicking real-world conditions, i.e., low-resolution images are not synthetically obtained by downsampling the high-resolution images. Moreover, the proposed method serves as a general-purpose restorer addressing several image degradation types, including saturation, noise, and low contrast that typically occur in low-resolution images acquired by low-end sensors. To the best of our knowledge, this is the first study to perform real-world and generic super-resolution for multispectral data in the scope of standing dead tree segmentation. Experimental evaluations demonstrate segmentation performances of 54% and 64% in Dice scores. Notably, the first result is obtained without using any high-resolution annotations; the segmentation network is trained on super-resolved low-resolution images, while evaluation is performed on the high-resolution data. We publicly share the aerial multispectral dataset with manually annotated labels at https://www.kaggle.com/datasets/meteahishali/aerial-imagery-for-dead-tree-segmentation-poland.",
+      "authors": [
+        "Mete Ahishali",
+        "Anis Ur Rahman",
+        "Einari Heinaro",
+        "Aysen Degerli",
+        "Samuli Junttila"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-04T11:13:50+00:00",
+      "link": "https://arxiv.org/pdf/2605.02471v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "super-resolution for high-quality aerial imagery and tree segmentation",
+      "llm_evidence_cn": "用于高质量航拍图像和树木分割的超分辨率技术",
+      "llm_evidence": "用于高质量航拍图像和树木分割的超分辨率技术",
+      "canonical_evidence": "用于高质量航拍图像和树木分割的超分辨率技术",
+      "llm_tldr_en": "Proposes a blind super-resolution framework to improve multispectral aerial imagery for dead tree segmentation.",
+      "llm_tldr_cn": "提出一种盲超分辨率框架，旨在提升用于枯树分割的多光谱航拍图像质量。",
+      "llm_tldr": "提出一种盲超分辨率框架，旨在提升用于枯树分割的多光谱航拍图像质量。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机航拍图像处理",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.03456v1",
+      "source": "arxiv",
+      "title": "VL-SAM-v3: Memory-Guided Visual Priors for Open-World Object Detection",
+      "abstract": "Open-world object detection aims to localize and recognize objects beyond a fixed closed-set label space. It is commonly divided into two categories, i.e., open-vocabulary detection, which assumes a predefined category list at test time, and open-ended detection, which requires generating candidate categories during the inference. Existing methods rely primarily on coarse textual semantics and parametric knowledge, which often provide insufficient visual evidence for fine-grained appearance variation, rare categories, and cluttered scenes. In this paper, we propose VL-SAM-v3, a unified framework that augments open-world detection with retrieval-grounded external visual memory. Specifically, once candidate categories are available, VL-SAM-v3 retrieves relevant visual prototypes from a non-parametric memory bank and transforms them into two complementary visual priors, i.e., sparse priors for instance-level spatial anchoring and dense priors for class-aware local context. These priors are integrated with the original detection prompts via Memory-Guided Prompt Refinement, enabling a shared retrieval-and-refinement mechanism that supports open-vocabulary and open-ended inference.Extensive zero-shot experiments on LVIS show that VL-SAM-v3 consistently improves detection performance under both open-vocabulary and open-ended inference, with particularly strong gains on rare categories.Moreover, experiments with a stronger open-vocabulary detector (i.e., SAM3) validate the generality of the proposed retrieval-and-refinement mechanism.",
+      "authors": [
+        "Chih-Chung Liu",
+        "Zhiwei Lin",
+        "Yongtao Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-05T07:44:03+00:00",
+      "link": "https://arxiv.org/pdf/2605.03456v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "Open-world object detection framework for cluttered scenes and fine-grained appearance",
+      "llm_evidence_cn": "针对杂乱场景和细粒度外观的开放世界目标检测框架",
+      "llm_evidence": "针对杂乱场景和细粒度外观的开放世界目标检测框架",
+      "canonical_evidence": "针对杂乱场景和细粒度外观的开放世界目标检测框架",
+      "llm_tldr_en": "Proposes VL-SAM-v3, a unified framework for open-world object detection using external visual memory.",
+      "llm_tldr_cn": "提出VL-SAM-v3框架，利用外部视觉记忆增强开放世界目标检测。",
+      "llm_tldr": "提出VL-SAM-v3框架，利用外部视觉记忆增强开放世界目标检测。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.04501v1",
+      "source": "arxiv",
+      "title": "Example-Based Object Detection",
+      "abstract": "In recent years, object detection has achieved significant progress, especially in the field of open-vocabulary object detection. Unlike traditional methods that rely on predefined categories, open-vocabulary approaches can detect arbitrary objects based on human-provided prompts. With the advancement of prompt-based detection techniques, models such as SAM3 can even outperform some category-specific detectors trained on particular datasets without requiring additional training on those datasets. However, despite these advancements, false positives and false negatives still occur. In practical engineering applications, persistent misdetections or missed detections of the same object are unacceptable. Yet retraining the model every time such errors occur incurs substantial costs in terms of human effort, computational resources, and time. Therefore, how to leverage existing false positive and false negative samples to prevent such errors from recurring remains a highly challenging and urgent problem. To address this issue, we propose EBOD (Example-Based Object Detection), which integrates a prompt-based detector (SAM3) with robust feature matching modules (DINOv3 and LightGlue). The proposed framework effectively suppresses the repeated occurrence of false positives and false negatives by leveraging previous error examples, without requiring additional model retraining. Code is available at https://github.com/sunzx97/examples_based_object_detection.",
+      "authors": [
+        "ZhiXin Sun"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-05-06T05:10:09+00:00",
+      "link": "https://arxiv.org/pdf/2605.04501v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "open-vocabulary object detection and prompt-based techniques",
+      "llm_evidence_cn": "开放词汇目标检测与基于提示的技术",
+      "llm_evidence": "开放词汇目标检测与基于提示的技术",
+      "canonical_evidence": "开放词汇目标检测与基于提示的技术",
+      "llm_tldr_en": "Explores example-based object detection to address false positives and negatives in open-vocabulary models.",
+      "llm_tldr_cn": "探索基于示例的目标检测，以解决开放词汇模型中的误报和漏报问题。",
+      "llm_tldr": "探索基于示例的目标检测，以解决开放词汇模型中的误报和漏报问题。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "biorxiv-10-64898-2026-05-01-722206-v1",
+      "source": "biorxiv",
+      "title": "Uncertainty-aware localization microscopy by variational diffusion",
+      "abstract": "Fast extraction of physically relevant information from images using deep neural networks has led to significant advances in fluorescence microscopy and its application to the study of biological systems. For example, the application of deep networks for kernel density (KD) estimation in single-molecule localization microscopy (SMLM) has accelerated super-resolution imaging of densely labeled structures in the cell. However, localization of fluorescent molecules in dense images is a difficult inverse problem with potentially multiple solutions. To model a probability distribution of solutions to this problem, we propose a generative modeling framework for KD estimation in SMLM based on a conditional variational diffusion model (CVDM). In this framework, CVDM is trained to perform localization tasks on low-resolution measurements by modeling a distribution of high-resolution KD estimates. This approach allows us to probe the structure of the distribution on KD estimates and express uncertainty, which is not currently offered by existing deep models for localization microscopy. We demonstrate that this model permits high-fidelity super-resolution, enables the uncertainty estimation of regressed KD estimates, and has important implications for image restoration in single-molecule and super resolution microscopy.",
+      "authors": [
+        "Seitz, C.",
+        "Liu, J."
+      ],
+      "primary_category": "bioinformatics",
+      "categories": [
+        "bioinformatics"
+      ],
+      "published": "2026-05-05T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.64898/2026.05.01.722206v1.full.pdf",
+      "tags": [
+        "keyword:SmallDet",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "localization of fluorescent molecules in dense images",
+      "llm_evidence_cn": "稠密图像中的荧光分子定位",
+      "llm_evidence": "稠密图像中的荧光分子定位",
+      "canonical_evidence": "稠密图像中的荧光分子定位",
+      "llm_tldr_en": "Proposes a variational diffusion model for high-density single-molecule localization microscopy.",
+      "llm_tldr_cn": "提出了一种用于高密度单分子定位显微成像的变分扩散模型。",
+      "llm_tldr": "提出了一种用于高密度单分子定位显微成像的变分扩散模型。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.04531v1",
+      "source": "arxiv",
+      "title": "Reward-Guided Semantic Evolution for Test-time Adaptive Object Detection",
+      "abstract": "Open-vocabulary object detection with vision-language models (VLMs) such as Grounding DINO suffers from performance degradation under test-time distribution shifts, primarily due to semantic misalignment between text embeddings and shifted visual embeddings of region proposals. While recent test-time adaptive object detection methods for VLM-based either rely on costly backpropagation or bypass semantic misalignment via external memory, none directly and efficiently align text and vision in a training-free manner. To address this, we propose Reward-Guided Semantic Evolution (RGSE), a training-free framework that directly refines the text embeddings at test time. Inspired by evolutionary search, RGSE treats text embedding adaptation as a semantic search process: it perturbs text embeddings as candidate variants, evaluates them via cosine similarity with current and historical high-confidence visual proposals as a reward signal, and fuses them into a refined embedding through reward-weighted averaging. Without any backpropagation, RGSE achieves state-of-the-art performance across multiple detection benchmarks while adding minimal computational overhead. Our code will be open source upon publication.",
+      "authors": [
+        "Lihua Zhou",
+        "Mao Ye",
+        "Xiatian Zhu",
+        "Nianxin Li",
+        "Changyi Ma",
+        "Shuaifeng Li",
+        "Yitong Qin",
+        "Hongbin Liu",
+        "Jiebo Luo",
+        "Zhen Lei"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-06T06:17:41+00:00",
+      "link": "https://arxiv.org/pdf/2605.04531v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "test-time adaptive object detection framework",
+      "llm_evidence_cn": "测试时自适应目标检测框架",
+      "llm_evidence": "测试时自适应目标检测框架",
+      "canonical_evidence": "测试时自适应目标检测框架",
+      "llm_tldr_en": "Introduces a training-free framework to align text and vision for adaptive object detection under distribution shifts.",
+      "llm_tldr_cn": "引入一种无需训练的框架，用于在分布偏移下对齐文本和视觉以进行自适应目标检测。",
+      "llm_tldr": "引入一种无需训练的框架，用于在分布偏移下对齐文本和视觉以进行自适应目标检测。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.01365v1",
+      "source": "arxiv",
+      "title": "VoxAfford: Multi-Scale Voxel-Token Fusion for Open-Vocabulary 3D Affordance Detection",
+      "abstract": "Open-vocabulary 3D affordance detection requires localizing interaction regions on point clouds given novel affordance descriptions. Recent methods extend multimodal large language models (MLLMs) with special output tokens that are decoded into segmentation masks. However, these tokens are produced through autoregressive generation, which models sequential dependencies rather than spatial neighborhood relations, leaving them semantically rich but spatially impoverished for 3D localization. We propose Voxel-enhanced Affordance detection (VoxAfford), which bypasses this bottleneck by injecting multi-scale geometric features from a frozen pre-trained 3D VQVAE encoder into the output tokens after generation. Each output token uses its affordance semantics as a query to retrieve relevant geometric patterns from its paired voxel scale via cross-attention, with a learned compatibility gate controlling the injection strength. The enhanced tokens are then aggregated into a spatially-aware affordance prompt through semantic-conditioned attention and propagated alongside per-point features to generate the final mask. Experiments on open-vocabulary affordance detection tasks show that VoxAfford achieves state-of-the-art performance with approximately an 8% improvement in mIoU, and real robot experiments confirm zero-shot transfer to novel objects.",
+      "authors": [
+        "Haowen Sun",
+        "Shaolong Zhang",
+        "Mingyang Li",
+        "Chengzhong Ma",
+        "Xinzhe Chen",
+        "Qiongjie Cui",
+        "Xingyu Chen",
+        "Zeyang Liu",
+        "Xuguang Lan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-05-02T10:21:13+00:00",
+      "link": "https://arxiv.org/pdf/2605.01365v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-scale geometric features for 3D affordance detection",
+      "llm_evidence_cn": "用于3D功能性检测的多尺度几何特征",
+      "llm_evidence": "用于3D功能性检测的多尺度几何特征",
+      "canonical_evidence": "用于3D功能性检测的多尺度几何特征",
+      "llm_tldr_en": "VoxAfford uses multi-scale voxel-token fusion to improve spatial localization in 3D affordance detection.",
+      "llm_tldr_cn": "VoxAfford通过多尺度体素令牌融合提升3D功能性检测中的空间定位能力。",
+      "llm_tldr": "VoxAfford通过多尺度体素令牌融合提升3D功能性检测中的空间定位能力。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "多尺度目标检测模型",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.05344v1",
+      "source": "arxiv",
+      "title": "Open-SAT: LLM-Guided Query Embedding Refinement for Open-Vocabulary Object Retrieval in Satellite Imagery",
+      "abstract": "In satellite applications, user queries often take the form of open-ended natural language, extending beyond a fixed set of predefined categories. This open-vocabulary nature poses significant challenges for retrieving relevant image tiles, as the retrieval system must generalize to a wide range of unseen objects and concepts. While vision-language models (VLMs) such as CLIP are widely used for text-image retrieval, even fine-tuned variants often struggle to accurately align such queries with satellite imagery. To address this, we propose Open-SAT, a training-free query embedding refinement algorithm that operates at inference time to improve alignment between user queries and satellite image content. Open-SAT uses VLMs to compute embeddings for image tiles, which are stored in a vector database for efficient retrieval. At query time, it leverages Large Language Models (LLMs) to refine the text embeddings by incorporating contextual information about objects of interest and their surroundings. A threshold-free retrieval mechanism further enhances accuracy and efficiency. Experimental results in three public benchmarks demonstrate that Open-SAT improves the F1 score by up to 16.04%, while retrieving a comparable number of image tiles. These results demonstrate the effectiveness of Open-SAT in open-vocabulary satellite image retrieval, leveraging LLM guidance without the need for additional training or supervision.",
+      "authors": [
+        "Md Adnan Arefeen",
+        "Biplob Debnath",
+        "Ravi K. Rajendran",
+        "Murugan Sankaradas",
+        "Srimat T. Chakradhar"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.IR"
+      ],
+      "published": "2026-05-06T18:12:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.05344v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "open-vocabulary object retrieval in satellite imagery",
+      "llm_evidence_cn": "卫星图像中的开放词汇目标检索",
+      "llm_evidence": "卫星图像中的开放词汇目标检索",
+      "canonical_evidence": "卫星图像中的开放词汇目标检索",
+      "llm_tldr_en": "Refines query embeddings for open-vocabulary object retrieval in satellite imagery using LLMs.",
+      "llm_tldr_cn": "利用大语言模型优化卫星图像中开放词汇目标检索的查询嵌入。",
+      "llm_tldr": "利用大语言模型优化卫星图像中开放词汇目标检索的查询嵌入。",
+      "llm_tags": [
+        "query:visdrone:composite"
+      ],
+      "matched_query_tag": "query:visdrone:composite",
+      "matched_query_text": "Papers central to 面向VisDrone小目标检测的论文检索, especially work that connects or combines: 小目标检测技术与算法; 目标检测任务研究; 无人机视觉感知研究; 无人机航拍图像处理; 小目标检测的特征提取方法; 多尺度目标检测模型; latest research on small object detection using VisDrone dataset; methods improving drone image small object detection performance; deep learning architectures for VisDrone object detection.",
+      "matched_requirement_id": "req-composite-visdrone",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.02169v1",
+      "source": "arxiv",
+      "title": "Heterogeneous Model Fusion for Privacy-Aware Multi-Camera Surveillance via Synthetic Domain Adaptation",
+      "abstract": "We propose HeroCrystal, a novel privacy-preserving framework for multi-camera domain-adaptive object detection, addressing challenges such as data privacy, class imbalance, and heterogeneous architectures. Our framework consists of three key stages. In the Generated Stage, we introduce a one-shot, target-aware diffusion-based generation module that learns visual style from a single target-domain image while leveraging prompt-based control to synthesize specific object instances. Unlike conventional style transfer-based methods that require large target datasets and ignore semantic-level discrepancies, our approach enables privacy-preserving augmentation to reduce ethical concerns, and introduces controllable rare object generation to mitigate long-tailed category degradation. In the Federated Stage, we employ probabilistic Faster R-CNN on the client side to improve localization accuracy, and a dynamic model contrastive strategy to suppress domain-specific bias. The server side performs model fusion across heterogeneous architectures without accessing raw data. Finally, in the Distilled Stage, we propose an inconsistent categories integration algorithm to resolve label inconsistency and architecture heterogeneity across clients. Extensive experiments on multiple cross-domain detection benchmarks demonstrate that our method outperforms existing multi-source domain adaptation and federated learning baselines under multi-class, privacy-preserving settings. Our method improves mAP by +2.1% over prior privacy-preserving approaches and achieves a new state-of-the-art mAP of 33.4%, highlighting the effectiveness of HeroCrystal in enabling practical multi-camera AI surveillance systems.",
+      "authors": [
+        "Peggy Joy Lu",
+        "Wei-Yu Chen",
+        "Yao-Tsung Huang",
+        "Vincent Shin-Mu Tseng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.DC",
+        "cs.LG"
+      ],
+      "published": "2026-05-04T02:58:21+00:00",
+      "link": "https://arxiv.org/pdf/2605.02169v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "domain-adaptive object detection for multi-camera surveillance and rare object synthesis",
+      "llm_evidence_cn": "用于多摄像头监控和稀有目标合成的领域自适应目标检测",
+      "llm_evidence": "用于多摄像头监控和稀有目标合成的领域自适应目标检测",
+      "canonical_evidence": "用于多摄像头监控和稀有目标合成的领域自适应目标检测",
+      "llm_tldr_en": "A privacy-preserving framework for multi-camera domain-adaptive object detection using synthetic data.",
+      "llm_tldr_cn": "一种利用合成数据进行多摄像头领域自适应目标检测的隐私保护框架。",
+      "llm_tldr": "一种利用合成数据进行多摄像头领域自适应目标检测的隐私保护框架。",
+      "llm_tags": [
+        "query:visdrone:composite"
+      ],
+      "matched_query_tag": "query:visdrone:composite",
+      "matched_query_text": "Papers central to 面向VisDrone小目标检测的论文检索, especially work that connects or combines: 小目标检测技术与算法; 目标检测任务研究; 无人机视觉感知研究; 无人机航拍图像处理; 小目标检测的特征提取方法; 多尺度目标检测模型; latest research on small object detection using VisDrone dataset; methods improving drone image small object detection performance; deep learning architectures for VisDrone object detection.",
+      "matched_requirement_id": "req-composite-visdrone",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

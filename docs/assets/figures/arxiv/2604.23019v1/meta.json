@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.23019v1/fig-001.webp",
+      "caption": "Figure 1: From left to right, we show citizen-science close-up photographs (Affouard et al., 2025), drone-acquired close-up images, and drone-based crown-view canopy imagery. Citizen-science images offer high species identifiability and are easily annotated by humans but are weakly scalable on demand. Drone-based close-ups reduce annotation effort and improve scalability but introduce a domain shift relative to citizen data. Crown-view canopy imagery is the most scalable modality for large-area monitoring, yet lacks fine-grained botanical cues.",
+      "page": 2,
+      "index": 1,
+      "width": 829,
+      "height": 319
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23019v1/fig-002.webp",
+      "caption": "Figure 6: Paired crown-view and close-up drone imagery for six distinct species.",
+      "page": 10,
+      "index": 2,
+      "width": 826,
+      "height": 1060
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23019v1/fig-003.webp",
+      "caption": "Table 1: Performance on crown-view canopy images. Models are fine-tuned on labeled canopy data across 16 acquisition periods. We report both individual-image predictions without taking time into account and crown-level soft voting aggregation.",
+      "page": 3,
+      "index": 3,
+      "width": 790,
+      "height": 297
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23019v1/fig-004.webp",
+      "caption": "Figure 4: Species Distribution Across Splits (Page 2/2) highlighting the rare species in the long-tail distribution.",
+      "page": 8,
+      "index": 4,
+      "width": 829,
+      "height": 254
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23019v1/fig-005.webp",
+      "caption": "Figure 3: Species Distribution Across Splits (Page 1/2) showing the most common species in the dataset.",
+      "page": 8,
+      "index": 5,
+      "width": 829,
+      "height": 246
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23019v1/fig-006.webp",
+      "caption": "Figure 2: F1 score comparison between crown-view (blue) and close-up (orange) models for top 10 (left) and bottom 10 (right) species by training sample size. Labels show training and test sample counts for crown-view (T) and close-up (C). Bottom 10 filtered for species with both non-zero F1 score with at least 1 training sample.",
+      "page": 4,
+      "index": 6,
+      "width": 790,
+      "height": 293
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23019v1/fig-007.webp",
+      "caption": "Figure 5: Observation of phenological variability over multiple months.",
+      "page": 9,
+      "index": 7,
+      "width": 826,
+      "height": 495
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23019v1/fig-008.webp",
+      "caption": "Table 3: Model specifications and training hyperparameters for all fine-tuned backbones. All models use AdamW, mixed-precision training (fp16), batch size 32, and early stopping on validation loss (patience = 5, min-delta = 0.001) with a maximum of 100 epochs. Training time is total wall-clock time for 3-fold cross-validation on a single A100 GPU. Epochs are reported as mean± std across folds.",
+      "page": 9,
+      "index": 8,
+      "width": 830,
+      "height": 329
+    }
+  ]
+}

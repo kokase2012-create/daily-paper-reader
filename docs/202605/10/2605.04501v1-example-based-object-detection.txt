@@ -1,0 +1,94 @@
+Title: Example-Based Object Detection
+
+URL Source: https://arxiv.org/pdf/2605.04501v1
+
+Published Time: Thu, 07 May 2026 00:28:55 GMT
+
+Number of Pages: 5
+
+Markdown Content:
+# Example-Based Object Detection 
+
+ZhiXin Sun 
+
+PowerChina Zhongnan Engineering Corporation Limited 
+
+sunzxjdi@gmail.com 
+
+# Abstract 
+
+In recent years, object detection has achieved significant progress, especially in the field of open-vocabulary object detection. Unlike traditional methods that rely on predefined categories, open-vocabulary approaches can detect arbitrary objects based on human-provided prompts. With the advancement of prompt-based detection techniques, models such as SAM3 can even outperform some category-specific detectors trained on particular datasets without requiring addi-tional training on those datasets. However, despite these advancements, false positives and false negatives still occur. In practical engineering applications, persistent misdetections or missed detections of the same object are unaccept-able. Yet retraining the model every time such errors occur incurs substantial costs in terms of human effort, computational resources, and time. Therefore, how to leverage existing false positive and false negative samples to prevent such errors from recurring remains a highly challenging and urgent problem. To ad-dress this issue, we propose EBOD (Example-Based Object Detection), which integrates a prompt-based detector (SAM3) with robust feature matching modules (DINOv3 and LightGlue). The proposed framework effectively suppresses the repeated occurrence of false positives and false negatives by leveraging previous error examples, without requiring additional model retraining. Code is available at 
+
+https://github.com/sunzx97/examples_based_object_detection .
+
+# 1 Introduction 
+
+Object detection is an important branch of computer vision and plays a crucial role in engineering applications. In recent years, with the development of open-vocabulary object detection[ 1, 2], it has become possible to rapidly deploy object detection systems in engineering without spending large amounts of time and effort collecting data and training task-specific models. For example, methods such as SAM3[ 3] and Grounded SAM[ 4] only require textual prompts or geometric cues, such as coordinates or bounding boxes, to detect the desired targets. However, in practical engineering applications, false positives and false negatives are unavoidable due to complex outdoor environments and adverse weather conditions such as fog and heavy rain. Instead of repeatedly collecting misdetection samples and retraining models, leveraging false positive and false negative examples to refine detection results provides a more efficient alternative, with significantly lower human effort and computational cost. Recently, several example-based object detection methods have also achieved promising results. SAM3[ 3 ], T-Rex2[ 2] and similar models natively support visual prompts, but these prompts are typically limited to interactive cues such as drawing boxes or adding points within the same image. They do not transfer the representation learned from the bounding box of an object in one image to another image, which would enable few-shot segmentation without relying on text prompts. FSS-SAM3[ 5 ] addresses this by concatenating the query image and the target image and leveraging SAM3 to enable cross-image visual prompting. However, compared with purely appearance-based visual prompts, SAM3 is more sensitive to geometric cues (e.g., box position and scale), meaning 
+
+Preprint. Under review. 
+
+> arXiv:2605.04501v1 [cs.CV] 6 May 2026
+
+that geometric prompts have a stronger influence on its behavior. Methods such as INSID3[ 6] and Matcher[ 7 ] can detect semantically similar regions in an image using only a small number of examples. Although these semantic-based few-shot detection approaches perform well, they inevitably suffer from semantic recognition errors. In contrast, instance-recognition-based methods[ 8, 9] are generally more robust, especially since feature point detection and matching models demonstrate strong generalization ability and can achieve excellent performance in unseen scenarios without additional training. However, example-based matching methods are also affected by differences in scale and field of view between the two images. When the query image is very small and the object occupies only a small number of pixels, while the target image has a much larger field of view and the object occupies only a tiny region, direct feature matching often fails due to insufficient matching keypoints or interference from other regions unrelated to the object in the query image. Therefore, this paper combines feature matching models such as INSID3[ 6] and LightGlue[ 8 ] with open-vocabulary detectors based on text or box prompts, such as SAM3[ 3], and proposes an example-based object detection algorithm. By providing the model with examples of previous false positives and false negatives, the proposed method avoids repeated detection errors on the same type of example. 
+
+# 2 Method 
+
+The overall architecture of the proposed EBOD framework is illustrated in Fig. 1. First, INSID3[ 6 ]is used to search the target image and identify all regions that may contain objects matching the query image. Then, these candidate regions are matched with the query image using LightGlue[ 8 ] for keypoint-based feature matching, producing precise matching bounding boxes. These bounding box coordinates are then used as box prompts, where their labels can be either true or false. Together with the user’s text prompt, they are fed into SAM3[3] to obtain the final detection results. 
+
+Figure 1: Overview of the proposed EBOD framework. Step1: Use INSID3 to generate candidate regions for the query image, indicated by yellow bounding boxes. Step2: Use LightGlue to match the query image with the candidate boxes generated by INSID3, obtaining precise target box coordinates, shown in blue. Step3: Using the precise box prompt from LightGlue and the user’s text prompt, use SAM3 to obtain the detected target boxes, shown in green. 
+
+2.1 INSID3 
+
+INSID3[ 6] is an in-context segmentation method. Given one annotated visual example, it is a training-free approach that segments concepts at varying granularities using only frozen DINOv3[ 10 ] features. Through the robust feature extraction capability of DINOv3[ 10 ], pixel-level feature representations can be obtained. In this paper, INSID3[ 6 ] supports both point-based matching and mask-based matching. We directly adopt its point-based query mechanism, and the practical pipeline is as follows: given a target image and a query image, we first use the backbone model DINOv3[ 10 ] in INSID3 to extract the feature of the center point in the query image. This feature is then matched with the features of all pixels in the target image. A threshold σ is applied to filter out low-confidence responses. For the high-confidence pixels, DBSCAN[ 11 ] clustering is performed with the minimum number of samples set to 3. The bounding box of each cluster is extracted and further expanded according to the size of the query image. Specifically, let w and h denote the width and height of the query image, and let the boundary of a cluster be (xmin , y min , x max , y max ). After expansion, the candidate bounding box becomes (xmin − w/ 2, y min − h/ 2, x max + w/ 2, y max + h/ 2) .22.2 LightGlue 
+
+LightGlue[ 8] is an image matching model that integrates keypoint detection and feature matching into a unified framework. Given two input images, LightGlue[ 8] first employs feature extractors such as SuperPoint[ 12 ] to detect keypoints and extract local descriptors. It then performs feature correspondence matching between the two images through a dedicated matching network. According to the matching difficulty between the image pair, LightGlue[ 8] can adaptively terminate at different network layers and output the matching results efficiently. In this paper, LightGlue[ 8 ] is applied to perform feature matching between the query image and the candidate regions generated by INSID3[6]. Based on the matched feature points, a homography matrix H is estimated. Then, the coordinates of the four vertices of the query image are projected onto the candidate region according to the homography transformation. Let the four corners of the query image be defined as 
+
+(0 , 0) , (wq , 0) , (wq , h q ), (0 , h q ),
+
+where wq and hq denote the width and height of the query image, respectively. The transformed corner coordinates in the candidate region are obtained by 
+
+p′ 
+
+> i
+
+= Hpi, i = 1 , 2, 3, 4,
+
+where pi are the homogeneous coordinates of the query-image corners, and p′ 
+
+> i
+
+are the corresponding projected coordinates. Afterward, by adding the top-left coordinate offset (xc, y c) of the candidate bounding box in the original target image, the final coordinates of the matched object in the target image can be obtained as 
+
+ˆpi = p′ 
+
+> i
+
++ ( xc, y c), i = 1 , 2, 3, 4.
+
+To filter out incorrect matches, a candidate region is considered a valid match only when the number of matched keypoints exceeds a predefined threshold and the inlier ratio is above a certain proportion. Here, inliers refer to the matched points that satisfy the same homography matrix H.
+
+2.3 SAM3 
+
+SAM3[ 3 ] is a unified model that integrates detection, segmentation, and tracking. Owing to its excellent generalization capability, it is adopted in this paper as the object detector. Given a text prompt, SAM3[ 3] can detect the corresponding target objects in the input image. Compared with fixed-category detection models such as YOLO[ 13 ], SAM3[ 3] additionally supports visual prompts, including bounding boxes and point annotations. To avoid repeated false negatives and false positives of the same instances, we first collect repre-sentative missed and incorrectly detected targets as query examples. Then, INSID3[ 6] is employed to roughly estimate their locations in the target image and generate candidate regions. After that, LightGlue[ 8] is applied to perform feature matching between each candidate region and the cor-responding query image, producing accurate coordinate box prompts. Finally, these refined box prompts are fed into SAM3[ 3] together with the text prompt for detection. This pipeline effectively suppresses the repeated occurrence of the same false-positive and false-negative objects. Compared with purely semantic-based or instance-matching approaches, EBOD combines coarse se-mantic retrieval with precise geometric verification, resulting in improved robustness under viewpoint and scale variations. 
+
+# 3 Experiments 
+
+We evaluate the proposed method in real-world scenarios, where it demonstrates strong effectiveness in reducing repeated false positives and false negatives for the same object instances. Due to data 3privacy constraints, we are unable to release additional details, Only one example is provided here to illustrate the process. As shown in the Fig. 2, the same collapse appears in images captured from two different viewpoints. We first take the collapsed region in the image from Viewpoint 1 as the query image, and then use the proposed method to detect the corresponding target in the image from Viewpoint 2. Fig. 3 shows the detection results, where the yellow boxes indicate candidate regions generated by INSID3[ 6], the blue boxes indicate refined regions selected by LightGlue[ 8 ] matching, and the green boxes indicate the final detection results of SAM3[3] under the box prompt.  
+
+> (a) Viewpoint 1 (b) Viewpoint 2
+
+Figure 2: Images of the same object from two different viewpoints 
+
+Figure 3: Given a missed detection case, we visualize the detection results produced by the proposed EBOD framework, where the yellow boxes correspond to candidate regions generated by INSID3, the blue boxes denote refined regions obtained via LightGlue-based matching, and the green boxes represent the final detection results of SAM3 conditioned on box prompts. The experimental results demonstrate that, although the images are captured from different viewpoints, the method successfully prevents the same missed detection from occurring again. However, we also observed during experiments that INSID3[ 6] seems to become ineffective for objects occupying only a very small number of pixels. How to reliably generate coarse candidate regions regardless of object size remains a challenging problem. 
+
+# 4 Conclusion 
+
+In this paper, we propose EBOD, an example-based object detection framework that leverages historical false positive and false negative samples to improve detection robustness without retraining. By integrating INSID3 for coarse candidate region generation, LightGlue for precise instance-level matching, and SAM3 for prompt-based detection, the proposed method effectively reduces repeated detection errors in real-world engineering scenarios. Experimental results demonstrate that EBOD can successfully transfer object-level information across different viewpoints and prevent recurring missed detections. This makes it particularly suitable for practical deployments where rapid iteration and low annotation cost are critical. Despite its effectiveness, the current framework still relies on INSID3 for initial candidate generation, which may become unreliable when the target object occupies only a very small region in the image. In future work, we plan to explore more robust candidate 4proposal strategies that are less sensitive to object scale, as well as more efficient mechanisms for filtering noisy matches. 
+
+# References 
+
+[1] Qing Jiang, Junan Huo, Xingyu Chen, Yuda Xiong, Zhaoyang Zeng, Yihao Chen, Tianhe Ren, Junzhi Yu, and Lei Zhang. Detect anything via next point prediction, 2025. URL 
+
+https://arxiv.org/abs/2510.12798 .[2] Qing Jiang, Feng Li, Zhaoyang Zeng, Tianhe Ren, Shilong Liu, and Lei Zhang. T-rex2: Towards generic object detection via text-visual prompt synergy, 2024. [3] Nicolas Carion, Laura Gustafson, Yuan-Ting Hu, Shoubhik Debnath, Ronghang Hu, Didac Suris, Chaitanya Ryali, Kalyan Vasudev Alwala, Haitham Khedr, Andrew Huang, Jie Lei, Tengyu Ma, Baishan Guo, Arpit Kalla, Markus Marks, Joseph Greer, Meng Wang, Peize Sun, Roman Rädle, Triantafyllos Afouras, Effrosyni Mavroudi, Katherine Xu, Tsung-Han Wu, Yu Zhou, Liliane Momeni, Rishi Hazra, Shuangrui Ding, Sagar Vaze, Francois Porcher, Feng Li, Siyuan Li, Aishwarya Kamath, Ho Kei Cheng, Piotr Dollár, Nikhila Ravi, Kate Saenko, Pengchuan Zhang, and Christoph Feichtenhofer. Sam 3: Segment anything with concepts, 2025. URL 
+
+https://arxiv.org/abs/2511.16719 .[4] Tianhe Ren, Shilong Liu, Ailing Zeng, Jing Lin, Kunchang Li, He Cao, Jiayu Chen, Xinyu Huang, Yukang Chen, Feng Yan, Zhaoyang Zeng, Hao Zhang, Feng Li, Jie Yang, Hongyang Li, Qing Jiang, and Lei Zhang. Grounded sam: Assembling open-world models for diverse visual tasks, 2024. [5] Yi-Jen Tsai, Yen-Yu Lin, and Chien-Yao Wang. Few-shot semantic segmentation meets sam3, 2026. URL https://arxiv.org/abs/2604.05433 .[6] Claudia Cuttano, Gabriele Trivigno, Christoph Reich, Daniel Cremers, Carlo Masone, and Stefan Roth. INSID3: Training-free in-context segmentation with DINOv3. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2026. [7] Yang Liu, Muzhi Zhu, Hengtao Li, Hao Chen, Xinlong Wang, and Chunhua Shen. Matcher: Segment anything with one shot using all-purpose feature matching. arXiv preprint arXiv:2305.13310 , 2023. [8] Philipp Lindenberger, Paul-Edouard Sarlin, and Marc Pollefeys. LightGlue: Local Feature Matching at Light Speed. In ICCV , 2023. [9] Hanwen Jiang, Arjun Karpur, Bingyi Cao, Qixing Huang, and Andre Araujo. Omniglue: Gener-alizable feature matching with foundation model guidance. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2024. [10] Oriane Siméoni, Huy V. Vo, Maximilian Seitzer, Federico Baldassarre, Maxime Oquab, Cijo Jose, Vasil Khalidov, Marc Szafraniec, Seungeun Yi, Michaël Ramamonjisoa, Francisco Massa, Daniel Haziza, Luca Wehrstedt, Jianyuan Wang, Timothée Darcet, Théo Moutakanni, Leonel Sentana, Claire Roberts, Andrea Vedaldi, Jamie Tolan, John Brandt, Camille Couprie, Julien Mairal, Hervé Jégou, Patrick Labatut, and Piotr Bojanowski. DINOv3, 2025. URL https: //arxiv.org/abs/2508.10104 .[11] Martin Ester, Hans-Peter Kriegel, Jörg Sander, and Xiaowei Xu. A density-based algorithm for discovering clusters in large spatial databases with noise. In Proceedings of the Second International Conference on Knowledge Discovery and Data Mining , KDD’96, page 226–231. AAAI Press, 1996. [12] Daniel DeTone, Tomasz Malisiewicz, and Andrew Rabinovich. Superpoint: Self-supervised interest point detection and description, 2018. URL https://arxiv.org/abs/1712.07629 .[13] Joseph Redmon, Santosh Divvala, Ross Girshick, and Ali Farhadi. You only look once: Unified, real-time object detection. In Proceedings of the IEEE conference on computer vision and pattern recognition , pages 779–788, 2016. 5
