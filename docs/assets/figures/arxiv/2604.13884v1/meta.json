@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13884v1/fig-001.webp",
+      "caption": "Fig. 1. Scenario with an unknown number of objects L(t), each with their own kinematic parameters Φ̃ℓ(t) being observed by L NT ×NR MIMO radars, resulting in complex amplitudes α̃ℓ,l(τ) per object and radar.",
+      "page": 3,
+      "index": 1,
+      "width": 977,
+      "height": 602
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13884v1/fig-002.webp",
+      "caption": "Fig. 3. Tracks of the considered scenarios. (a) The random crossing tracks scenario observed by four radars located on a circle at p1 = [ −100 160 ]T , p2 = [ 10 50 ]T , p3 = [ −100 −60 ]T , and p4 = [ −210 50 ]T . (b) Paralell track scenario with the radars placed in the same locations as shown in (a). (c) Sensor handover scenario with radars placed at pi =[ −100 + (i− 1)110 0 ]T . The dashed lines denote the mean distance resulting in the return signal haveing a SNR of -20 dB.",
+      "page": 8,
+      "index": 2,
+      "width": 457,
+      "height": 790
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13884v1/fig-003.webp",
+      "caption": "Fig. 2. Bayesian network representation of the multi-object detection and tracking problem. Each object k has state Φk,n, existence ξk,n, and reflectivity αk,n,l. Shaded nodes denote the measured data Zn and clear nodes represent unknown random variables.",
+      "page": 4,
+      "index": 3,
+      "width": 521,
+      "height": 360
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13884v1/fig-004.webp",
+      "caption": "Fig. 4. The OSPA error for the random crossing tracks",
+      "page": 9,
+      "index": 4,
+      "width": 478,
+      "height": 258
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-001.webp",
+      "caption": "Figure 3: F1-Confidence curve for DroneScan-YOLO. The optimal confidence threshold of 0.265 yields macro-averaged F1= 0.56. Per-class curves reveal the expected gap between large objects (car: F1≈0.84) and small-object categories (bicycle, awning-tricycle), consistent with their sub-32px size distribution.",
+      "page": 7,
+      "index": 1,
+      "width": 582,
+      "height": 390
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-002.webp",
+      "caption": "Figure 6: DroneScan-YOLO training dynamics over 100 epochs at 1280×1280 px. Training and validation losses (box, cls, DFL) decrease monotonically. Validation mAP@50 rises from 0.15 to 0.553. The brief plateau near epoch 85 corresponds to a training interruption and resumption from the last checkpoint.",
+      "page": 10,
+      "index": 2,
+      "width": 829,
+      "height": 416
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-003.webp",
+      "caption": "Figure 7: Qualitative detection examples. (a) High-confidence vehicle detection (0.88–0.92) with successful bicycle identification (conf= 0.41) in a low-density scene. (b) Multi-class detection in a complex urban intersection including awning-tricycle, the most challenging category on VisDrone.",
+      "page": 10,
+      "index": 3,
+      "width": 826,
+      "height": 257
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-004.webp",
+      "caption": "Figure 4: Normalized confusion matrices. DroneScan-YOLO (left) vs. YOLOv8s baseline (right). The background row is substantially lighter for DroneScan, indicating a 40% reduction in pedestrian non-detection rate and improved recall across all small-object categories.",
+      "page": 8,
+      "index": 4,
+      "width": 826,
+      "height": 328
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-005.webp",
+      "caption": "Figure 5: Precision-Recall curves. DroneScan-YOLO (left) consistently dominates the baseline (right) across all 10 VisDrone categories. Most pronounced gains on bicycle (+0.207) and awningtricycle (+0.086).",
+      "page": 8,
+      "index": 5,
+      "width": 826,
+      "height": 297
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-006.webp",
+      "caption": "Table 5: Per-class AP@50 on VisDrone2019-DET validation split. ⋆ = primary tiny-object classes targeted by MSFD and SAL-NWD.",
+      "page": 9,
+      "index": 6,
+      "width": 618,
+      "height": 311
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-007.webp",
+      "caption": "Table 6: Ablation study at 1280px resolution. Each module is added incrementally to the YOLOv8s backbone trained at 1280px.",
+      "page": 9,
+      "index": 7,
+      "width": 706,
+      "height": 242
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-008.webp",
+      "caption": "Figure 1: Qualitative results on VisDrone2019-DET validation images. Ground truth annotations (left) vs. DroneScan-YOLO predictions with confidence scores (right). The model successfully detects high-density scenes including challenging small-scale targets such as bicycles, tricycles and pedestrians.",
+      "page": 5,
+      "index": 8,
+      "width": 826,
+      "height": 257
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13278v1/fig-009.webp",
+      "caption": "Figure 2: VisDrone2019-DET training set statistics. Class distribution (top-left) showing the dominance of car instances and scarcity of small-object categories. Bounding box anchors (top-right). Spatial distribution of object centers (bottom-left), concentrated near image center due to UAV capture angle. Bounding box size distribution (bottom-right) confirming the prevalence of sub-32px objects (width and height < 0.1 in normalized coordinates).",
+      "page": 5,
+      "index": 9,
+      "width": 598,
+      "height": 598
+    }
+  ]
+}

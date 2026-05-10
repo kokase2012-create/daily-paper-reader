@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.11668v1/fig-001.webp",
+      "caption": "Figure 1. Unified contrastive learning of geospatial data. We jointly train encoders for five modalities (text, aerial imagery, streetlevel imagery, elevation, and geographic coordinates), which simultaneously are contrasted across all modality pairs. This yields a single unified embedding space that represents heterogeneous geospatial information.",
+      "page": 1,
+      "index": 1,
+      "width": 468,
+      "height": 392
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11668v1/fig-002.webp",
+      "caption": "Figure 5. PCA of Coordinate Embeddings. Embeddings computed over a dense grid in Manhattan, NYC are projected using PCA, with the top three principal components mapped to RGB. UniGeoCLIP produces spatial patterns that reflect underlying urban structure (e.g., Central Park and surrounding neighborhoods), indicating semantically informed representations. In contrast, SatCLIP and GeoCLIP exhibit smoother, predominantly position-driven gradients.",
+      "page": 6,
+      "index": 2,
+      "width": 1023,
+      "height": 399
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11668v1/fig-003.webp",
+      "caption": "Table 3. Evaluation of the Location Encoder. Performance on 27 downstream regression tasks spanning health, socio-economic, and environmental indicators. Models are grouped into contrastive approaches (top) and pre-computed embedding fields (bottom). Variants marked with † are retrained on our dataset. ⋆ denotes models specifically trained for socio-economic prediction. We bold the best overall performance and underline the best performance among contrastive approaches.",
+      "page": 6,
+      "index": 3,
+      "width": 492,
+      "height": 266
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11668v1/fig-004.webp",
+      "caption": "Figure 2. Sample from our multimodal geospatial dataset. Each location is represented through five complementary modalities: aerial imagery, street-level imagery, a Digital Surface Model (DSM), geographic coordinates, and an automatically generated text description. 1All modalities are spatially co-registered and jointly contrasted during training.",
+      "page": 2,
+      "index": 4,
+      "width": 1043,
+      "height": 417
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11668v1/fig-005.webp",
+      "caption": "Figure 3. Multi-Scale Coordinate Encoder. Latitude–longitude coordinates are first projected using multiple random Fourier feature matrices with increasing spectral bandwidths. Each frequency projection is treated as a token and processed through self-attention to enable inter-scale interaction. The resulting tokens are averaged to produce a unified D-dimensional geographic embedding.",
+      "page": 3,
+      "index": 5,
+      "width": 671,
+      "height": 258
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11668v1/fig-006.webp",
+      "caption": "Figure 4. Geographic Coverage. Spatial distribution of sampled locations across the continental United States. Green regions indicate areas containing samples after spatial filtering and farthest-point sampling.",
+      "page": 4,
+      "index": 6,
+      "width": 496,
+      "height": 283
+    }
+  ]
+}

@@ -1,12 +1,58 @@
 {
-  "generated_at": "2026-05-09T19:59:38.968537+00:00",
-  "updated_date": "20260509",
+  "generated_at": "2026-05-10T09:52:54.967229+00:00",
+  "updated_date": "20260411-20260510",
   "carryover_days": 9,
   "tag_states": {
     "SmallDet": {
-      "updated_date": "20260509",
+      "updated_date": "20260411-20260510",
       "carryover_days": 9,
       "items": []
+    },
+    "visdrone": {
+      "updated_date": "20260411-20260510",
+      "carryover_days": 9,
+      "items": [
+        {
+          "id": "2605.00884v1",
+          "source": "arxiv",
+          "title": "LiteVLA-H: Dual-Rate Vision-Language-Action Inference for Onboard Aerial Guidance and Semantic Perception",
+          "abstract": "Vision-language-action (VLA) models have shown strong semantic grounding and task generalization in manipulation, but aerial deployment remains difficult because drones require low-latency closed-loop guidance under strict onboard compute and communication constraints. We present LiteVLA-H, a compact 256M-parameter VLA system designed for dual-rate operation on an NVIDIA Jetson AGX Orin: a fast outer-loop guidance mode for short action-token outputs and a slower semantic mode for scene understanding, hazard description, and operator-facing narration. The central empirical observation is that, in this compact edge regime, end-to-end latency is dominated by multimodal pre-fill rather than by the marginal cost of decoding a few extra tokens. This motivates a scheduler that issues reactive action tokens at 50.65,ms (19.74,Hz) while still supporting sentence-level semantic outputs at 149.90--164.57\\ms (6.08--6.67,Hz) on the same embedded platform. To specialize the model without collapsing its descriptive competence, we use a knowledge-preserving fine-tuning recipe that mixes reactive flight data, aerial semantic data, and generic caption/VQA supervision. Beyond reporting current latency measurements, we position the system against recent state-of-the-art architectures, including AnywhereVLA, FutureVLA, and ReMem-VLA, showing that the measured action branch reaches a higher edge inference rate under our deployment conditions while retaining periodic semantic awareness.",
+          "authors": [
+            "Justn williams",
+            "Kishor Datta Gupta",
+            "Roy George",
+            "Mrinmoy Sarkar"
+          ],
+          "primary_category": "cs.CV",
+          "categories": [
+            "cs.CV"
+          ],
+          "published": "2026-04-27T06:42:50+00:00",
+          "link": "https://arxiv.org/pdf/2605.00884v1",
+          "tags": [
+            "keyword:visdrone",
+            "query:SmallDet",
+            "query:visdrone"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "onboard aerial guidance and semantic perception for drones",
+          "llm_evidence_cn": "无人机机载引导与语义感知",
+          "llm_evidence": "无人机机载引导与语义感知",
+          "canonical_evidence": "无人机机载引导与语义感知",
+          "llm_tldr_en": "LiteVLA-H is a compact VLA system for low-latency drone guidance and scene understanding on edge devices.",
+          "llm_tldr_cn": "LiteVLA-H是一个紧凑的VLA系统，用于边缘设备上的低延迟无人机引导和场景理解。",
+          "llm_tldr": "LiteVLA-H是一个紧凑的VLA系统，用于边缘设备上的低延迟无人机引导和场景理解。",
+          "llm_tags": [
+            "query:visdrone"
+          ],
+          "matched_query_tag": "query:visdrone",
+          "matched_query_text": "无人机视觉感知研究",
+          "matched_requirement_id": "req-7",
+          "selection_source": "carryover_cache",
+          "paper_id": "2605.00884v1",
+          "carry_days": 1
+        }
+      ]
     }
   }
 }

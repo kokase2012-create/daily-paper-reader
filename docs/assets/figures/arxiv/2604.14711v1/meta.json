@@ -1,0 +1,166 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-001.webp",
+      "caption": "Table 1: Summary of recent DL-based crack detection methods",
+      "page": 6,
+      "index": 1,
+      "width": 796,
+      "height": 984
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-002.webp",
+      "caption": "Table 9: Comparative performance analysis of finetuned ImageNet models with proposed novel MS-SSE block",
+      "page": 25,
+      "index": 2,
+      "width": 866,
+      "height": 277
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-003.webp",
+      "caption": "Fig. 6: Dataset distribution for training, testing and validation, with sample image from each class",
+      "page": 15,
+      "index": 3,
+      "width": 621,
+      "height": 634
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-004.webp",
+      "caption": "Table 2: Performance comparison of different CNN architectures on the StructDamage dataset",
+      "page": 7,
+      "index": 4,
+      "width": 806,
+      "height": 322
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-005.webp",
+      "caption": "Fig. 9: GRADCAM visualization analysis",
+      "page": 22,
+      "index": 5,
+      "width": 623,
+      "height": 827
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-006.webp",
+      "caption": "Fig. 3: Overview of proposed methodology framework",
+      "page": 10,
+      "index": 6,
+      "width": 698,
+      "height": 487
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-007.webp",
+      "caption": "Fig. 5: Augmentation sample that shows rotation, flip and contrast enhancement",
+      "page": 14,
+      "index": 7,
+      "width": 389,
+      "height": 417
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-008.webp",
+      "caption": "Table 4: Dataset statistics: number of families (distinct surfaces) and sample counts per split",
+      "page": 14,
+      "index": 8,
+      "width": 441,
+      "height": 288
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-009.webp",
+      "caption": "Fig. 8: Performance analysis of proposed model and DenseNet201 (a) AUC-ROC curve (b) Precision-Recall (PR) Curve",
+      "page": 18,
+      "index": 9,
+      "width": 777,
+      "height": 311
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-010.webp",
+      "caption": "Fig. 11: t-SNE visualization of proposed model",
+      "page": 23,
+      "index": 10,
+      "width": 775,
+      "height": 567
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-011.webp",
+      "caption": "Table 11: Acronym and its full form",
+      "page": 28,
+      "index": 11,
+      "width": 764,
+      "height": 1072
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-012.webp",
+      "caption": "Fig. 4: Sample image from each class",
+      "page": 13,
+      "index": 12,
+      "width": 775,
+      "height": 388
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-013.webp",
+      "caption": "Fig. 1: Base architecture of the DenseNet201 backbone used in this study.",
+      "page": 8,
+      "index": 13,
+      "width": 777,
+      "height": 257
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-014.webp",
+      "caption": "Table 6: Comparative performance analysis of MS-SSE-Net and ImageNet models",
+      "page": 19,
+      "index": 14,
+      "width": 933,
+      "height": 423
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-015.webp",
+      "caption": "Fig. 7: Performance analysis of baseline and proposed model (a) DenseNet201 (b) proposed (MS-SSE-Net)",
+      "page": 17,
+      "index": 15,
+      "width": 769,
+      "height": 367
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-016.webp",
+      "caption": "Table 3: Overview of the StructDamage dataset",
+      "page": 12,
+      "index": 16,
+      "width": 463,
+      "height": 319
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-017.webp",
+      "caption": "Fig. 12: t-SNE visualization of DenseNet201 (backbone) features",
+      "page": 24,
+      "index": 17,
+      "width": 777,
+      "height": 567
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-018.webp",
+      "caption": "Fig. 2: Architecture overview of the proposed MS-SSE block",
+      "page": 9,
+      "index": 18,
+      "width": 546,
+      "height": 479
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-019.webp",
+      "caption": "Table 7: Comparative analysis of various modules integrated with the DenseNet201 backbone",
+      "page": 20,
+      "index": 19,
+      "width": 719,
+      "height": 231
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14711v1/fig-020.webp",
+      "caption": "Table 5: Class-wise performance metrics for the backbone and proposed model",
+      "page": 16,
+      "index": 20,
+      "width": 715,
+      "height": 610
+    }
+  ]
+}

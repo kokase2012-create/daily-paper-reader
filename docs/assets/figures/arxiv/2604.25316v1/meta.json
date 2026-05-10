@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.25316v1/fig-001.webp",
+      "caption": "Figure 1: Experimental setup with ground-robot-based source domain (left) used for training and UAV-based target domain (right) used for model validation. Different approaches are used to learn models based on the source domain to achieve robust detection in the target domain.",
+      "page": 6,
+      "index": 1,
+      "width": 814,
+      "height": 889
+    },
+    {
+      "url": "assets/figures/arxiv/2604.25316v1/fig-002.webp",
+      "caption": "Table 1: Per-flight precision (prec) and recall (rec) comparison.",
+      "page": 15,
+      "index": 2,
+      "width": 664,
+      "height": 644
+    },
+    {
+      "url": "assets/figures/arxiv/2604.25316v1/fig-003.webp",
+      "caption": "Figure D.8: Two examples of tiles correctly classified as Rumex (true positives, top) and tiles erroneously classified as background (false negatives, bottom) from flight Herrenpuent (ID 5) using the LoRA-finetuned (R = 32) DINOv3 large-based model. Number in red rectangle indicates uncalibrated model probability for class Rumex.",
+      "page": 29,
+      "index": 3,
+      "width": 814,
+      "height": 621
+    },
+    {
+      "url": "assets/figures/arxiv/2604.25316v1/fig-004.webp",
+      "caption": "Figure C.7: F1 score for ResNet-based models with different degree of vanilla fine-tuning (0, 3, 6 and 10 unfreezed blocks).",
+      "page": 28,
+      "index": 4,
+      "width": 570,
+      "height": 337
+    },
+    {
+      "url": "assets/figures/arxiv/2604.25316v1/fig-005.webp",
+      "caption": "Figure 4: Model performance on AGSMultiRumex vs. number of trainable parameters for different models using DINOv2 (red), DINOv3 (blue) or ResNet (green). ResNet-based models are trained either in a standard, vanilla way (circles) or using moment-matching DA in a single-source (M2S2DA, squares) or multi-source (M3SDA − β, crosses) setting. DINO-based models are trained in a straightforward fashion (vanilla, circles) or using parameter-efficient low-rank approximations (LoRA, diamonds). Error bars correspond to the standard deviation of the median measured over the last 10 epochs, σepoch. The dashed line indicates the baseline of a dummy classifier based on prior Rumex probability.",
+      "page": 13,
+      "index": 5,
+      "width": 814,
+      "height": 596
+    },
+    {
+      "url": "assets/figures/arxiv/2604.25316v1/fig-006.webp",
+      "caption": "Figure 3: Label distribution of the Rumex classification task in source and target data.",
+      "page": 8,
+      "index": 6,
+      "width": 814,
+      "height": 206
+    },
+    {
+      "url": "assets/figures/arxiv/2604.25316v1/fig-007.webp",
+      "caption": "Figure B.6: Per-flight performance (F1 scores versus epoch) for 6 different models.",
+      "page": 27,
+      "index": 7,
+      "width": 814,
+      "height": 490
+    },
+    {
+      "url": "assets/figures/arxiv/2604.25316v1/fig-008.webp",
+      "caption": "Figure 5: F1 score for each flight for compared methods.",
+      "page": 16,
+      "index": 8,
+      "width": 814,
+      "height": 535
+    }
+  ]
+}

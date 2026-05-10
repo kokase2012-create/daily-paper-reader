@@ -1,0 +1,577 @@
+Title: RareSpot+: A Benchmark, Model, and Active Learning Framework for Small and Rare Wildlife in Aerial Imagery
+
+URL Source: https://arxiv.org/pdf/2604.20000v1
+
+Published Time: Thu, 23 Apr 2026 00:21:20 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# RareSpot+: A Benchmark, Model, and Active Learning Framework for Small and Rare Wildlife in Aerial Imagery 
+
+## Bowen Zhang 1, Jesse T. Boulerice 2, Charvi Mendiratta 1, Nikhil Kuniyil 1,Satish Kumar 3, Hila Shamon 2,4 , B. S. Manjunath 1
+
+> 1
+
+University of California, Santa Barbara, 93106, California, United States of America. 
+
+> 2
+
+Smithsonian National Zoo and Conservation Biology Institute, 20008, Washington, DC, United States of America. 
+
+> 3
+
+Stanford University, 94305, California, United States of America. 
+
+> 4
+
+The Doris Duke Foundation, 10022, New York, United States of America. Contributing authors: bowen68@ucsb.edu; boulericejt@si.edu; charvi@ucsb.edu; nikhilkuniyil@ucsb.edu; satishy@stanford.edu; hshamon@dorisduke.org; manj@ucsb.edu; 
+
+Abstract 
+
+Automated wildlife monitoring from aerial imagery is vital for conservation but remains limited by two persistent challenges: the difficulty of detecting small, rare species and the high cost of large-scale expert annotation. Prairie dogs exemplify this problem—they are ecologically important yet appear tiny, sparsely distributed, and visually indistinct from their surroundings, posing a severe challenge for conventional detection models. To overcome these limitations, we present RareSpot+ ,a detection framework that integrates multi-scale consistency learning, context-aware augmentation, and geospatially guided active learning to address these issues. A novel multi-scale consistency loss aligns intermediate feature maps across detection heads, enhancing localization of small ( ∼ 30 pixels wide) objects without architectural changes, while context-aware augmentation improves robustness by synthesizing hard, ecologically plausible examples. A geospatial active learning module exploits domain-specific spatial priors linking prairie dogs and burrows, together with test-time augmentation and a meta-uncertainty model, to reduce redundant labeling. On a 2 km 2 aerial dataset, RareSpot+ improves detection over the baseline mAP@50 by +35.2% (absolute +0.13). Cross-dataset tests on HerdNet, AED, and several other wildlife benchmarks demonstrate robust detector-level transferabil-ity. The active learning module further boosts prairie dog AP by 14.5% using an annotation budget of just 1.7% of the unlabeled tiles. Beyond detection, RareSpot+ enables spatial ecological analyses such as clustering and co-occurrence, linking vision-based detection with quantitative ecology. 
+
+Keywords: Small Object Detection; Wildlife Monitoring; Prairie Dog Dataset; Active Learning 
+
+# 1 Introduction 
+
+Automated wildlife monitoring has become an indispensable tool for ecology and conserva-tion, enabling researchers to estimate species abundance and distribution on broad spa-tial and temporal scales (Tuia et al., 2022; McEver, Zhang, Levenson, Iftekhar, & Manju-nath, 2023; Kellenberger, Marcos, & Tuia, 2018; 1   
+
+> arXiv:2604.20000v1 [cs.CV] 21 Apr 2026 Fig. 1 Left: Two large-scale, densely annotated orthomosaics from our drone deployments, separated by 0.8 km and covering a combined area of approximately 2 km 2. The red boxes highlight Colony EnrNE (top) and Colony Enr (bottom).
+> Right: Example detections of prairie dogs and burrows. The insets provide zoomed-in views to emphasize the visual difficulty of finding objects from natural background textures such as soil, vegetation, or shadows.
+
+Delplanque et al., 2023). Traditionally, these sur-veys relied on human observers conducting aerial counts (Caughley, 1974; Buckland et al., 2001), a process that is labor-intensive, expensive, and prone to observer bias (Hodgson et al., 2018). The recent adoption of high-resolution drones and aerial imaging platforms has transformed this landscape, allowing efficient data collection over vast regions (Delplanque et al., 2023; Gui et al., 2024). However, the sheer volume of data, cou-pled with the difficulty of detecting small, rare species within cluttered natural backgrounds, con-tinues to pose significant challenges for automated analysis and scalable annotation. Many ecologically important species present two distinct and often conflated challenges for computer vision systems: small visual scale and rare occurrence. We define small objects as those 2occupying only a few pixels in the image, often spanning fewer than 30 pixels in width, which leads to weak and ambiguous visual cues that are easily confused with soil, vegetation, or shad-ows under varying illumination and occlusion conditions. In contrast, rare objects are defined by their infrequent occurrence across large geo-graphic areas, often accounting for less than 0 .1% of the total surveyed area (Naud´ e & Joubert, 2019; Hu, Smith, Woldt, & Tang, 2021), resulting in extreme class imbalance and high redundancy in manual annotation. Our approach explicitly separates these two phenomena and addresses them with complemen-tary mechanisms. The challenge of small object scale is tackled through representation learning via our Multi-Scale Consistency Learning (MSCL) module, which regularizes intermediate feature maps across detection heads to preserve the signal of diminutive targets. The challenge of rare occur-rence is addressed through data-efficiency strate-gies, including Context-Aware Hard Sample Aug-mentation (CA-HSA) and a geospatially guided 
+
+Active Learning (AL) pipeline, which together mitigate class imbalance and substantially reduce redundant human labeling. These challenges are exemplified by prairie dogs ( Cynomys spp.), a keystone genus of burrow-ing rodents that play a critical role in grassland ecosystems across North America (Kotliar, Baker, Whicker, & Plumb, 1999; Miller, Reading, Hoog-land, Clark, & Ceballos, 2000; Kotliar, 2000; Davidson & Lightfoot, 2006; VanNimwegen, Kret-zer, & Jr., 2008; Dreelin, Brown, & Hill, 2025). Despite their ecological importance, automated detection of prairie dogs in aerial imagery remains an open problem due to the combined effects of limited annotated data, severe class imbalance, and extreme spatial sparsity across large habi-tats. Moreover, prairie dogs are visually subtle at typical flight altitudes, and their sparse distri-bution further exacerbates annotation inefficiency and detector bias (Figure 1). To address these challenges, we present 
+
+RareSpot+ (Figure 2), an integrated framework that unifies detection, data augmentation, and active learning strategies for small and rare species in aerial imagery. RareSpot+ refers to the uni-fied framework rather than an individual network  
+
+> Fig. 2 The RareSpot+ pipeline. This includes Multi-Scale Consistency Learning, Context-Aware Hard Sample Aug-mentation and Active Learning to overcome data scarcity and rare class imbalance.
+
+architecture, encompassing complementary mech-anisms designed to address distinct failure modes in small and rare object detection. First, a multi-scale consistency learning mod-ule enforces structured alignment among feature maps from adjacent detection heads, preserv-ing discriminative cues of tiny targets (typically smaller than 32 × 32 pixels, following COCO conventions (Lin et al., 2014)) without alter-ing the underlying network architecture. Second, a context-aware hard-sample augmentation pro-cess identifies false positives and reinserts them into ecologically plausible backgrounds, improving robustness to habitat-specific confounders. Third, a geospatial active learning framework exploits spatial priors—such as the proximity of prairie dogs to burrows—to focus expert labeling effort on the most informative regions, using uncertainty estimates derived from both test-time augmenta-tion and a meta-uncertainty head. Finally, we introduce the first large-scale, high-resolution aerial dataset of prairie dogs and their burrows. The dataset comprises eight expert-annotated drone surveys covering more than 5 km 2 at 2 cm/px resolution, providing a founda-tion for developing the first automated models for prairie dog and burrow monitoring. 
+
+Positioning of our contribution. 
+
+In contrast to prior multi-scale fusion approaches such as FPN and PAN, which rely on architectural 3modifications, our approach operates entirely at the loss level. We introduce a tri-loss regulariza-tion that aligns adjacent detection heads ( P3↔P4
+
+and P4↔P5) using complementary MSE, KL-divergence, and cosine-similarity terms. This for-mulation strengthens small-object representations during training while introducing no additional parameters at inference-time. By integrating principled feature-level regu-larization, context-aware data augmentation, and geospatially guided active learning within an openly released benchmark, RareSpot+ illustrates how advances in computer vision can translate into scalable, reproducible tools for ecological monitoring and conservation. 
+
+# 2 Related Work 
+
+Prairie dog colonies and their extensive bur-row systems play a critical ecological role by contributing to prey availability, landscape het-erogeneity, nutrient cycling, and subterranean habitats that sustain diverse dependent species, including insects (Davidson & Lightfoot, 2006), birds (Smith & Lomolino, 2004; Dinsmore, White, & Knopf, 2005; Dreelin et al., 2025), reptiles (Kretzer & Jr., 2001), and mammals (Hoogland, 1995; Kotliar, 2000; Davidson & Lightfoot, 2006; Stapp, 2007), notably the endangered black-footed ferret (Mustela nigripes ) (Kotliar et al., 1999; Eads et al., 2011). Although previous UAV-based efforts have mapped the distribution of prairie dog burrows (Delparte et al., 2019; Kearney, Poren-sky, Augustine, & Pellatz, 2023), these studies were limited to static burrow identification and did not address direct detection of prairie dogs themselves. Our work fills this gap by introduc-ing the first framework and benchmark dataset for joint detection of prairie dogs and their burrows, enabling automated monitoring of colony activity. Furthermore, the natural co-occurrence of prairie dogs and burrows provides a principled spatial cue for uncertainty estimation in active learning and for analyzing spatiotemporal variations in colony dynamics. 
+
+## 2.1 Small-Object Detection in Aerial and Ecological Imagery 
+
+Detecting small objects remains a persistent chal-lenge in aerial and ecological imagery, where target instances occupy only a few dozen pixels and are often indistinguishable from background clutter. Conventional detection frameworks such as Faster R-CNN (Ren, He, Girshick, & Sun, 2015) and YOLO (Redmon & Farhadi, 2018; Bochkovskiy, Wang, & Liao, 2020) have demonstrated remark-able success on generic benchmarks, but degrade significantly when object size falls below 32 pix-els (Zhu, Lyu, Wang, & Zhao, 2021; Wang, Bochkovskiy, & Liao, 2022). Several methods have attempted to improve feature resolution through multi-scale feature fusion (Lin et al., 2017; Tan, Pang, & Le, 2020; Wang et al., 2022) or by incorporating transformer-based global reason-ing (Carion et al., 2020a; Z. Liu et al., 2021). Nevertheless, these architectures often struggle to retain fine-grained cues critical for small-object localization, particularly when trained with lim-ited data. Building on these general challenges, ecolog-ical detection tasks pose additional difficulties due to cluttered natural backgrounds, low inter-class variability, and strong dependence on envi-ronmental context. Prior studies have focused primarily on adapting generic detectors to spe-cific taxa, such as elephants (Naud´ e & Jou-bert, 2019), waterfowl (Hu et al., 2021), and seals (Laradji et al., 2022), or on leveraging multi-sensor cues such as thermal and hyperspectral imagery (Chabot & Francis, 2018; Gui et al., 2024). While these approaches have improved detection accuracy for specific species, they rely heavily on extensive annotation or strong priors about object size and appearance. In contrast, our work introduces a multi-scale consistency loss that regularizes feature maps across adjacent detec-tion heads, improving the representation of tiny objects without modifying the backbone architec-ture or adding new parameters during inference, requiring only a minimal increase in parameters during training. 
+
+Relation to prior multi-scale and consistency learning 
+
+While our approach regularizes feature hierar-chies through the loss function, existing multi-scale fusion approaches such as FPN, PAN, and transformer-based detectors propagate informa-tion across scales through architectural changes (H. Zhang, Zhang, Mei, Gan, & Zhu, 2025; 4Du, Hu, Zhao, Jin, & Ma, 2024), often increas-ing model complexity to stabilize representa-tions of small objects. In contrast, our formu-lation operates at the loss level , introducing a lightweight tri-loss that regularizes existing detec-tion heads. While prior representation-stability methods (Huang, Tang, Wen, & Jin, 2022; Huynh, Jung, & Suhr, 2024; Sim´ eoni et al., 2025) focus on scale-invariant features or patch-level consis-tency, we explicitly enforce cross-head coherence 
+
+by aligning adjacent levels ( P3↔P4, P4↔P5). This adjacency-based design preserves fine-scale cues critical for tiny objects while stabilizing higher-level semantics, as illustrated in Fig. 5. 
+
+## 2.2 Context-Aware Data Augmentation 
+
+Data augmentation is a well-established strat-egy for improving robustness and diversity in training data (Shorten & Khoshgoftaar, 2019; H. Zhang, Ciss´ e, Dauphin, & Lopez-Paz, 2018; Yun et al., 2019). Recent work has explored techniques such as synthetic copy–paste (Ghiasi et al., 2021), style transfer (Georgakis, Mousa-vian, Berg, & Kosecka, 2017), and adversarial augmentation (Volpi et al., 2018) to mitigate domain imbalance. However, these generic aug-mentation strategies rarely account for the eco-logical context in which small objects appear. In wildlife monitoring scenarios, spatial and textu-ral cues—including vegetation density, soil col-oration, and shadow patterns—strongly influence false detections (Kellenberger et al., 2018; Tuia et al., 2022). Our context-aware hard-sample augmentation 
+
+strategy generates hard yet ecologically realistic training examples that improve model generaliza-tion. Unlike prior copy–paste approaches, object placement is guided by learned habitat context rather than random spatial overlays of ground-truth instances, thereby better reflecting the envi-ronmental variability encountered in aerial wildlife surveys. 
+
+## 2.3 Active Learning for Efficient Annotation 
+
+Active learning (AL) provides a principled frame-work for reducing labeling effort by iteratively selecting the most informative samples for anno-tation. Common selection criteria include model uncertainty (D. Li et al., 2024), sample diver-sity (Yamani, Alyami, Luqman, Ghanem, & Gian-cola, 2024), and hybrid strategies that balance both (Ash, Zhang, Krishnamurthy, Langford, & Agarwal, 2020). In computer vision, AL has been applied to object detection (Roy & Todor-ovic, 2018; Kasarla, Dinesh, Tondewad, Rad-hakrishnan, & Jawahar, 2019; Siddiqui, Valentin, & Nießner, 2020), segmentation (Mackowiak et al., 2018), and remote sensing (Tuia, Ratle, Pacifici, Kanevski, & Emery, 2009). Teacher– student frameworks have further combined AL with semi-supervised detection to refine pseudo-labels (B. Zhang, Wang, & Du, 2024), while few-shot and low-shot methods augmented with AL have been explored to address rare species and long-tailed class distributions (P. Liu, Huang, Jin, & Long, 2025; Guirguis et al., 2024), which are particularly relevant in ecological monitoring. Nevertheless, most existing AL strategies treat samples as independent and ignore the strong spatial dependencies characteristic of ecological imagery, where animal occurrences are often cor-related with habitat structures or co-located features such as nests, burrows, or vegetation patches. We address this limitation through a geospa-tial active learning framework that incorporates species–habitat spatial priors to prune the candi-date annotation pool prior to uncertainty-based ranking. In our case study, prairie dogs exhibit strong spatial association with burrow locations; leveraging this relationship enables us to priori-tize labeling of tiles most likely to contain animals. We further integrate test-time augmentation and a meta-uncertainty model to refine sample selection. Together, these components substantially reduce annotation cost without sacrificing detection accu-racy. In summary, prior advances in small-object detection, data augmentation, and active learning have largely evolved independently of ecological applications. RareSpot+ unifies these directions within a single domain-aware framework, provid-ing a reproducible benchmark for large-scale aerial wildlife monitoring and establishing a foundation for translating computer vision innovations into ecological analysis. 5Table 1 Summary of prairie dog habitat datasets. The table reports the number of annotated and total tiles, prairie dogs (PD), burrows, and orthomosaic dimensions across training, validation, and test splits. AL denotes datasets used for active learning. Partial indicates datasets with ongoing annotations that are released as part of the benchmark but are not used in the experiments reported in this paper, and are intended to support future active learning and weakly supervised learning research. The prefixes EnrNE and Enr in the dataset names refer to the two colonies. 
+
+Dataset Data Type # Annot. Tiles # Total Tiles # PD # Burrows Orthomosaic Size (px) 
+
+EnrNE fly 1 Train 7,858 33,294 807 3,913 95K ×91K EnrNE fly 2 Validation 9,293 27,888 569 4,435 85K ×84K Enr fly 3 Test 7,616 55,224 609 4,435 120K ×119K Enr fly 4 AL 3,534 58,560 771 3,572 122K ×124K EnrNE fly 5 Partial 960 16,240 161 968 57K ×73K EnrNE fly 6 Partial 1,434 27,547 91 1,491 86K ×83K EnrNE fly 7 Partial 1,266 28,728 127 1,331 87K ×85K Enr fly 8 Partial 2,072 14,762 101 2,590 61K ×62K 
+
+# 3 Prairie Dog Benchmark Dataset 
+
+Prairie dogs ( Cynomys spp. ) are keystone species that structure North American grassland ecosys-tems by aerating soil, altering vegetation, and serving as prey for numerous predators. Accu-rate monitoring of colony distribution and den-sity is therefore central to assessing ecosystem health. Traditional ground surveys are labor-intensive and spatially limited, motivating the use of high-resolution aerial imagery for scalable and repeatable monitoring. We constructed our benchmark dataset from eight aerial surveys of two prairie dog colonies, covering approximately 5 km 2 of mixed-grass prairie (Table 1). Flights were conducted during the summer months on multiple dates and times under stable illumination using a fixed-wing drone (SenseFly eBee X) equipped with a 24 MP RGB camera (SenseFly Aeria X). All surveys were flown at an above-ground altitude of approximately 100 m, yielding an average ground sampling dis-tance (GSD) of 2 cm/px, with 75% lateral and 70% longitudinal overlap between adjacent flight lines. Orthomosaics were generated using Pix4D software, producing georeferenced mosaics with centimeter-level spatial accuracy. 
+
+## 3.1 Image Tiling and Annotation Workflow 
+
+Each orthomosaic was subdivided into fixed-size tiles (512 ×512 px) to facilitate efficient annotation and model training. Annotation was performed using the BisQue platform (Bisque: Bioimage Software and Services Platform , n.d.) and cross-validated by multiple experts. Two object classes were labeled: (i) prairie dogs , identified by char-acteristic body shape and shadow patterns, and (ii) burrows , visible as circular openings with surrounding soil mounds. To ensure annotation consistency, a two-stage quality-control process was employed. First, nine trained annotators independently labeled and cross-checked the data. This was followed by senior ecologist verification across all annotated tiles. Disagreements were jointly reviewed to refine labeling guidelines and resolve ambiguous cases. 
+
+## 3.2 Dataset Statistics and Splits 
+
+The final dataset comprises 34,033 annotated tiles containing a total of 3,236 prairie dog instances and 22,735 burrow instances, covering approxi-mately 5 km 2 of surveyed area. Prairie dog bound-ing boxes range from 15 to 80 pixels in maximum side length , with a mean of approximately 30 pix-els, placing this dataset firmly within a challenging small-object detection regime. To evaluate cross-site generalization, the data are partitioned geographically into two non-overlapping prairie dog colonies: Colony EnrNE (Enrico North East) and Colony Enr (Enrico), separated by approximately 0.8 km and dif-fering in vegetation density and soil coloration (Figure 1). All training and validation data are drawn exclusively from Colony EnrNE, while Colony Enr is reserved for testing, ensuring strict 6Fig. 3 Dataset statistics of the training dataset. 
+
+spatial separation between training and evalua-tion regions. Within each colony, orthomosaics are tiled into 512 × 512 pixel patches with 30% over-lap. All tiles containing at least one annotation are included, along with an equal number of randomly sampled background tiles without objects, to con-struct the detection training set. A detailed statis-tical breakdown of all eight datasets is provided in Table 1. Datasets labeled as Partial correspond to surveys with ongoing annotations; these data are not used in the experiments reported here but are released to support future research in active learning and weakly supervised detection. Figure 3 shows the frequency distributions of bounding box widths for prairie dogs and bur-rows, illustrating the wide range of object sizes and highlighting both the challenge of detect-ing small objects and the severe class imbalance present in the data. Compared with existing aerial wildlife datasets such as HerdNet (Delplanque et al., 2023), Eikelboom et al. (Eikelboom et al., 2019), AED (Naud´ e & Joubert, 2019), Water-fowl (Hu et al., 2021), and WAID (Kumar et al., 2024), our benchmark offers higher spatial reso-lution and an explicit coupling between animal and habitat features, enabling systematic evalua-tion of detector performance under realistic spatial variability. 
+
+## 3.3 Ecological Utility and Public Release 
+
+Beyond serving as a computer vision benchmark, the dataset supports downstream ecological anal-yses such as colony density estimation, spatial clustering, and co-occurrence analysis between prairie dogs and burrows (Section 3 in Supplemen-tary Materials). These dual-use capabilities make the dataset valuable to both the machine learning and ecological research communities. The dataset will be publicly released at the time of publication and will include all imagery, annotations, and standardized data splits used in this study. To protect sensitive habitats, geolo-cation metadata will be anonymized prior to release. All aerial surveys were conducted under approved institutional wildlife-monitoring permits and in compliance with local regulations, ensur-ing minimal disturbance to prairie dog colonies during data acquisition. The data and accompa-nying code will be made available through Bisque UCSB (B. Zhang et al., 2025a) 
+
+# 4 The RareSpot+ Detection Method 
+
+Robust recognition and detection often rely on multi-scale feature processing, which enables mod-els to handle objects spanning a wide range of sizes (Huang et al., 2022; Huynh et al., 2024). Recent work such as DINOv3 (Sim´ eoni et al., 2025) highlights this principle through Gram anchoring , which stabilizes patch-level represen-tations across scales. This idea is closely related to the fine-grained feature consistency explored in earlier versions of this work (B. Zhang et al., 2025b), where preserving high-frequency spa-tial detail within feature maps was shown to be critical for improving detection and segmen-tation accuracy. Figure 4 provides an overview of the RareSpot+ detection method, which inte-grates a convolutional backbone with a multi-scale detection head and a context-aware augmentation strategy to enhance recognition of small and rare objects in aerial imagery. 
+
+## 4.1 Multi-Scale Consistency Learning 
+
+We introduce multi-scale consistency learning ,a lightweight tri-loss alignment mechanism that enforces structured correspondence across adja-cent feature scales using Mean Squared Error (MSE), Kullback–Leibler (KL) divergence, and cosine similarity. By explicitly regularizing fea-ture representations across detection heads, this 7Fig. 4 Multi-Scale Consistency Learning applied across feature layers and Context-Aware Hard Sample Augmentation. 
+
+approach is particularly effective for the challeng-ing task of tiny object detection. 
+
+## 4.2 Feature Alignment Across Scales 
+
+To enforce cross-scale consistency, we explicitly align feature maps extracted from the YOLOv5 FPN–PAN hierarchy. Let P3 ∈ RC×H×W , P 4 ∈
+
+RC× H   
+
+> 2×W
+> 2
+
+, P 5 ∈ RC× H   
+
+> 4×W
+> 4
+
+, denote the feature maps at three successive pyramid levels, where 
+
+C is the number of channels and ( H, W ) are the spatial dimensions of P3. To enable direct com-parison across scales, we upsample P4 and P5 to the highest spatial resolution, yielding ˜P4, ˜P5 ∈
+
+RC×H×W .
+
+Mean Squared Error (MSE): 
+
+The MSE term promotes similarity in raw activa-tion magnitudes between adjacent feature scales, encouraging point-wise alignment across the fea-ture pyramid:            
+
+> LMSE =1
+> HW
+> HX
+> i=1
+> WX
+> j=1
+> P(i,j )3−˜P(i,j )4
+> 2
+> +˜P(i,j )4−˜P(i,j )5
+> 2
+> .
+> (1)
+
+This loss enforces consistent activation strength for potential targets across adjacent pyramid lev-els, helping to prevent tiny objects from being suppressed or lost as features propagate between scales. 
+
+Kullback–Leibler (KL) Divergence: 
+
+To complement the MSE term, which enforces numerical alignment, the KL divergence encour-ages semantic coherence across scales by penaliz-ing cases in which adjacent feature levels produce qualitatively different spatial distributions for the same image region. This encourages neighboring detection heads to focus on the same semantic center of a small animal target. Treating feature vectors as probability distributions via softmax normalization, we define 
+
+LKL = 1
+
+HW 
+
+> H
+
+X
+
+> i=1
+> W
+
+X
+
+> j=1
+
+KL  S[P3](i,j ), S [ ˜P4](i,j )
+
++KL  S[ ˜P4](i,j ), S [ ˜P5](i,j ),
+
+(2) where KL( ·, ·) denotes the Kullback–Leibler divergence and S[·] represents softmax normaliza-tion. 
+
+Cosine Similarity: 
+
+Finally, cosine similarity focuses on the direc-tional orientation of feature vectors across scales. By enforcing angular consistency, this term helps preserve the underlying structural representation of small targets, even when absolute activation magnitudes weaken. 8Lcos = 1            
+
+> HW
+> HX
+> i=1
+> WX
+> j=1
+> h
+> 1−cos  P(i,j )3,˜P(i,j )4
+> i
+> +
+> h
+> 1−cos  P(i,j )4,˜P(i,j )5
+> i
+> .
+> (3)
+
+## 4.3 Final Multi-Scale Consistency Loss 
+
+We combine the three components into a unified objective: 
+
+Lconsistency = α LMSE + β LKL + γ Lcos (4) Here, LMSE minimizes numerical discrepancies in activation magnitude, LKL aligns semantic distri-butions across scales, and Lcos preserves angular coherence in feature orientation. Together, these complementary terms encourage stable and con-sistent representations of small objects across adjacent pyramid levels, improving detection robustness in cluttered aerial imagery. In our fixed-altitude aerial survey setting, prairie dog targets consistently appear at small spatial scales. The proposed consistency loss explicitly leverages this property by reinforc-ing cross-scale coherence in a manner tuned for small-object detection. Each alignment term is assigned an independent weighting coefficient, allowing fine-grained control over its contribution and selective emphasis across pyramid levels. This design preserves the spatial precision of lower-level features ( P3) and the semantic abstraction of higher-level features ( P5), while improving con-sistency between them. The consistency loss is applied jointly with the standard detection objec-tives—bounding box regression, objectness, and classification losses—using tunable coefficients to ensure compatibility with the overall detection framework. 
+
+Design rationale and exact pairing 
+
+Consistency alignment is restricted to adjacent feature pairs (P3↔P4 and P4↔P5), where comple-mentary spatial and semantic information is most strongly correlated. The tri-loss weighting coeffi-cients are set to ( α, β, γ ) = (10 .0, 1.0, 1.0) and are applied uniformly to both adjacent pairs. Fur-thermore, a detailed loss ablation and sensitivity analysis are provided in Table 1 of the Supplemen-tary Materials. The consistency objective is used 
+
+only during training and introduces no additional parameters at inference time, thereby preserv-ing the computational efficiency of the baseline detector. 
+
+## 4.4 Context-Aware Hard Sample Augmentation for Rare and Small Object Detection 
+
+Prairie dogs present an extreme small-object detection challenge in drone imagery: they con-stitute only 0.81% of the annotated instances in our dataset and exhibit weak visual signals compared with objects in large-scale benchmarks such as COCO. To address this, we propose a 
+
+context-aware hard sample augmentation (CA-HSA) strategy that leverages model errors and ecological context to improve robustness and gen-eralization. Our approach begins by mining hard examples from model predictions, specifically false positives (FPs) and false negatives (FNs), which typically correspond to ambiguous visual patterns such as shadows, rocks, or vegetation textures. These sam-ples are combined with true labeled instances to form a pool of challenging patches. Each patch is then embedded into a semantically consis-tent background to generate realistic yet difficult training examples. Backgrounds are constructed by sampling empty (background-only) tiles from the training set and applying HSV color-based segmentation to separate habitat regions into dirt/mud and grass. This process yields a pixel-wise context map 
+
+c, where c(i, j ) ∈ { dirt , grass } denotes the local habitat type. Patches drawn from the sets PLabeled , P FP ,
+
+and PFN are placed into contextually matched regions—90% in dirt and 10% in grass—reflecting their empirical distribution in the dataset. Each patch undergoes random transformations param-eterized by θ = {θscale , θ rot , θ illum }:
+
+• θscale : random scaling in [0 .9, 1.1] 
+
+• θrot : random in-plane rotation in [ −90 ◦, +90 ◦]
+
+• θillum : random brightness and contrast adjust-ment in HSV space Augmented patches are blended into the back-ground using Poisson image blending via the 
+
+SeamlessClone module in OpenCV (Bradski, 9Fig. 5 Comparison of the RareSpot+ model (ours) with a baseline. The first column shows the ground truth and the resulting predictions at 0.2 confidence threshold. The second and third columns present the corresponding feature maps from both models across different feature levels (P3, P4, and P5). Multi-Scale Consistency Learning in our model produces more focused and localized feature activations, improving object localization compared to the baseline’s noisy feature maps. 
+
+2000), ensuring smooth spatial transitions and photometric coherence. Let PFP , P FN , and PLabeled denote the sets of image patches extracted from false positives, false negatives, and ground-truth labeled objects iden-tified during prior training epochs. Formally, the augmentation process is defined as 
+
+I′ = Aug 
+
+
+
+I, {PFPs , P FNs , P Labeled } ; c, θ 
+
+
+
+,
+
+(5) where I is a background image, c the context map, and θ the transformation parameters. The result-ing image I′ is a semantically augmented sample generated by embedding transformed patches into habitat-consistent regions of I.The patch sets PFP , P FN , and PLabeled capture common sources of detection ambiguity, includ-ing shadows, rocks, and vegetation. Their targeted reintegration into realistic backgrounds encour-ages the detector to learn more discriminative context cues for prairie dogs and burrows, improv-ing robustness to visually similar clutter. Overall, 10 Fig. 6 Overview of the geospatial active learning pipeline. Large orthomosaic surveys are tiled into 512 × 512 patches. Following initial detection, spatial filtering and uncertainty estimation modules select the most informative tiles for expert annotation, forming a closed-loop training process. 
+
+the CA-HSA pipeline generated 3,929 additional training images, enriching the dataset with rare and ambiguous examples. 
+
+# 5 RareSpot+ Geospatial Active Learning 
+
+Inference over large aerial surveys comprising tens of thousands of tiles is computationally tractable; however, improving detector performance in such settings is fundamentally constrained by the cost of expert annotation, particularly when targets are rare and spatially sparse. Active learning (AL) addresses this challenge by querying the most informative unlabeled samples for annota-tion (Settles, 2009; Tuia, Camps-Valls, Matasci, Kanevski, & Benediktsson, 2011; Brust, K¨ onig, Denzler, Denzler, & Rodner, 2019). Standard AL strategies, however, often assume sample indepen-dence and perform poorly when targets exhibit strong spatial clustering, as is common in eco-logical imagery (Legendre, 1993; Fortin & Dale, 2005). We introduce a geospatial active learning framework that explicitly exploits spatial rela-tionships between classes to guide sample acqui-sition. In the prairie dog monitoring setting, animal locations are strongly associated with nearby burrow entrances. Our geospatial analy-sis (Supplementary Materials, Section 3) shows that approximately 95% of prairie dogs lie within 15.2 m of a burrow, consistent with ecological observations (Hoogland, 1995). We therefore use high-confidence burrow detections as a high-recall proxy to pre-filter the search space prior to uncertainty-based selection. While the specific spatial relation used here is domain-specific, the underlying principle—leveraging auxiliary spatial cues to guide annotation—is broadly applicable when such cues can be defined or learned. The geospatial active learning pipeline is illus-trated in Figure 6. An initial detector fθ0 is trained on a labeled dataset D(0)  
+
+> L
+
+. Large orthomosaics are then tiled into 512 × 512 patches, and infer-ence is performed to identify a candidate set P
+
+of tiles containing confident burrow detections. Tiles in P are ranked using uncertainty measures 
+
+U (x; fθ0 ) (Section 5.1), and the top-k tiles ( k ∈{100 , 200 , 500 , 1000 }) are selected for expert anno-tation. The newly annotated tiles are merged with 
+
+D(0)  
+
+> L
+
+to retrain the detector, yielding an updated model fθ1 . This relation-guided strategy focuses the annotation budget on geographically relevant 11 and informative regions, substantially reducing redundant labeling in large-scale surveys. 
+
+## 5.1 Uncertainty Estimation Models 
+
+We evaluate two tile-level uncertainty estimation strategies within the geospatial active learning pipeline shown in Figure 6.  
+
+> Fig. 7 Sampling for TTA-based uncertainty.
+
+5.1.1 TTA-Based Uncertainty with Geospatial Context 
+
+We estimate prediction uncertainty using instabil-ity under test-time augmentation (TTA), rather than stochastic inference techniques such as MC Dropout. For a candidate tile x and its 3 ×3 spatial neighborhood N (x), we apply T augmentations 
+
+at ∼ A , with each augmentation applied identi-cally across all nine tiles to preserve local spatial structure. This yields a set of predictions {Pt}Tt=1 ,as illustrated in Figure 7. Detections across TTA passes are clustered using an IoU threshold τ to form a set of unique object instances o ∈ O x (see Algorithm 1 in the Supplementary Materials). 
+
+Confidence Uncertainty ( Uc). 
+
+Let ct(o) ∈ [0 , 1] denote the confidence score of instance o at augmentation t, and let ¯c(o) =
+
+> 1
+> T
+
+P 
+
+> t
+
+ct(o) be the mean confidence. We define 
+
+σ2 
+
+> c
+
+(o) = 1
+
+T
+
+> T
+
+X
+
+> t=1
+
+ ct(o)−¯c(o)2, Uc(o) = 4 σ2 
+
+> c
+
+(o),
+
+which attains its maximum when predictions are split between high and low confidence values. 
+
+Existence Uncertainty ( Uex ). 
+
+Let k = Tdetected (o) be the number of TTA passes in which instance o is detected. Using a Jeffreys prior, we estimate the detection probability as ˆp(o) = k+0 .5  
+
+> T+1
+
+and define 
+
+Uex (o) = 4 ˆ p(o) 1 − ˆp(o),
+
+which corresponds to the normalized Bernoulli variance and peaks when object presence is ambiguous across TTA views. 
+
+Tile-Level Uncertainty Aggregation. 
+
+Let Opd  
+
+> x
+
+and Ob 
+
+> x
+
+denote the sets of prairie dog and burrow instances detected in tile x. We normalize for instance count using 
+
+αi(x) = 1max  1, |O ix| , i ∈ { pd , b}.
+
+With class-specific weights wi 
+
+> c
+
+and wi
+
+> ex
+
+, the final tile-level uncertainty score is 
+
+U (x) = αpd (x) X
+
+> o∈O pd
+> x
+
+
+
+wpd c Uc(o) + wpd ex Uex (o)
+
+
+
++ αb(x) X
+
+> o∈O b
+> x
+
+
+
+wbc Uc(o) + wbex Uex (o)
+
+
+
+.
+
+(6) Prairie dog weights are typically set higher than burrow weights to emphasize the rarer and more annotation-critical class. 
+
+5.1.2 Learned Meta-Uncertainty Head (MUH)       
+
+> Fig. 8Architecture of the Meta-Uncertainty Head (MUH).
+
+In addition to TTA-based uncertainty, we learn uncertainty through a lightweight Meta-Uncertainty Head (MUH) that directly regresses 12 a tile-level error score from internal detec-tor features, treating uncertainty estimation as a meta-learning problem over the base detec-tor (Hospedales, Antoniou, Micaelli, & Storkey, 2021). As illustrated in Figure 8, MUH branches from the frozen P3 feature map—chosen for its fine-grained spatial detail—of a detector trained with multi-scale consistency learning and context-aware augmentation, and outputs a single scalar uncertainty value per tile. Supervision for MUH is provided by a self-labeled Prediction Uncertainty Score , Uscore , com-puted on a held-out validation split with the base detector frozen. The score aggregates multiple sources of detection error, including localization inaccuracies, classification ambiguity, false nega-tives, and false positives: 
+
+Uscore = 1
+
+|P | + |G| − | M |
+
+"X 
+
+> (pi,g j)∈M
+
+ 1 − ci · IoU( pi, g j )
+
++ |GF N | + X
+
+> pi∈PF P
+
+min(1 , 0.5 + ci)
+
+#
+
+.
+
+(7) where P and G denote the sets of predictions and ground-truth objects, respectively, M is the set of matched prediction–ground-truth pairs, ci is the confidence score of prediction pi, and IoU( ·) mea-sures localization overlap. The normalization term ensures that Uscore is invariant to the number of objects per tile. By training MUH to regress Uscore , the detec-tor learns a direct mapping from its internal feature representations to expected failure modes. This enables a data-driven acquisition function that selects informative tiles based not only on prediction variance, but also on learned, task-specific indicators of detection difficulty. 
+
+# 6 Experimental Evaluation 
+
+We evaluate the proposed RareSpot+ frame-work to quantify the individual and combined impact of its core components, including Multi-Scale Consistency Learning (MSCL), Context-Aware Hard Sample Augmentation (CA-HSA), and Geospatially-Guided Active Learning, on prairie dog and burrow detection performance. All experiments are conducted using identical train-ing and evaluation protocols across the baseline and ablation variants to ensure fair comparison. The following subsections report quantitative and qualitative detection results, the efficiency of our uncertainty-driven acquisition strategies under varying annotation budgets, and cross-dataset generalization to other drone-based wildlife bench-marks. 
+
+## 6.1 Detection Performance and Ablation Study 
+
+To assess the individual and combined contri-butions of the proposed modules, we conduct a comprehensive ablation study, with results sum-marized in Table 2. The baseline model (YOLOv5-L with standard high-augmentation settings) achieves strong performance for burrow detec-tion but performs less reliably on prairie dogs, which are smaller, visually subtle, and sparsely distributed. 
+
+Multi-Scale Consistency Learning improves detection performance by reinforcing cross-scale feature alignment for small objects. On the val-idation set, this module improves prairie dog mAP@50 by 17.3%, while on the test set, mAP@50 increases by 24%, demonstrating its effectiveness in preserving fine-grained discrimina-tive features critical for small-object detection. 
+
+Context-Aware Hard Sample Augmentation 
+
+further enhances robustness by emphasizing visually ambiguous instances through context-matched compositing of hard examples. This strategy improves both recall and precision for prairie dogs and burrows across datasets, indi-cating increased sensitivity to rare and challeng-ing targets. In some settings, particularly when the training set is already large, the increased emphasis on hard negatives can lead to minor precision reductions, reflecting a common sensi-tivity–specificity trade-off in augmentation-based learning. Finally, the full RareSpot+ detection model, which integrates both MSCL and CA-HSA, achieves the strongest overall performance. On the test set, RareSpot+ improves prairie dog mAP@50 by 35.25% and recall by 41.80%, demonstrating the complementary benefits of 13 Table 2 RareSpot+ detection experiments and ablation study results showing the impact of different modules on both validation and test sets for prairie dog and burrow detection. The proposed RareSpot+ , which integrates Multi-Scale Consistency Learning and Context-Aware Hard Sample Augmentation, outperforms the baseline across both datasets. These results demonstrate the effectiveness of incorporating cross-scale feature consistency and hard sample prioritization to improve small-object detection.                                                                                
+
+> Model Precision (P) Recall (R) AP@50 Overall mAP@50 PD Burrow PD Burrow PD Burrow Validation Results Baseline Model (YOLOv5L) 0.570 0.791 0.370 0.840 0.393 0.846 0.620 Multi-Scale Consistency Learning 0.578 0.824 0.434 0.850 0.432 0.843 0.637 CA Hard Sample Augmentation 0.557 0.823 0.407 0.851 0.415 0.852 0.633
+> RareSpot+ (Combined) 0.634 0.845 0.470 0.885 0.491 0.871 0.681
+> Improvement over Baseline +11.23% +6.83% +27.03% +5.36% +24.94% +2.96% +9.90%
+> Test Results Baseline Model (YOLOv5L) 0.482 0.790 0.366 0.891 0.366 0.886 0.626 Multi-Scale Consistency Learning 0.536 0.842 0.488 0.910 0.454 0.914 0.684 CA Hard Sample Augmentation 0.464 0.871 0.471 0.891 0.383 0.912 0.647
+> RareSpot+ (Combined) 0.591 0.893 0.519 0.907 0.495 0.923 0.709
+> Improvement over Baseline +22.61% +13.04% +41.80% +1.80% +35.25% +4.18% +13.26%
+
+Table 3 Comparison with other detection models on the validation set and parameter counts (M). All models are trained and evaluated under identical settings. 
+
+Models mAP@50 Params 
+
+Baseline (YOLOv5L) 0.620 47M YOLOv5L (P3 Only) 0.623 46M YOLOv7L 0.517 71M YOLOv8L 0.597 43.7M YOLOv10L 0.471 26M YOLOv11L 0.589 26M YOLOv12L 0.609 26.4M DETR 0.411 41M Co-DETR 0.437 304M TPH-YOLOv5 0.534 90M WildlifeMapper 0.313 636M 
+
+RareSpot+ 0.681 47M 
+
+representation-level consistency and context-aware data augmentation for detecting small and infrequent objects in aerial imagery. All reported results are averaged over three independent runs with different random seeds; RareSpot+ achieves a mean mAP@50 of 0 .681 ± 0.009, compared to 0.620 ± 0.007 for the baseline. 
+
+## 6.2 Choice of Backbone and Comparison with State-of-the-Art Methods 
+
+We adopt YOLOv5 as the base detector due to its strong performance on small-object bench-marks and its ability to preserve fine-grained spatial detail through static feature aggrega-tion and fixed anchor design. In compara-tive experiments (Tables 2 and 3), alterna-tive FPN-based architectures—including ResNet-50-FPN, other YOLO variants, and ViT-FPN models—consistently underperformed relative to YOLOv5 on our dataset. Although more recent YOLO variants demonstrate improved perfor-mance on common benchmarks, we observe that YOLOv5-L remains particularly effective for extremely small, low-contrast targets in aerial imagery. We therefore focus on strengthening the most competitive baseline rather than modifying the underlying detection architecture. While YOLOv7 shares a CSPDarknet–FPN backbone, its architectural modifications—such as RepConv, E-ELAN, and dynamic label assign-ment—are primarily optimized for medium-to-large objects and tend to reduce the fidelity of high-resolution features required for reliable small-object detection (X. Li et al., 2024; K. Li, Wang, & Hu, 2023). In contrast, our Multi-Scale Consis-tency Learning module integrates seamlessly with YOLOv5, introduces no additional parameters, and requires no dataset-specific tuning, while con-sistently improving detection performance. These gains extend to mixed-scale datasets such as WAID, where object sizes range from 20 to 530 pixels. As shown in Table 3, the full RareSpot+ detec-tion model outperforms state-of-the-art detec-tors, including transformer-based architectures (DETR (Carion et al., 2020b), Co-DETR (Zong, 14 Song, & Liu, 2023)) and specialized small-object designs (TPH-YOLO (Zhu et al., 2021), WildlifeMapper (Kumar et al., 2024)). Our approach achieves superior performance while maintaining a substantially lower parameter count than these specialized models. Moreover, many competing methods rely on extensive annotation budgets and large-scale supervision, which lim-its their effectiveness in data-sparse, rare-species monitoring scenarios. In contrast, our model is designed to operate efficiently under limited anno-tation budgets and was trained in approximately four hours on four NVIDIA A100 GPUs using a batch size of 64. 
+
+## 6.3 RareSpot+ Detection Performance on Other Wildlife Datasets 
+
+To assess the broader applicability of the RareSpot+ framework, we evaluate its detection and augmentation components on five diverse drone-based wildlife datasets: the Aerial Elephant Dataset (AED) (Naud´ e & Joubert, 2019), the Waterfowl Thermal Imagery Dataset (Hu et al., 2021), WAID (Mou, Liu, Zhu, & Cui, 2023), Herd-Net (Delplanque et al., 2023), and the dataset of Eikelboom et al. (Eikelboom et al., 2019). These experiments are designed to evaluate the portability of the RareSpot+ detection architec-ture—specifically Multi-Scale Consistency Learn-ing (MSCL) and Context-Aware Hard Sample Augmentation (CA-HSA)—rather than the full geospatial active learning framework. Unlike our primary prairie dog study, these benchmarks feature larger targets (approximately 45–166 pixels in width) and do not provide explicit geospatial habitat proxies. As such, they do not exhibit the extreme small-object scale or strongly clustered spatial distributions that moti-vate geospatial active learning. Results on these datasets therefore reflect detector-level portability rather than full-system generalization. Despite differences in sensing modality (visi-ble versus thermal imagery) and target species, RareSpot+ consistently outperforms the YOLOv5 baseline across multiple benchmarks. As shown in Table 4, MSCL yields consistent performance gains on datasets with smaller object instances,              
+
+> Table 4 Detection performance (mAP@50) on other drone-based wildlife datasets. Results compare a YOLOv5 baseline, WildlifeMapper (WM), and YOLOv5 augmented with Multi-Scale Consistency Learning (MSCL). These experiments evaluate detector-level portability rather than the full RareSpot+ framework. Method AED Waterfowl Thermal WAID YOLOv5 0.891 0.957 0.956 WM 0.553 0.368 0.658
+> MSCL 0.897 0.970 0.976
+
+achieving 97.6% mAP@50 on WAID and out-performing both WildlifeMapper and the stan-dard YOLOv5 architecture. To further examine component-wise generalization, Table 5 reports results for MSCL and CA-HSA individually on the HerdNet and Eikelboom datasets. In the absence of explicit metadata relating targets to their eco-logical context in these benchmarks, we employed a simple, dataset-agnostic foreground–background heuristic for context-aware sample placement, rather than the domain-specific geospatial priors used in the prairie dog study. Visualizations of the augmentation results for the Eikelboom et al. and HerdNet datasets are provided in Figure 2 of the Supplementary Materials. Although these bench-marks contain larger targets and different ecologi-cal distributions, both components independently improve upon the baseline, with their combina-tion in the full RareSpot+ model achieving the strongest overall performance.              
+
+> Table 5 Detection performance (mAP@50) on the HerdNet and Eikelboom wildlife datasets. Results compare the YOLOv5-L baseline with individual RareSpot+ components—Multi-Scale Consistency Learning (MSCL) and Context-Aware Hard Sample Augmentation (CA-HSA)—as well as their combination. The “Original Paper” row reports results as published by the respective dataset authors. Model Herdnet Eikelboom Original Paper 0.800 0.810 Baseline (YOLOv5L) 0.773 0.830 MSCL 0.848 0.836 CA-HSA 0.798 0.842
+> MSCL + CA-HSA 0.870 0.852
+
+15 6.4 Qualitative Analysis 
+
+Qualitative visualizations (Figure 5; see also Section 6 of the Supplementary Materials ) show that RareSpot+ localizes prairie dogs and bur-rows more reliably than the baseline and pro-duces cleaner, target-focused feature activations. For visualization purposes, high-dimensional fea-ture maps are aggregated by averaging activations across the channel dimension and normalized to produce a single intensity map; this procedure is used exclusively for qualitative analysis. These activation maps illustrate the effect of multi-scale consistency learning : by explicitly aligning adjacent detection heads ( P3↔P4 and 
+
+P4↔P5), the model improves cross-scale feature coherence while preserving the fine spatial detail required for reliable small-object localization. As a result, RareSpot+ yields more localized and less noisy activations around true targets compared to the baseline. Additional qualitative examples and visual analyses are provided in Section 6 of the Supplementary Materials. In summary, RareSpot+ achieves substantial performance gains over strong baselines through its unified treatment of scale alignment and context-aware augmentation. These improvements yield more stable and interpretable detection out-puts, which in turn support downstream spatial analysis and uncertainty-aware annotation strate-gies evaluated in the following sections. 
+
+## 6.5 Active Learning Results and Analysis 
+
+Table 6 summarizes active learning performance as a function of annotation budget. Random Sam-pling yields only marginal improvements even at 1,000 annotated tiles, reflecting the difficulty of identifying informative samples when targets are rare and spatially sparse. The maximum budget of 1,000 tiles was selected to reflect the practical con-straints of expert availability and the significant labor costs associated with high-precision ecolog-ical annotation. Incorporating a geospatial prior (Geospatial + Random Sampling ) substantially improves outcomes by restricting candidate selec-tion to burrow-adjacent tiles; for example, prairie dog recall reaches 0.568 at 1,000 tiles compared to 0.539 under random sampling. Within this focused candidate pool, uncertainty-based acquisition becomes critical. Both Geospatial + TTA (Ours) and Geospatial + Meta-Uncertainty Head (Ours) outperform geospatial-only selection, with the learned MUH achieving the strongest overall performance. With 1,000 annotated tiles (approximately 1.7% of the 58k-tile survey), MUH attains the highest overall mAP@50 (0.737) and delivers the largest gains on the rare class: prairie dog recall increases from 0.519 to 0.571, and AP improves from 0.495 to 0.548. The two uncertainty strategies exhibit comple-mentary behavior. TTA-based uncertainty mea-sures prediction instability across augmentations, which tends to surface borderline confounders such as shadows or complex vegetation. This effectively supports targeted hard negative min-ing, leading to a primary improvement in pre-cision (e.g., +2.6% at k = 100) as the detec-tor becomes more conservative. In contrast, the Meta-Uncertainty Head is trained to predict a task-specific failure score ( Uscore ) that explicitly emphasizes expected false negatives. This fail-ure discovery mechanism drives stronger recall improvements (e.g., +2.7% at k = 100) by prior-itizing subtle, low-contrast prairie dogs that are often missed by the base detector. Across all strategies, most of the performance gains for prairie dogs arise from increased recall rather than precision. This reflects the core effect of the RareSpot+ design: Multi-Scale Consis-tency Learning and Context-Aware Hard Sam-ple Augmentation primarily recover subtle, low-contrast instances that the baseline fails to detect, thereby reducing false negatives. Similarly, the geospatially guided active learning pipeline con-centrates annotation effort on burrow-adjacent regions where prairie dogs are likely but under-represented. While spatial priors reduce obvious background false positives and help stabilize preci-sion relative to random sampling, some visual con-founders remain. In ecological monitoring, such recall-oriented gains are particularly desirable, as minimizing missed detections of rare individuals is often more critical than eliminating occasional false alarms. 16 Fig. 9 Active Learning qualitative results. Left →Right: Ground truth, Baseline YOLOv5, RareSpot+, and RareSpot+ after AL. The AL iteration reduces both false negatives and false positives and sharpens localization. 
+
+17 Table 6 Active learning performance vs. annotation budget. Bold indicates the best metric at each budget across strategies. PD: Prairie Dog.                                                                                                         
+
+> Acquisition Strategy Budget ( k)Precision (P) Recall (R) AP@50 Overall mAP@50 Out of 58k PD Burrow PD Burrow PD Burrow
+> Initial Model (RareSpot+) 00.591 0.893 0.519 0.907 0.495 0.923 0.709 Random Sampling 100 0.558 0.897 0.523 0.902 0.485 0.922 0.704 500 0.580 0.898 0.539 0.909 0.510 0.925 0.717 1000 0.572 0.897 0.539 0.911 0.491 0.928 0.709 Geospatial + Random Sampling 100 0.583 0.911 0.512 0.904 0.498 0.928 0.713 500 0.599 0.909 0.535 0.907 0.515 0.928 0.722 1000 0.563 0.893 0.568 0.919 0.508 0.931 0.719 Geospatial + TTA (Ours) 100 0.617 0.893 0.510 0.916 0.516 0.927 0.721
+> 500 0.627 0.903 0.501 0.921 0.516 0.934 0.725 1000 0.589 0.896 0.553 0.924 0.536 0.936 0.736
+> Geospatial + Meta-Uncertainty Head (Ours)
+> 100 0.551 0.892 0.546 0.907 0.510 0.921 0.716 500 0.578 0.908 0.561 0.904 0.533 0.930 0.732
+> 1000 0.566 0.903 0.571 0.905 0.548 0.925 0.737
+
+# 7 Discussion, Geospatial Generalization, and Future Directions 
+
+## 7.1 Summary of Contributions 
+
+This work addresses two persistent challenges in aerial wildlife monitoring: reliable detection of small, rare targets and the high cost of expert annotation. The proposed RareSpot+ 
+
+framework demonstrates that scalable, data-efficient monitoring can be achieved by jointly advancing representation learning, data aug-mentation, and annotation strategy. Multi-Scale Consistency Learning preserves fine-grained spa-tial features critical for small-object localization, while Context-Aware Hard Sample Augmenta-tion improves robustness to visually confounding backgrounds, together yielding a 35% improve-ment in mAP@50 over a strong baseline. To fur-ther reduce labeling effort, the Geospatial Active Learning framework integrates ecological priors with uncertainty-aware acquisition, achieving a 14.5% improvement in prairie dog average pre-cision using only 1.7% of the total survey tiles. Collectively, these components form a complete system that scales effectively to large aerial sur-veys and supports downstream spatial analyses such as colony-level structure modeling. 
+
+## 7.2 Geospatial Generalization and Ecological Implications 
+
+While the specific geospatial relation exploited in this study—the co-occurrence of prairie dogs and burrows—is domain-specific, RareSpot+ estab-lishes a broader methodological principle for eco-logical monitoring: the explicit integration of aux-iliary environmental cues to guide sample acquisi-tion for rare targets. In natural ecosystems, species distributions are rarely random; instead, they are closely coupled to habitat structures and persis-tent environmental markers. RareSpot+ provides a blueprint for incorporating such species–habitat spatial priors within an active learning framework to improve annotation efficiency. This paradigm is applicable to a range of eco-logical monitoring scenarios in which auxiliary spatial cues are available. For example, many colo-nial or burrowing mammals (e.g., meerkats and other rodents) exhibit strong dependence on per-sistent burrow systems that can serve as spatial proxies for animal presence. Large herbivores such as bison create wallows—distinct ground depres-sions that act as long-lived indicators of activity even when animals are not directly observable. In avian monitoring, seabird nesting colonies and rookeries provide fixed spatial anchors that enable targeted high-resolution surveys during breeding seasons. Although many existing wildlife datasets do not yet include the dual annotations (animal and habitat proxy) required to directly evaluate such relations, our prairie dog results serve as a proof of concept for the proposed approach. 18 7.3 Boundary Conditions and Future Directions 
+
+We emphasize that the geospatial active learn-ing component is applicable only when meaningful auxiliary spatial cues can be defined or learned. In scenarios where such cues are absent, RareSpot+ naturally reduces to its detection and augmenta-tion components, which remain broadly applicable across domains and datasets. This explicit bound-ary condition ensures that the framework does not rely on assumptions that cannot be met in practice. Several directions for future work remain. Semi-supervised and self-supervised extensions could exploit large pools of unlabeled aerial imagery, while human-in-the-loop adaptation may enable continuous refinement in new environ-ments. Incorporating temporal cues or multi-sensor data, such as thermal imagery or LiDAR, could further improve detection robustness and uncertainty calibration. More broadly, the princi-ples demonstrated here—multi-scale feature align-ment, context-aware augmentation, and relation-guided active learning—extend beyond ecology to other domains where small or rare instances are critical, including search and rescue, industrial inspection, and medical imaging. Because the pro-posed regularization is architectural-agnostic and applied only during training, it can be retrofitted to existing detection pipelines without increas-ing inference cost, a key property for large-scale deployments under real-world constraints. Overall, RareSpot+ provides a unified and practical framework for small-object detection and data-efficient learning, establishing a foundation for scalable, automated analysis of fine-grained patterns in complex aerial imagery. 
+
+# 8 Acknowledgement 
+
+This research was supported in part by the NSF CSSI Award #2411453. We thank the UCSB BisQue team: Chandrakanth Gudavalli, Connor Leverson, Amil Khan, and Umang Garg for their technical support and Lacey Hughey and Jared Stabach at the Smithsonian’s National Zoo & Conservation Biology Institute. We thank the annotation volunteers Spencer Harman, Lani O’Foran, Autumn Gray, Sydney Houck, Jessica Winey, Emily Csizmadia, and Isabella Barrera for improving our dataset quality. We also extend our gratitude to American Prairie, especially Danny Kinka and Dan Stevenson, for their support and collaboration on this project. 
+
+# Conflict of interest 
+
+The authors declare that they have no known com-peting financial interests or personal relationships that could have appeared to influence the work reported in this paper. 
+
+# Compliance with ethical standards 
+
+This study did not involve human participants, human data, or human tissue. Aerial wildlife sur-veys were conducted in accordance with applicable animal welfare and wildlife-protection regulations. No animals were captured, handled, or disturbed for this research. Flight operations complied with relevant aviation regulations (e.g., FAA Part 107 in the United States), and land-access permissions were obtained from landowners and managing agencies prior to data collection. 
+
+# Informed consent 
+
+Not applicable. This research did not involve human participants or identifiable personal data. 
+
+# Funding 
+
+This research was supported in part by the NSF CSSI Award #2411453. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript. 
+
+# Data availability 
+
+The data and code will be made available through Bisque UCSB (B. Zhang et al., 2025a). 19 References 
+
+Ash, J. T., Zhang, C., Krishnamurthy, A., Lang-ford, J., & Agarwal, A. (2020). Deep batch active learning by diverse, uncertain gradient lower bounds. Bisque: Bioimage software and services platform. 
+
+(n.d.). https://bisque2.ece.ucsb.edu/client service/. (Accessed: 2025) Bochkovskiy, A., Wang, C.-Y., & Liao, H.-Y. M. (2020). Yolov4: Optimal speed and accu-racy of object detection. arXiv preprint arXiv:2004.10934 .Bradski, G. (2000). The OpenCV Library. Dr. Dobb’s Journal of Software Tools .Brust, C.-A., K¨ onig, C., Denzler, M., Denzler, J., & Rodner, E. (2019). Active learning for deep object detection. 
+
+Buckland, S. T., Anderson, D. R., Burnham, K. P., Laake, J. L., Borchers, D. L., & Thomas, L. (2001). Introduction to distance sam-pling: Estimating abundance of biological populations . Oxford, UK: Oxford University Press. Carion, N., Massa, F., Synnaeve, G., Usunier, N., Kirillov, A., & Zagoruyko, S. (2020a). 
+
+End-to-end object detection with transform-ers. Retrieved from https://arxiv.org/abs/ 2005.12872 Carion, N., Massa, F., Synnaeve, G., Usunier, N., Kirillov, A., & Zagoruyko, S. (2020b). End-to-end object detection with transformers. 
+
+Springer. Caughley, G. (1974). Bias in aerial survey. The Journal of Wildlife Management , 38 (4), 921–933. Chabot, D., & Francis, C. M. (2018). Canada goose nesting ecology and management: Combining drone imagery and ground sur-veys to improve population monitoring. 
+
+Remote Sensing in Ecology and Conserva-tion , 4 (1), 74–86. doi: 10.1002/rse2.59 Davidson, A. D., & Lightfoot, D. C. (2006). Key-stone rodent interactions: Prairie dogs and kangaroo rats structure the biotic composi-tion of a desertified grassland. Ecography ,
+
+29 (5), 755–765. doi: 10.1111/j.2006.0906 -7590.04699.x Delparte, D. M., Bly, K. L. S., Stone, T., Olimb, S. K., Kinsey, M. J., Belt, M., & Calton, T. F. (2019). suas for wildlife conser-vation – assessing habitat quality of the endangered black-footed ferret. Applica-tions of Small Unmanned Aircraft Systems .Retrieved from https://api.semanticscholar .org/CorpusID:210259243 Delplanque, A., Foucher, S., Th´ eau, J., Bussi` ere, E., Vermeulen, C., & Lejeune, P. (2023). From crowd to herd counting: How to precisely detect and count african mam-mals using aerial imagery and deep learn-ing? ISPRS Journal of Photogrammetry and Remote Sensing , 197 , 167–180. doi: 10.1016/j.isprsjprs.2023.01.025 Dinsmore, S. J., White, G. C., & Knopf, F. L. (2005). Mountain plover popula-tion responses to black-tailed prairie dogs in montana. The Journal of Wildlife Manage-ment , 69 (4), 1546–1553. doi: 10.2193/0022 -541X(2005)69[1546:MPPRTB]2.0.CO;2 Dreelin, R. A., Brown, C. R., & Hill, J. G. (2025). Keystone effects of prairie dogs ( Cynomys 
+
+spp.) on grassland birds: Current knowledge and future directions. Conservation Science and Practice , 7 (e70004). doi: 10.1111/csp2 .70004 Du, Z., Hu, Z., Zhao, G., Jin, Y., & Ma, H. (2024). 
+
+Cross-layer feature pyramid transformer for small object detection in aerial images. 
+
+Eads, D. A., Biggins, D. E., Livieri, T. M., Dullum, J. L. D., Jachowski, D. S., &Millspaugh, J. J. (2011). Postbreeding resource selection by adult black-footed fer-rets in the conata basin, south dakota. Jour-nal of Mammalogy , 92 (4), 760–770. doi: 10.1644/10-MAMM-A-250.1 Eikelboom, J. A., Wind, J., Van de Ven, E., Kenana, L. M., Schroder, B., De Knegt, H. J., . . . Prins, H. H. (2019). Improving the precision and accuracy of animal population estimates with aerial image object detection. 
+
+Methods in Ecology and Evolution , 10 (11), 1875–1887. Fortin, M.-J., & Dale, M. R. T. (2005). Spatial analysis: A guide for ecologists . Cambridge, UK: Cambridge University Press. Georgakis, G., Mousavian, A., Berg, A. C., & Kosecka, J. (2017). Synthesizing training data for object detection in indoor scenes. 
+
+Ghiasi, G., Cui, Y., Srinivas, A., Qian, R., Lin, T.-Y., Cubuk, E. D., . . . Zoph, B. 20 (2021). Simple copy-paste is a strong data augmentation method for instance segmen-tation. Retrieved from https://openaccess .thecvf.com/content/CVPR2021/papers/ Ghiasi Simple Copy-Paste Is a Strong Data Augmentation Method for Instance CVPR 2021 paper.pdf Gui, S., Sun, X., Shi, Y., Yang, S., Wang, K., Hu, W., . . . Zhu, X. X. (2024). Remote sensing object detection in the deep learning era—a review. Remote Sensing , 16 (2), 327. doi: 10.3390/rs16020327 Guirguis, K., Eskandar, G., Wang, M., Kayser, M., Monari, E., Yang, B., & Beyerer, J. (2024). Uncertainty-based forget-ting mitigation for generalized few-shot object detection. IEEE. Retrieved from http://dblp.uni-trier.de/db/conf/cvpr/ cvprw2024.html#GuirguisEWKM0B22 doi: 10.1109/CVPRW63382.2024.00265 Hodgson, J. C., Mott, R., Baylis, S. M., Pham, T. T., Wotherspoon, S., Kilpatrick, A. D., . . . Koh, L. P. (2018). Drones count wildlife more accurately and precisely than humans. 
+
+Methods in Ecology and Evolution , 9 (5), 1160–1167. doi: 10.1111/2041-210X.12974 Hoogland, J. L. (1995). The black-tailed prairie dog: Social life of a burrowing mammal .Chicago: University of Chicago Press. Hospedales, T., Antoniou, A., Micaelli, P., &Storkey, A. (2021). Meta-learning in neural networks: A survey. IEEE transactions on pattern analysis and machine intelligence ,
+
+44 (9), 5149–5169. Hu, Q., Smith, J., Woldt, W., & Tang, Z. (2021). Uav-derived waterfowl thermal imagery dataset”, mendeley data. Mendeley Data, V4 . doi: 10.17632/46k66mz9sz.4 Huang, H., Tang, X., Wen, F., & Jin, X. (2022). Small object detection method with shallow feature fusion network for chip surface defect detection. Scientific reports , 12 (1), 3914. Huynh, X. N., Jung, G. B., & Suhr, J. K. (2024). One-stage small object detection using super-resolved feature map for edge devices. Electronics , 13 (2), 409. Kasarla, N., Dinesh, C., Tondewad, R., Rad-hakrishnan, V. B., & Jawahar, C. V. (2019). Region-based active learning for effi-cient annotation of semantic segmentation datasets. 
+
+Kearney, S. P., Porensky, L. M., Augustine, D. J., & Pellatz, D. W. (2023). Toward broad-scale mapping and characterization of prairie dog colonies from airborne imagery using deep learning. Ecological Indicators , 154 .Kellenberger, B., Marcos, D., & Tuia, D. (2018). Detecting mammals in uav images: Best practices to address a substantially imbal-anced dataset with deep learning. Remote sensing of environment , 216 , 139–153. Kotliar, N. B. (2000). Application of the new keystone-species concept to prairie dogs: How well does it work? Conservation Biol-ogy , 14 (6), 1715–1721. doi: 10.1111/j.1523 -1739.2000.98384.x Kotliar, N. B., Baker, B. W., Whicker, A. D., & Plumb, G. (1999). A critical review of assumptions about the prairie dog as a key-stone species. Environmental Management ,
+
+24 (2), 177–192. Retrieved from https:// pubmed.ncbi.nlm.nih.gov/10384028/ doi: 10.1007/s002679900013 Kretzer, J. E., & Jr., J. F. C. (2001). Effects of black-tailed prairie dogs on reptiles and amphibians in kansas shortgrass prairie. The Southwestern Naturalist , 46 (2), 171–177. doi: 10.2307/3672525 Kumar, S., Zhang, B., Gudavalli, C., Levenson, C., Hughey, L., Stabach, J. A., . . . Manjunath, B. (2024, June). Wildlifemapper: Aerial image analysis for multi-species detection and identification. 
+
+Laradji, I., Babanezhad, R., Manfredonia, R., Vazquez, D., Nowrouzezahrai, D., Barrett, L., & Derpanis, K. G. (2022). Sealnet: A benchmark for seal detection and counting in aerial images. Ecological Informatics , 67 ,101527. Legendre, P. (1993). Spatial autocorrelation: Trouble or new paradigm? Ecology , 74 (6), 1659–1673. doi: 10.2307/1939924 Li, D., Wang, Z., Chen, Y., Jiang, R., Ding, W., & Okumura, M. (2024). A survey on deep active learning: Recent advances and new frontiers. 
+
+Li, K., Wang, Y., & Hu, Z. (2023). Improved yolov7 for small object detection algorithm based on attention and dynamic convolu-tion. Applied Sciences , 13 (16), 9316. 21 Li, X., Wei, Y., Li, J., Duan, W., Zhang, X., & Huang, Y. (2024). Improved yolov7 algorithm for small object detection in unmanned aerial vehicle image scenarios. 
+
+Applied Sciences , 14 (4), 1664. Lin, T., Doll´ ar, P., Girshick, R., He, K., Hariha-ran, B., & Belongie, S. (2017, July). Feature pyramid networks for object detection. 
+
+Lin, T., Maire, M., Belongie, S., Hays, J., Perona, P., Ramanan, D., . . . Zitnick, C. L. (2014). Microsoft COCO: Common objects in con-text. In D. Fleet, T. Pajdla, B. Schiele, & T. Tuytelaars (Eds.), Computer vision – eccv 2014 (Vol. 8693, pp. 740–755). Cham: Springer. Liu, P., Huang, B., Jin, T., & Long, H. (2025). Low-shot weakly supervised object detection for remote sensing images via part domination-based active learning and enhanced fine-tuning. Remote Sensing ,
+
+17 (7). Retrieved from https://www.mdpi .com/2072-4292/17/7/1155 doi: 10.3390/ rs17071155 Liu, Z., Lin, Y., Cao, Y., Hu, H., Wei, Y., Zhang, Z., . . . Guo, B. (2021). Swin transformer: Hierarchical vision transformer using shifted windows. ICCV .Mackowiak, R., Lenz, P., Ghori, O., Diego, F., Lange, J., & Rother, C. (2018). 
+
+Cereals—cost-effective region-based active learning for semantic segmentation. 
+
+McEver, R. A., Zhang, B., Levenson, C., Iftekhar, A., & Manjunath, B. (2023). Context-driven detection of invertebrate species in deep-sea video. International Journal of Computer Vision , 131 (6), 1367–1388. Miller, B., Reading, R. P., Hoogland, J. L., Clark, T. W., & Ceballos, G. (2000). The role of prairie dogs as a keystone species: Response to stapp. Conservation Biology , 14 (1), 318– 321. doi: 10.1046/j.1523-1739.2000.99201.x Mou, C., Liu, T., Zhu, C., & Cui, X. (2023). Waid: A large-scale dataset for wildlife detection with drones. Applied Sciences , 13 (18), 10397. Naud´ e, J., & Joubert, D. (2019, June). The aerial elephant dataset: A new public benchmark for aerial object detection. 
+
+Redmon, J., & Farhadi, A. (2018). Yolov3: An incremental improvement. arXiv preprint arXiv:1804.02767 .Ren, S., He, K., Girshick, R. B., & Sun, J. (2015). Faster R-CNN: Towards real-time object detection with region proposal networks. 
+
+IEEE Transactions on Pattern Analysis and Machine Intelligence .Roy, A., & Todorovic, S. (2018). Deep active learning for object detection. 
+
+Settles, B. (2009). Active learning litera-ture survey (Tech. Rep. No. Computer Sciences Technical Report 1648). Uni-versity of Wisconsin–Madison. Retrieved from http://burrsettles.com/pub/ settles.activelearning.pdf Shorten, C., & Khoshgoftaar, T. M. (2019). Asurvey on image data augmentation for deep learning. Journal of Big Data , 6 (1), 60. doi: 10.1186/s40537-019-0197-0 Siddiqui, Y., Valentin, J., & Nießner, M. (2020). 
+
+Viewal: Active learning with viewpoint entropy for 3d object detection. 
+
+Sim´ eoni, O., Vo, H. V., Seitzer, M., Baldassarre, F., Oquab, M., Jose, C., . . . others (2025). Dinov3. arXiv preprint arXiv:2508.10104 .Smith, G. A., & Lomolino, M. V. (2004). Black-tailed prairie dogs and the structure of avian communities on the shortgrass plains. 
+
+Oecologia , 138 (4), 592–602. doi: 10.1007/ s00442-003-1465-3 Stapp, P. (2007). Rodent communities in active and inactive colonies of black-tailed prairie dogs in shortgrass steppe. Journal of Mam-malogy , 88 (1), 241–249. doi: 10.1644/05 -MAMM-A-206R3.1 Tan, M., Pang, R., & Le, Q. V. (2020, June). 
+
+Efficientdet: Scalable and efficient object detection. 
+
+Tuia, D., Camps-Valls, G., Matasci, G., Kanevski, M., & Benediktsson, J. A. C. (2011). Active learning methods for remote sens-ing image classification. IEEE Transactions on Geoscience and Remote Sensing , 49 (3), 868–880. doi: 10.1109/TGRS.2010.2076849 Tuia, D., Kellenberger, B., Beery, S., Costel-loe, B. R., Zuffi, S., Risse, B., . . . others (2022). Perspectives in machine learning for wildlife conservation. Nature communica-tions , 13 (1), 792. Tuia, D., Ratle, F., Pacifici, F., Kanevski, M. F., & Emery, W. J. (2009). Active learning meth-ods for remote sensing image classification 
+
+22 (Vol. 47) (No. 7). doi: 10.1109/TGRS.2008 .2010404 VanNimwegen, R. E., Kretzer, J., & Jr., J. F. C. (2008). Ecosystem engineering by a colonial mammal: How prairie dogs structure rodent communities. Ecology , 89 (12), 3298–3305. doi: 10.1890/07-1511.1 Volpi, R., Namkoong, H., Sener, O., Duchi, J., Murino, V., & Savarese, S. (2018). General-izing to unseen domains via adversarial data augmentation (Vol. 31). Wang, C.-Y., Bochkovskiy, A., & Liao, H.-y. (2022). Yolov7: Trainable bagof-freebies sets new state-of-the-art for real-time object detectors. 10.48550. arXiv preprint arXiv.2207.02696 .Yamani, A., Alyami, A., Luqman, H., Ghanem, B., & Giancola, S. (2024, January). Active learning for single-stage object detection in uav images. 
+
+Yun, S., Han, D., Oh, S. J., Chun, S., Choe, J., & Yoo, Y. (2019). Cutmix: Regulariza-tion strategy to train strong classifiers with localizable features. 
+
+Zhang, B., Boulerice, J. T., Kuniyil, N., Mendi-ratta, C., Kumar, S., Shamon, H., &Manjunath, B. S. (2025a). RareSpot+ Prairie Dog Dataset. https://bisque2.ece .ucsb.edu/client service/view?resource= https://bisque2.ece.ucsb.edu/data service/ 00-B2mLaCeFPkCgZF4LND9uEd. (Hosted on the UCSB BisQue platform) Zhang, B., Boulerice, J. T., Kuniyil, N., Mendi-ratta, C., Kumar, S., Shamon, H., & Manju-nath, B. S. (2025b). Rarespot: Spotting small and rare wildlife in aerial imagery with multi-scale consistency and context-aware augmentation. 
+
+Zhang, B., Wang, Z., & Du, B. (2024). Boosting semi-supervised object detection in remote sensing images with active teaching. IEEE Geoscience and Remote Sensing Letters , 21 ,1–5. Retrieved from http://dx.doi.org/10 .1109/LGRS.2024.3357098 doi: 10.1109/ lgrs.2024.3357098 Zhang, H., Ciss´ e, M., Dauphin, Y. N., & Lopez-Paz, D. (2018, April). mixup: Beyond empirical risk minimization. International Conference on Learning Representations (ICLR). Retrieved from https://openreview .net/forum?id=r1Ddp1-Rb (OpenReview) Zhang, H., Zhang, H., Mei, A., Gan, Z., & Zhu, G.-N. (2025). So-detr: Leveraging dual-domain features and knowledge distillation for small object detection. 
+
+Zhu, X., Lyu, S., Wang, X., & Zhao, Q. (2021, October). Tph-YOLOv5: Improved YOLOv5 based on transformer prediction head for object detection on drone-captured scenarios. 
+
+Zong, Z., Song, G., & Liu, Y. (2023). Detrs with collaborative hybrid assignments training. 
+
+23

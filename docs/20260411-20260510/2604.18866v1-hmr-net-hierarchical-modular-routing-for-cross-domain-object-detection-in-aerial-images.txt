@@ -1,0 +1,655 @@
+Title: HMR-Net: Hierarchical Modular Routing for Cross-Domain Object Detection in Aerial Images
+
+URL Source: https://arxiv.org/pdf/2604.18866v1
+
+Published Time: Wed, 22 Apr 2026 00:21:46 GMT
+
+Number of Pages: 35
+
+Markdown Content:
+# HMR-Net: Hierarchical Modular Routing for Cross-Domain Object Detection in Aerial Images 
+
+## Pourya Shamsolmoali 1, Masoumeh Zareapoor 2, Michael Felsberg 3,Nick Pears 1, Yue Lu 41Department of Computer Science, University of York, UK. 
+
+2SEIEE, Shanghai Jiao Tong University, China. 
+
+3Computer Vision Laboratory, Link¨ oping University, Sweden. 
+
+4SCEE, East China Normal University, China. 
+
+Abstract 
+
+Despite advances in object detection, aerial imagery remains a challenging domain, as models often fail to generalize across variations in spatial resolu-tion, scene composition, and semantic label coverage. Differences in geographic context, sensor characteristics, and object distributions across datasets limit the capacity of conventional models to learn consistent and transferable rep-resentations. Shared methods trained on such data tend to impose a unified representation across fundamentally different domains, resulting in poor perfor-mance on region-specific content and less flexibility when dealing with novel object categories. To address this, we propose a novel modular learning framework that enables structured specialization in aerial detection. Our method intro-duces a hierarchical routing mechanism with two levels of modularity: a global expert assignment layer that uses latent geographic embeddings to route datasets to specialized processing modules, and a local scene decomposition mechanism that allocates image subregions to region-specific sub-modules. This allows our method to specialize across datasets and within complex scenes. Additionally, the framework contains a conditional expert module that uses external seman-tic information (e.g., category names or textual descriptions) to enable detection of novel object categories during inference, without the need for retraining or fine-tuning. By moving beyond monolithic representations, our method offers an adaptive framework for remote sensing object detection. Comprehensive evalu-ations on four datasets highlight improvements in multi-dataset generalization, regional specialization, and open-category detection. 
+
+Keywords: Object detection, modular learning, aerial images 
+
+1    
+
+> arXiv:2604.18866v1 [cs.CV] 20 Apr 2026 G-Expert 1  G-Expert E G-Expert 2
+> Local Routing
+> Inputs Output
+> detection
+> Inputs Output
+> detection
+> MOEs HMR -Net (Ours)
+> L-Expert 2
+> Expert 2 Expert 1
+> Router Gating
+> L-Expert 1  L-Expert R
+> Global Routing
+> Expert N Fig. 1
+
+Comparison between standard Mixture of Experts (MOE) and our Hierarchical Mod-ular Routing. Unlike conventional models with global-only expert assignment, our method introduces dataset-specific global routing and region-level local specialization. 
+
+# 1 Introduction 
+
+Object detection in aerial or remote sensing imagery (RSI) refers to identifying objects of interest on the Earth surface [1–3]. This task is important for interpreting remote sensing data and supporting a range of earth observation applications, including envi-ronmental monitoring and disaster response systems [4, 5]. Recent advancements in deep learning, particularly with the rise of convolutional neural networks (CNNs), have significantly improved aerial object detection [1, 6, 7]. Despite these improvements, object detection in RSI continues to pose considerable challenges due to the substantial diversity in data sources and scene structures [8]. Unlike natural image benchmarks [9, 10], remote sensing datasets [11–14] are collected across different geographic regions and sensor platforms, each with its own characteristics in spatial resolution, seman-tic coverage, and object distribution. This heterogeneity introduces significant domain shifts, making it difficult for a unified model to capture generalizable representations across datasets [15]. A typical approach to address multi-domain object detection is training a shared model over concatenated datasets [16, 17]. While this strategy provides a simple solution, it often results in biased learning, where dominant datasets or frequently occurring object types overshadow less represented domains. Such shared architec-tures lack the capacity to adapt to domain-specific variations or to focus selectively on geographically or structurally distinct regions within a scene. To overcome these limitations, recent methods have explored multi-task learning [18, 19] and Mixture of Experts (MoE) [20–22] frameworks. Multi-task approaches introduce dataset-specific components to encourage partial specialization, while MoE models introduce expert modules and gating functions that dynamically route inputs, allowing selective pro-cessing based on content. However, these models often operate at the token level with soft attention, resulting in fragmented or overlapping expert usage. Their gating mech-anisms lack semantic structure, and expert usage is imbalanced. More importantly, as shown on Fig. 1 (left) they ignore the spatial context inherent to remote sensing imagery, where object appearance and meaning are often determined by region-specific 2visual patterns. Moreover, most models rely on fixed label spaces and cannot generalize to novel categories during inference [23–25]. These challenges require a detection framework that can move beyond uniform representations and instead adapt structurally to the diversity of remote sensing data. Specifically, the framework should support specialization across heterogeneous datasets, adapt to spatial variability within individual scenes, and flexibly extend to novel categories at inference time without requiring manual reconfiguration or retraining. To address these challenges, we propose Hierarchical Modular Routing Net-work (HMR-Net), that introduces structured, multi-level specialization into the object detection pipeline. Instead of relying on a single shared backbone, the model is com-posed of modular components that are selectively activated based on dataset identity and scene composition. As shown in Fig. 1 (right), at the dataset level, we introduce a global expert routing mechanism that learns latent geographic embeddings to repre-sent each dataset and uses them to assign inputs to domain-specialized expert modules. This enables the model to capture coarse domain characteristics such as those present in urban, rural, or coastal imagery without relying on manual dataset structuring. At the image level, we introduce a content-aware spatial parsing strategy that adaptively splits each image into region-specific subspaces, enabling targeted expert selection based on localized visual context. These region-level experts enable the model to capture fine-grained, spatially localized structures, supporting contextual adapta-tion within a single scene, such as roads in dense urban zones or vessels in coastal image. By integrating these two levels of modularity, our method achieves both inter-domain adaptability and intra-scene specialization within a unified design. To enhance its flexibility, we extend the method specialization capability by allowing it to con-ditionally align with external semantic cues. Specifically, we introduce a mechanism for latent alignment between visual representations and text inputs, enabling the model to respond to object categories not present during training. This supports open-category inference through prompt adaptation, without requiring explicit supervision or retraining. In doing so, the method moves beyond fixed label spaces and acquires the flexibility needed for real-world remote sensing tasks. Through this formulation, our method achieves a balance between specialization and generalization, capturing both domain-level variations across datasets and spa-tial complexity within scenes. Its ability to condition expert behaviour on external semantic information further enables inference on object categories not present during training, addressing a key limitation of existing closed-set detectors. Comprehensive experiments on diverse aerial imagery benchmarks demonstrate that our proposed approach consistently improves detection performance, particularly in cross-domain generalization, fine-grained spatial localization, and open-category recognition. These results highlight the potential of our modular learning as a principled and effec-tive direction for advancing object detection in complex and diverse remote sensing environments. The main contributions of this paper are summarized as follows: 
+
+• We propose HMR-Net for RSI object detection that introduces structured special-ization at both dataset and image-region levels. This method incorporates a global 3expert routing mechanism based on latent geographic embeddings and a local scene segmentation strategy for spatially adaptive expert selection. 
+
+• We extend the modular framework with a conditional specialization mechanism, which allows expert behaviour to be guided by text inputs. 
+
+• Extensive experiments demonstrate that the proposed approach significantly improves cross-domain generalization and region-level localization, with particular advantages in detecting previously unseen categories. These results highlight the scalability and label efficiency of our method for remote sensing applications. The rest of this manuscript is structured as follows: Section 2 discusses related studies. In Section 3, we introduce the details of HMR-Net. Section 4 presents the experimental results and ablation study. Finally, Section 5 concluding the remarks. 
+
+# 2 Related Work 
+
+## 2.1 Object Detection in Remote Sensing 
+
+Object detection in remote sensing has been addressed through a range of deep learn-ing approaches adapted from general-purpose detection models [1, 26, 27], including two-stage detectors like Faster R-CNN [4, 28] and one-stage variants such as YOLO [29, 30] and RetinaNet [31, 32]. Moreover, attention [3, 33], transformer [34–36] and feature enhancement-based methods [37, 38] have also been extended to this domain. These methods have shown strong performance on individual benchmarks such as DOTA, xView, and DIOR [11–13], which vary widely in resolution, object density, and scene type. Despite these advances, most models are developed and evaluated on a per-dataset basis and are rarely designed to operate across multiple sources [1, 11, 39]. Cross-dataset generalization remains limited, as models tend to overfit to dataset-specific characteristics and struggle with variations in scene structure and label semantics. Several works have attempted to improve transferability by apply-ing domain adaptation techniques [4, 40, 41] or training unified models over merged datasets [16, 42]. However, these approaches often rely on shared backbones and global representations, which are insufficient to capture the spatial and semantic diversity inherent to remote sensing. This has motivated the need for detection frameworks that can explicitly model domain-specific variations, local scene structures, and evolving object semantics challenges that remain insufficiently addressed by current approaches. 
+
+## 2.2 Multi-Dataset Object Detection 
+
+Object detection has long been a foundational task in computer vision, with contin-ued efforts aimed at developing models that generalize across a wide range of object categories and visual environments. One of the key challenges in this area is the limited availability of large-scale, well-annotated datasets, as collecting and labeling high-quality data is both expensive and time-consuming [43]. To address this limita-tion, recent research has explored the use of multiple datasets in a unified training framework, aiming to use the visual diversity across sources to improve robustness and generalization in detection tasks [44–46]. Training object detectors using multiple 4datasets is a widely adopted strategy for improving generalization, especially where individual datasets lack sufficient diversity or scale. By combining datasets, models are exposed to a broader range of object categories, image conditions, and domain-specific variations. However, this approach introduces several challenges, including differences in dataset sizes, annotation coverage, label semantics, and scene structures. Early works focused on jointly training large-scale datasets such as ImageNet and OpenImages [47] to increase visual diversity and category coverage. However, inconsis-tencies in annotation density, label definitions, and domain characteristics limited their effectiveness. To address these limitations, adaptation mechanisms such as squeeze-and-excitation layers were proposed to adjust feature representations based on dataset specifics [48], but these methods relied on shared architectures and lacked mechanisms to address semantic misalignment across datasets. Recent methods have addressed annotation inconsistencies by designing loss functions capable of learning from par-tially labeled data and incorporating pseudo-labels to supplement missing annotations. To handle differences in label definitions across datasets, several approaches have introduced language-guided embeddings to construct shared label spaces [45, 46]. Other strategies use unified architectures with dataset-specific output layers and projection layers to reconcile heterogeneous label definitions during training [49]. Addi-tionally, mixture-of-experts models have been proposed to assign each dataset to a dedicated expert, enabling more structured learning under domain imbalance and dis-tribution shift [20, 43, 50]. While effective in capturing dataset-specific characteristics, these models typically rely on fixed expert assignment strategies, which limit flexibility when dataset boundaries are ambiguous or when distributions overlap significantly. In contrast, our proposed HMR-Net introduces a more adaptive and scalable solution by enabling expert specialization at both the dataset and region levels, guided by learned routing mechanisms based on domain and spatial diversity. 
+
+## 2.3 Modular and Expert-Based Learning 
+
+Recent work in modular and expert-based learning [51–53] has explored architec-tures designed to improve adaptability, scalability, and specialization across tasks or domains. Mixture-of-Experts (MoE) models have been widely adopted in vision tasks for their ability to route inputs to a subset of specialized modules, allowing the net-work to adjust its capacity based on the input. Several MoE-based object detectors have used soft routing strategies to distribute computational resources across token-level experts, achieving improvements in model efficiency and representation diversity. In MoE, the router (gate) decides which expert is responsible for each token or sample. Several routing strategies have been proposed, such as Top-k token routing [54, 55], expert-driven token selection [49, 56], and refining expert selection [57, 58]. However, a primary challenge in these frameworks is imbalanced expert loads. Routers often overuse some experts while overlooking others, resulting in inefficient capacity use. To address this, [59] introduces a balancing loss that encourages equal expert use, and subsequent studies have further developed these concepts [60, 61]. Related work in calibrated expert learning offers further insight into expert specialization and bal-anced contribution. [62] proposes a method to ensure that expert outputs remain well-calibrated and even balanced, reducing the risk of overreliance on dominant 5Fig. 2 Visualization of global expert assignments across datasets in latent space. Each dot represents the assignment of an image to a global expert. The high-dimensional assignment vectors are projected into 2D using MDS for visualization. Left: Mixture-of-Experts (MoE) shows noisy expert usage across domains. Right: HMR-Net produces structured clusters, where global experts consistently specialize based on dataset characteristics. 
+
+experts, a challenge that is seen in MoE-based systems. Similarly, [63] addresses the problem of decision imbalance by encouraging more consistent and calibrated expert outputs across classes. Despite their success, existing approaches have several limita-tions, particularly in complex domains such as remote sensing. Most models rely on probabilistic gating mechanisms that lead to partial expert activation, where multiple experts contribute weakly without developing distinct functional roles. This behaviour is evident in Fig. 2 (left), where assignments appear scattered and unstructured, with experts overlapping across all domains rather than forming clear specializations. Such diffuse activation undermines the modular structure and limits interpretability since no expert consistently aligns with a specific task or dataset. Moreover, MoE models typically operate at the token or patch level, without incorporating higher-level con-textual details such as domain identity, scene composition, or geographic patterns. As a result, these models struggle to develop meaningful specialization across diverse data sources. Current architectures also rely on flat gating, which is insufficient for cap-turing both broad domain-level variation and detailed spatial structure within scenes. These limitations highlight the need for a more structured, context-aware learning method capable of addressing both cross-domain variation and scene-level complexity. 
+
+# 3 Methodology 
+
+## 3.1 Problem Overview 
+
+Consider a collection of N aerial image datasets D = {D1, D 2, . . . , D N }, each repre-senting different geographic locations or imaging conditions. Each dataset Di contains images Iij ∈ RH×W ×3 with corresponding annotations comprising bounding boxes and category labels. The goal in multi-domain object detection is to learn a unified detector 
+
+fθ , parameterized by θ, capable of accurately predicting object categories and bound-ing boxes across datasets, despite variations in scene composition, spatial resolution, object scales, and domain-specific distributions. Formally, given an image Iij from the 6dataset Di, the detector produces predictions: 
+
+fθ (Iij ) = {(bk, c k)}Kij
+
+> k=1
+
+, (1) where each bk ∈ R4 is the coordinates of a detected bounding box and ck ∈ { 1, . . . , C }
+
+denotes the predicted object class. The standard approach for multi-dataset training is to minimize the detection loss computed across all datasets, which can be written as 
+
+Ldet (θ) = 
+
+> N
+
+X
+
+> i=1
+> |Di|
+
+X
+
+> j=1
+
+ℓ(fθ (Iij ), Y ij ), (2) where Y ij denotes labels and ℓ(·) combines classification and bounding box regression losses. However, optimizing this joint loss across domains with distinct visual char-acteristics often leads the model to converge toward domain-agnostic representations that fail to capture domain-specific cues. This results in a representation collapse, in which shared parameters encode overly generic features, reducing the ability of the model to preserve the discriminative information required for accurate detection in less-represented or visually distinct domains. Therefore, the model performs poorly when applied to datasets with non-dominant distributions or domain-specific object appearances. Moreover, traditional architectures commonly use a fixed, shared set of parameters to uniformly process data from diverse sources, disregarding variations at both the domain and local scene levels. This approach overlooks the distinctive domain-level characteristics and fine-grained spatial patterns within images, limiting the model capacity for targeted specialization. Additionally, existing detection frame-works generally assume a closed and static set of object categories, thereby limiting their capability to identify novel categories not present during the training. To systematically address these challenges, we introduce a Hierarchical Modular Routing Network (HMR-Net), which is designed to support domain-aware and region-aware specialization through structured expert assignment as shown in Fig. 2 (right). HMR-Net produces clear clusters in the latent space, where experts are consistently aligned with dataset characteristics. The framework of HMR-Net is shown in Fig. 3. 
+
+## 3.2 Global Expert Routing 
+
+To address the challenges of domain-specific variations in multi-domain object detec-tion, the first component of our HMR-Net is a global routing mechanism. By assigning images to specialized experts based on dataset-specific attributes, our global routing mechanism minimizes representation collapse, enabling the model to preserve dis-criminative domain-specific features. Unlike earlier Mixture of Experts (MoE) [53] approaches, which depend only on token-level visual features, our approach explicitly incorporates dataset-specific attributes, leading to interpretable and domain-aware specialization. Formally, given a collection of datasets D, we associate each dataset Di with a latent dataset embedding vector zi ∈ Rd, where d denotes the dimension of the dataset 7Shared 
+
+> Backbone
+> Dataset
+> Embedding
+
+..
+
+> Local Expert 1
+> Local Expert 2
+> Local Expert 3
+> Local Expert R
+> Global Expert E
+> Global Expert 1
+
+..    
+
+> Global Routing
+> Φ
+> Region -to -Expert
+> Assignment
+> Local
+> Routing
+> Inputs
+> Classification
+> Regression
+> Complexity
+> Estimation
+> car road ship
+> Text Prompt
+> Teacher
+> Ensemble
+> CEKD
+> Global Expert 2
+> Global
+> Routing
+> Local
+> Routing
+> Open Prompts Module
+> Text Encoder
+> CEM Fig. 3
+
+Overall architecture of the proposed framework. Each image is processed by a single global expert, while all global experts also contribute to a teacher ensemble that supervises the selected expert via cross-expert knowledge distillation. The routed global output is then parsed into spatial regions by a complexity-aware local routing module, where region-to-expert assignments enable fine-grained specialization. The outputs are aggregated and passed to detection heads, with an optional Expert Module supporting open-category detection. 
+
+embedding vector. These embeddings, learned jointly with the model, encode dataset-level priors that reflect semantic composition, geographic patterns, and overall visual statistics distinctive to each source domain. In practice, we initialize zi using average pooled backbone features across each dataset to improve early-stage routing stability, and fine-tune them jointly during training. Specifically, for each input image Iij ∈ Di,we first extract an intermediate visual representation using a shared backbone ϕ(·), 
+
+vij = ϕ(Iij ) ∈ Rh×w×c. (3) To determine the expert assignment at the dataset level, we summarize these features into a global descriptor using an average across the spatial dimensions of the image 
+
+ψ(·), resulting in: uij = ψ(vij ) ∈ Rc. This descriptor is then combined with the cor-responding dataset embedding zi ∈ Rd and passed to a global routing function G(·)that outputs a probability distribution over the set of global experts as 
+
+gij = G([ uij , zi]) ∈ REG , (4) 8where [ ·, ·] denotes vector concatenation and EG is the number of global experts. Different from traditional gating strategies, our global routing function explicitly con-ditions on the dataset embedding zi, enabling domain-aware expert assignment and capturing high-level dataset-specific context. The routing function is implemented as a linear projection, ˜xij = LN  [uij , z i],hij = ϕ ˜xij W1 + b1
+
+,
+
+gij = σ   ˜xij Wskip + hij W2 + b2
+
+/τ  ,
+
+(5) in which ϕ denotes ReLU, σ is softmax over the EG, τ > 0 represents a temperature, and Wskip , W 1, W 2, b 1, b 2 are learnable parameters. The concatenation [ uij , zi] allows the router to jointly consider both image-level appearance and dataset-specific context, producing a global expert assignment vector gij ∈ REG that encodes a probability distribution over the available expert modules. To enforce discrete and interpretable specialization, we select the top-ranked expert with the highest assignment probability for each input, which can be defined by eij =arg max e gij,e . Once the expert assignment eij is determined, the corresponding global expert module f global 
+
+> eij
+
+(·) further processes the backbone representation vij , resulting in expert-specialized global feature maps for detection: 
+
+f ij = f global 
+
+> eij
+
+(vij ). (6) To further regularize specialization and minimize redundancy across global experts, we introduce a cross-expert knowledge distillation (CEKD) strategy. For each input, we compute a softened ensemble output across all global experts 
+
+pteacher = σ 1
+
+EGEGX
+
+> e=1
+
+f global  
+
+> e
+
+(vij )/T 
+
+!
+
+, (7) where T > 1 is a temperature parameter and we compute the student distribution from the routed expert 
+
+pstudent = σ
+
+
+
+f global 
+
+> eij
+
+(vij )/T 
+
+
+
+. (8) The distillation loss is then defined as the KL divergence between the teacher and student distributions 
+
+Ldistill = KL  pteacher ∥ pstudent  , (9) this regularization helps each global expert to be consistent with the consensus of the expert pool while still preserving its specialization. Beyond stabilizing transitions between expert responsibilities, Ldistill also acts as an implicit normalization across global experts, aligning their output space so that the later local experts can operate in a shared, consistent representation. This alignment is also important for generalization across ambiguous domains. 93.3 Local Region Routing 
+
+Aerial images are complex, often containing multiple spatially distinct regions that correspond to different semantic categories or structural patterns. A single scene might contain areas of dense urban structures, vegetation, and water bodies, each demand-ing distinct modeling strategies. Global experts alone are insufficient to handle this complexity, as they do not explicitly model localized spatial variations within images. To address this challenge, we introduce the local region routing mechanism as the second stage in our hierarchical modular architecture. This mechanism adaptively seg-ments the global expert feature maps into spatial routing units (RUs) and routes each RU independently to an appropriate local expert module. In this process, a dynamic partitioning strategy is used that adaptively determines the number of regions per image according to scene complexity, enabling an optimized balance between regional specificity and feature representation. 
+
+Terminology. We refer to the spatial partitions as RUs to distinguish them from 
+
+object proposals (RoIs) produced by the detector. Unless stated otherwise, “region” below means RU. Given the global expert feature representation f ij ∈ Rh×w×c′
+
+from (6), we first estimate scene complexity to determine the number of regions Rij . We compute the entropy of f ij as a lightweight proxy for complexity entropy( f ij ) = − X
+
+> c
+
+pc log pc, pc =
+
+P 
+
+> x,y
+
+f ij (x, y, c )
+
+P 
+
+> x,y,c ′
+
+f ij (x, y, c ′) , (10) here pc is defined by normalizing the non-negative activations across channels c,ensuring pc ∈ [0 , 1] and P 
+
+> c
+
+pc = 1. Then we estimate the number of regions as 
+
+Rij =  2 + σs
+
+ θR · entropy( f ij ) (EL − 2)  , (11) where θR is a learnable scalar and EL is the maximum number of local experts (set to 8 in our experiments, corresponding to the maximum number of regions per image). Here, σs denotes the sigmoid and ⌊·⌉ represents rounding to the nearest integer, which ensures that Rij is always an integer. 11 guarantees at least two regions for simple scenes, and adaptively assigns more regions to complex ones. Then we compute the spatial partitioning map as 
+
+Pij = Ω( f ij ; θΩ) ∈ Rh×w×EL , (12) where Ω( ·) is a convolutional layer that produces an RU score tensor. We apply a softmax along the channel dimension so that, for each pixel ( x, y ), the routing scores across all EL experts sum to one. Then we select the top-Rij channels ranked from their global score P 
+
+> x,y
+
+Pij (x, y, r ), leading to the candidate set of active experts. Therefore, the RU assignment for a spatial position ( x, y ) is 
+
+rx,y = arg max 
+
+> r∈R ij
+
+Pij (x, y, r ), (13) 10 where Rij denotes the index set of the top-Rij experts selected in (12). Subsequently, for each r ∈ { 1, ..., R ij }, the corresponding features from the global expert feature map are aggregated into the RU-specific representations, which can be written as 
+
+f ij,r = Γ( f ij , Mij,r ), Mij,r (x, y ) = 
+
+(1 if rx,y = r
+
+0 otherwise , (14) in which Γ( ·) represents a masked pooling operation that aggregates features within each RU. Using the binary mask Mij,r , the function selectively pools spatial locations assigned to RU, producing a localized representation f ij,r . Next, each RU-level repre-sentation f ij,r is independently routed to a corresponding local expert module f local  
+
+> r
+
+(·), which processes the localized features and produces region-specific outputs 
+
+oij,r = f local  
+
+> r
+
+(f ij,r ). (15) 
+
+f local  
+
+> r
+
+is the r − th local expert among the EL available experts. Only the top-Rij
+
+local experts (selected by Ω) are activated per image. Each local expert is trained to specialize in the visual semantics and spatial configurations characteristic of its assigned RU. Finally, the outputs from all local experts are integrated into a unified feature representation oij = Φ  {oij,r }Rij
+
+> r=1
+
+, which is then fed into the object detection heads. Here, Φ( ·) denotes a spatially aligned fusion operation that merges region-specific outputs into a coherent feature map, maintaining spatial consistency across the image for detection. To stabilize the local routing, we use a regularization loss 
+
+Lcoh = X
+
+> (x,y )∼(x′,y ′)
+
+∥Pij (x, y ) − Pij (x′, y ′)∥22, (16) where ( x, y ) ∼ (x′, y ′) denotes neighbouring pixels. Region masks are obtained by an arg max over the top-Rij selected maps (13), resulting in compact partitions, while (16) penalizes local discontinuities to ensure contiguous regions. This step adds only a small additional cost, since entropy estimation and region prediction are lightweight operations. By incorporating local routing, the method unifies fine-grained regional specialization with global domain-specific modelling, addressing the challenges of domain diversity and spatial complexity in RSIs. 
+
+## 3.4 Conditional Expert Module 
+
+Open-vocabulary object detection, also referred to as zero-shot object detection, focuses on recognizing object categories that are absent from the training label set. A common approach [64] replaces the final classification layer with language-based embeddings, such as GloVe [65], corresponding to the target class names. Recent meth-ods, including ViLD [66], Detic [67], DetPro [68], AlignDet [69], and CastDet [70], adopt CLIP [71] embeddings to improve visual–language alignment. ViLD transfers knowledge by distilling region-level features from CLIP image representations, whereas CastDet incorporates a CLIP-guided teacher–student self-learning method. 11 Visual     
+
+> features
+> Visual
+> embeddings
+> Prompt
+> truck
+> field
+> Textual
+> embeddings
+> Bipartite
+> matching Sk,m
+> car  tree field car truck road
+> tree
+> road PtPtPvPv
+> , car}
+> , field}
+> , tree}
+> , road} {
+> {
+> {
+> {Fig. 4
+
+Conditional Expert Module: RU-level visual embeddings are aligned to textual prompts via bipartite matching, enabling prompt-driven open-category detection. 
+
+Therefore, building on the domain-aware and region-specific specialization achieved by global and local routing, we introduce a Conditional Expert Module (CEM) to enable detection of novel object categories. The CEM establishes a one-to-one correspondence between region-level visual embeddings and textual prompts. These prompts are drawn from known class labels or from more descriptive, compositional phrases that reflect contextual relationships in aerial scenes. Let {vij,r }Rij 
+
+> r=1
+
+be the set of RU-level visual embeddings for image Iij , and {tm}Mm=1 
+
+be textual prompt embeddings generated by a frozen CLIP encoder [71]. These are projected into a shared latent space using learnable projection functions ˜vij,r = Pv (vij,r ), ˜tm = Pt(tm). (17) where Pv (.) and Pt(.) are the projection function for the visual and textual domains, respectively. Between region r and prompt m, we define the pairwise alignment score using similarity matrix S as 
+
+Sr,m = ˜ vij,r · ˜tm. (18) Our alignment loss encourages high similarity to correctly match pairs and is defined over a binary assignment matrix π ∈ { 0, 1}Rij ×M , which can be defined by 
+
+Lalign = − X
+
+> r,m
+
+Sr,m · πr,m . (19) This loss is subject to a one-to-one matching. Each region must be matched to one prompt. Therefore, the optimal assignment ˆ π must maximize the total alignment score ˆπ = arg max 
+
+> π∈Π
+
+X
+
+> r,m
+
+Sr,m · πr,m , (20) 12 Algorithm 1 HMR-Net Training  
+
+> 1:
+
+Init dataset embeddings {zi} by pooled backbone features; then train jointly.  
+
+> 2:
+
+Note: The number of routing units (RUs) per image satisfies Rij ≤ EL. 
+
+> 3:
+
+for minibatch {(Iij , labels) } do  
+
+> 4:
+
+vij ← ϕ(Iij ); uij ← ψ(vij ) 
+
+> 5:
+
+gij ← σ(Wg [uij , zi] + bg ); eij ← arg max e≤EG gij,e  
+
+> 6:
+
+f ij ← f global 
+
+> eij
+
+(vij ) (6)  
+
+> 7:
+
+Compute entropy( f ij ) and Rij (10), (11)  
+
+> 8:
+
+Pij ← Ω( f ij ; θΩ); keep top-Rij channels among EL (12)  
+
+> 9:
+
+RU assignment: rx,y ← arg max r≤Rij Pij (x, y, r ); build masks Mij,r (13)  
+
+> 10:
+
+for r = 1 ..R ij do  
+
+> 11:
+
+f ij,r ← Γ( f ij , Mij,r ); oij,r ← f local  
+
+> r
+
+(f ij,r ) (14), (15)  
+
+> 12:
+
+end for  
+
+> 13:
+
+oij ← Φ {oij,r }Rij
+
+> r=1
+
+; compute detection loss Ldet on oij 
+
+> 14:
+
+pteacher , pstudent (7), (8)  
+
+> 15:
+
+Lcoh ← P 
+
+> (x,y )∼(x′,y ′)
+
+∥Pij (x, y ) − Pij (x′, y ′)∥22 (16)  
+
+> 16:
+
+Compute routing regularization Lroute (22)  
+
+> 17:
+
+if CEM enabled then  
+
+> 18:
+
+Form RU embeddings {vij,r }Rij 
+
+> r=1
+
+and prompts {tm}Mm=1 ; project with Pv , Pt;build S; ˆ π ← Hungarian; 
+
+Lalign ← − P 
+
+> r,m
+
+Sr,m ˆπr,m (19), (20)  
+
+> 19:
+
+else  
+
+> 20:
+
+Lalign ← 0 
+
+> 21:
+
+end if  
+
+> 22:
+
+L ← L det + λ1Lroute + λ2Ldistill + λ3Lalign + λ4Lcoh ; update parameters (23)  
+
+> 23:
+
+end for 
+
+where Π is the set of all feasible one-to-one assignments. This is a classical bipartite matching problem, which we solve efficiently using the Hungarian algorithm [72]. The CEM operates on RU-level descriptors (not RoI features). RoIs used by the detector are produced after RU fusion by the detection head. Moreover, the CEM introduces minimal computational cost, as it uses a frozen, pre-trained CLIP text encoder and applies bipartite matching over a limited number of visual-text pairs. On average, the CEM processes at most 16 alignments per image, incurring less than 2% additional inference time (see Fig. 14). The aligned outputs are processed by two lightweight detection heads: a classification head that supports both fixed-category classification and open-category detection, and a bounding box regression head for localization. The classification head switches between standard and prompt-guided modes depending on the inference context. 13 3.5 Training 
+
+The HMR-Net is trained using a multi-component objective that combines detection loss with auxiliary regularization terms for expert routing, cross-expert consistency, region coherence, and visual-semantic alignment. To ensure stable optimization and have effective expert specialization, we adopt a staged training strategy. 
+
+Detection Loss: We use an object detection loss that combines classification and bounding box regression. For each dataset, the detection loss is defined as 
+
+Ldet =
+
+> N
+
+X
+
+> i=1
+> Mi
+
+X
+
+> j=1
+
+ℓ( ˆY ij , Y ij ), (21) where ˆY ij denotes model predictions for image Iij , Y ij is the ground-truth annotation, and ℓ(·) includes cross-entropy for classification and smooth-L1 for localization. 
+
+Routing Regularization: To prevent expert collapse and ensure balanced special-ization across global experts, we introduce a routing regularization term that penalizes deviation from uniform expert usage 
+
+Lroute =
+
+> EG
+
+X
+
+> e=1
+
+
+
+¯pe − 1
+
+EG
+
+2
+
+, (22) where ¯ pe is the average global selection probability of expert e over the training set. While maximizing entropy is a standard approach to encourage uniformity, we use this L2-based formulation due to its empirical stability and simplicity in balancing gradient magnitudes during training. To effectively apply this regularization and to stabilize expert routings we use a progressive training that incrementally activates components of our architecture. 
+
+• We initially disable expert routing, region segmentation, and the CEM. All inputs are processed by a shared backbone and baseline detection head to learn general representations. Only Ldet is used. 
+
+• After warm-up, we activate global expert routing and cross-expert distillation. Inputs are routed to top-1 global experts, and Lroute and Ldistill are added to have balanced and consistent specialization. 
+
+• In the final phase, we enable local region routing and the CEM. Region segmentation and local expert modules are activated, and semantic alignment is supervised via 
+
+Lalign . Coherence regularization Lcoh stabilizes region boundaries. 
+
+Total Loss: The full training objective is a weighted sum of the detection loss and additional terms: 
+
+Ltotal = Ldet + λ1Lroute + λ2Ldistill + λ3Lalign + λ4Lcoh , (23) where λ1, λ2, λ3 and λ4 are weighting hyperparameters. During backpropagation, each expert module only receives gradients from the samples it processes, enabling 14 clean and independent specialization as shown in Algorithm 1. This staged training significantly improves convergence stability and model performance by avoiding early overfitting to suboptimal routing decisions and gradually guiding the network toward hierarchical specialization with strong semantic alignment. 
+
+# 4 Experiments 
+
+This section presents a comprehensive evaluation of the proposed HMR-Net. We eval-uate its performance across a diverse set of remote sensing benchmarks, focusing on three core capabilities: generalization across domains, specialization within complex scenes, and recognition of novel object categories. We conduct comparisons against existing state-of-the-art object detection models to highlight the benefits of modular specialization and structured routing. The experimental setup, evaluation protocols, and implementation details are described below. 
+
+## 4.1 Experimental Setup 
+
+Datasets. We evaluate our model using four aerial object detection benchmarks: DIOR [11] consists of 23,463 images across 20 object categories, including vehicles, buildings, aircraft, ships, and storage tanks. It covers multiple scenes, such as urban, rural, and industrial, captured at varying scales and resolutions. DOTA-v1.0 [12] contains high-resolution imagery showing complex spatial configura-tions and detailed scene compositions. It has 2,806 images of 15 object classes. xView [13] is a large-scale dataset designed for detecting small and rare objects in overhead satellite imagery. It contains approximately 1 million labeled instances across 60 object categories, featuring both common classes and less frequent classes, making it valuable for testing the detection of sparsely represented objects. NWPU VHR-10 [73] provides 800 high-resolution images of 10 object categories. 
+
+Implementation Details. For all main experiments (to ensure fair comparison to existing RS baselines), we use HMR-Net with a Faster R-CNN R50-FPN head [74] (ImageNet-pretrained). HMR-Net itself is detector-agnostic : the fused feature map oij
+
+produced by hierarchical routing is passed to the detection head. In the proposal-based setting, an RPN generates RoIs from oij and standard classification/box heads are applied. In a DETR [75] setting, oij serves as the encoder input with positional encodings and detections are decoded from object queries. Routing and expert selec-tion occur before the head, therefore the same oij is produced regardless of whether the head is proposal-based or query-based. Given the semantic overlap across datasets, a strict one-to-one mapping between datasets and experts limits flexibility. Instead, we use six global experts, allowing the model to form semantic clusters across datasets. This allows the routing function to specialize experts based on visual content rather than dataset origin, improving generalization across shared object categories and scene types. All expert modules (global, local, and conditional) are implemented as lightweight sub-networks composed of three convolutional layers followed by ReLU activations and batch normalization. We set the number of global experts to EG = 6 in all main experiments. This is based 15 Fig. 5 Visualization detection results of our model on sample images from different datasets. 
+
+on an ablation study (see Fig. 13), where increasing EG improves both performance and routing balance up to six experts. For the conditional expert, additional linear projection layers are included to align visual embeddings with CLIP semantic space. These modules are trained from scratch and process backbone feature maps through the hierarchical routing pipeline before being passed to detection heads. Training is conducted using stochastic gradi-ent descent with a momentum of 0 .9, an initial learning rate of 0 .001, and a weight decay of 1 e − 4. The model is trained for 200 epochs and the learning rate is decayed by a factor of 0 .1 at epochs 120 and 160. θR is initialized to 1 .0. We use a batch size 8 across four RTX-3090 GPUs for training and use one GPU for testing. Dur-ing training, data augmentations, including random horizontal flipping, scaling, and random rotation, are applied. All datasets are preprocessed to a fixed input size of 800 ×800. For DOTA and xView, we adopt a tiling strategy with non-overlapping crops, ensuring that object annotations are preserved within each tile. For NWPU and DIOR, we resized or padded the images to the target resolution. For consistency across all datasets, we convert all annotations to horizontal bounding boxes (HBB). While DOTA and xView contain inherently rotated objects, this simplification enables a unified detection protocol and fair comparison across datasets. At inference time, Non-Maximum Suppression is used with an IoU threshold of 0 .5. The hyperparame-ters associated with routing regularization and prompt alignment losses are kept fixed across all experiments. 
+
+Evaluation Protocols. We design comprehensive evaluation protocols to systemat-ically validate our framework. 
+
+• Per-Dataset Evaluation: We evaluate the model independently on the test set of each dataset to assess its ability to adapt to domain-specific visual distributions and annotation schemas. This evaluation also allows us to analyze the effectiveness 16 Table 1 Per-dataset evaluation on the DIOR. Methods AP ↑ AP 50 ↑ AP 75 ↑ AP S ↑ AP M ↑ AP L↑ Avg. (%) FR-CNN [74] 27.53 51.26 28.11 21.43 28.65 47.38 34.05 CR-CNN [76] 28.90 52.78 28.65 22.17 29.40 49.04 35.16 Me R-CNN [77] 27.84 52.63 28.59 22.03 29.11 48.86 34.84 RTMDet [38] 27.85 51.53 28.63 21.52 29.15 48.82 34.59 H2RBox [27] 31.42 55.19 31.27 26.44 35.82 51.69 38.64 DAMEX [20] 30.46 55.84 31.02 22.73 35.64 52.14 37.97 AFD [3] 30.82 54.22 30.26 24.72 32.51 50.16 37.12 MoCaE [43] 31.37 55.41 31.25 26.24 35.73 51.56 38.59 ORFENet [37] 33.19 56.45 32.97 27.53 35.88 51.64 39.61 LSKNet [1] 33.35 56.88 32.71 27.28 35.96 51.85 39.67 HMR-Net (Ours) 33.48 56.61 33.14 27.20 35.93 51.97 39.72 
+
+of the dataset-aware routing mechanism in assigning inputs to appropriate expert modules, contributing to improved detection performance across diverse domains. 
+
+• Cross-Domain Generalization: To assess the model ability to generalize to previously unseen data distributions, we adopt a leave-one-dataset-out evaluation strategy. The model is trained on three datasets and evaluated on the remaining one without any fine-tuning. This setting reflects real-world deployment scenarios in which the model encounters previously unobserved geographic regions or domain-specific imaging conditions and allows us to evaluate whether the hierarchical routing framework enables effective transfer across domains. 
+
+• Open-Category Detection: To evaluate the model open-category detection capability, we assess its ability to recognize object categories excluded during training by query-ing it at inference time with textual prompts corresponding to unseen classes. This measures the model visual-semantic alignment and zero-shot detection performance without retraining to labeled examples of novel categories. For our experiments, we adopt established zero-shot benchmarks across multiple datasets. Following [78], we use their predefined settings for DIOR. For DOTA, we apply semantic clustering to select classes, ensuring diversity and semantic coherence among unseen cate-gories—resulting in 11 seen and 4 unseen classes. To construct textual prompts, we use a hybrid strategy combining both class-driven and phrase-based queries. For base categories, we use class names directly extracted from the dataset annotations (e.g., “airplane”, “harbour”). For unseen categories, we design descriptive prompts to capture semantic context and compositional cues (e.g., “dock near ship”, “solar panel beside car”). These prompts are selected to reflect realistic scene composi-tions in aerial images, promoting fine-grained visual–text alignment. We randomly sample up to 16 prompts per image, ensuring a diverse alignment pool. To evaluate detection performance across varying object sizes, we report AP metrics stratified by object scale. Moreover, given the high resolution and object density in remote sensing imagery, we also define size categories based on bounding box dimen-sions (in pixels) after resizing inputs following [37, 79]. AP S corresponds to small objects with bounding box sizes smaller than 32 × 32 pixels, AP M captures medium objects between 32 × 32 and 64 × 64 pixels, and AP L denotes large objects that are 17 Table 2 Per-dataset comparison on the DOTA. Methods AP ↑ AP 50 ↑ AP 75 ↑ AP S ↑ AP M ↑ AP L↑ Avg. (%) FR-CNN [74] 46.61 74.58 47.33 35.39 53.72 71.16 54.80 CR-CNN [76] 47.49 75.26 48.81 37.24 55.64 72.43 56.12 Me R-CNN [77] 48.64 77.48 51.13 38.26 57.85 72.59 57.66 RTMDet [38] 51.43 80.42 56.35 42.46 60.28 73.79 60.78 H2RBox [27] 47.54 75.31 51.42 39.84 56.61 72.68 57.24 DAMEX [20] 48.12 78.05 52.46 40.57 58.26 73.10 58.46 AFD [3] 50.73 78.48 55.32 45.51 59.72 73.38 60.53 MoCaE [43] 50.56 81.03 55.64 43.38 61.70 74.89 61.20 ORFENet [37] 52.85 80.97 58.84 50.03 62.81 75.37 63.49 LSKNet [1] 53.23 81.30 58.71 49.59 62.74 75.53 63.52 HMR-Net (Ours) 53.17 81.24 59.08 49.82 63.18 75.91 63.74 
+
+larger than 64 × 64 pixels. These ranges are selected based on the empirical size dis-tributions observed in the datasets. Additionally, to evaluate the performance of our model for open-category detection, same as the common zero-shot object detection (ZSD) setup [64, 78], we use Recall@100 (RE@100) with IoU of 0 .4, 0.5, 0.6 and mAP on test images that only contain unseen categories. 
+
+## 4.2 Comparison with State-of-the-Art 
+
+We compare the performance of our proposed method against Faster R-CNN (FR-CNN) [74], Cascade R-CNN (CR-CNN) [76], Me R-CNN [77], MoCaE [43], H2RBox [27], DAMEX [20], RTMDet [38], AFD [3], LSKNet [1], and ORFENet [37]. For open-category (prompt-based) detection, we additionally compare against Detic [67], ViLD [66], DetPro [68], AlignDet [69] and CastDet [70]. To ensure a fair comparison, we reproduce their official experiments by retraining all models using the same backbone architecture, training settings, and hardware environment as our method. 
+
+4.2.1 Per-Dataset Evaluation 
+
+In this experiment, the models are trained on the combined training sets of all datasets. For evaluation, the trained models are tested separately on the test set of each indi-vidual dataset without fine-tuning. In Fig. 5, we visualise the detection performance of our proposed model on sample images from different datasets. 
+
+(a) Evaluation on the DIOR. As shown in Table 1, our model achieves the highest average performance (39 .72%), surpassing all baselines including LSKNet (39 .67%) and ORFENet (39 .61%). It reports the best AP 75 (33 .14%), indicating precise local-ization, and strong performance across different object scales, particularly in AP L
+
+(51 .97%) and AP M (35 .93%). While AP S remains competitive, our model achieves a more consistent balance across different object sizes. In comparison to DAMEX, it shows notable improvements, highlighting the effect of HMR-Net in supporting both domain-level and spatial specialization. 
+
+(b) Evaluation on the DOTA. As Table 2 shows, Our method achieves the high-est overall performance with an average AP of 63 .74%. It ranks first in AP 75 , and robustness to medium and large object scales. While AP S (49 .82%) is slightly behind 18 Table 3 Per-dataset detection results on the xView. Methods AP ↑ AP 50 ↑ AP 75 ↑ AP S ↑ AP M ↑ AP L↑ Avg. (%) FR-CNN [74] 21.38 44.46 20.39 10.34 23.86 43.72 27.36 CR-CNN [76] 22.52 45.78 21.24 10.86 25.12 43.94 28.24 Me R-CNN [77] 23.17 45.91 21.83 12.37 25.06 44.10 28.74 RTMDet [38] 23.43 46.03 22.16 12.78 25.14 44.23 28.96 H2RBox [27] 24.35 47.64 23.52 14.24 27.03 44.52 30.22 DAMEX [20] 23.14 46.58 23.21 14.36 26.90 44.17 29.73 AFD [3] 24.06 48.13 24.34 16.74 27.42 45.10 30.96 MoCaE [43] 24.82 48.76 25.17 17.85 27.89 45.51 31.67 ORFENet [37] 26.71 49.40 27.02 19.84 28.79 46.63 33.06 LSKNet [1] 25.83 49.32 26.87 18.42 27.58 46.86 32.48 HMR-Net (Ours) 26.58 49.61 27.19 19.66 28.75 46.93 33.12 
+
+ORFENet (50 .03%), our model maintains balanced performance across all metrics, reflecting strong generalization across spatial structures. 
+
+(c) Evaluation on the xView. Unlike other datasets, xView is particularly chal-lenging due to its dense scenes and a high proportion of tiny, imbalanced objects. As shown in Table 3, our model achieves the highest average AP of 33 .12%, slightly sur-passing ORFENet, which is specifically designed for small object detection. Although our AP S score is slightly lower than that of ORFENet, the balanced performance with stronger precision at high IoU and superior large-object detection highlights our model effectiveness in handling the complexity and scale variability of xView. 
+
+(d) Evaluations on the NWPU. The results in Table 4 indicate that although all models benefit from this dataset clean structure and large objects, their adaptabil-ity varies. Traditional detectors achieve only modest improvements, whereas modular approaches particularly our method shows more effective scalability. Our method achieves the highest overall performance (67 .88%) and leads in AP 75 and AP L, con-firming that its hierarchical routing adapts not just to complex domains but also to structured environments. This shows the strength of our model spatial reasoning and its ability to maintain specialization across diverse domains.                                                                                        
+
+> Table 4 Per-dataset evaluation on NWPU VHR-10. Methods AP ↑AP 50 ↑AP 75 ↑AP S↑AP M↑AP L↑Avg. (%) FR-CNN [74] 51.42 77.53 52.16 37.63 58.02 75.24 58.67 CR-CNN [76] 52.68 78.49 54.13 38.44 59.33 76.18 59.88 Me R-CNN [77] 54.47 80.16 57.86 41.66 61.63 77.68 62.24 RTMDet [38] 54.34 80.02 57.91 41.52 61.45 77.40 62.11 H2RBox [27] 54.16 79.33 56.84 42.31 60.92 77.62 61.86 DAMEX [20] 55.89 81.24 58.32 42.74 62.34 78.06 63.10 AFD [3] 56.23 82.15 60.20 45.16 64.03 78.92 64.45 MoCaE [43] 58.16 83.34 62.37 46.31 65.19 79.84 65.87 ORFENet [37] 59.02 84.38 63.05 51.13 66.82 80.34 67.46 LSKNet [1] 59.76 84.56 63.17 50.87 66.73 80.91 67.65 HMR-Net (Ours) 59.48 84.32 63.91 50.98 67.34 81.24 67.88
+
+19 Fig. 6 Comparison of detection results and feature maps produced by LSKNet and our method, highlighting generalization performance on the DOTA. 
+
+4.2.2 Cross-Domain Generalization 
+
+(a) Generalization to DIOR. The models are trained on DOTA, xView, NWPU, and evaluated on DIOR. This tests robustness under varying imaging conditions and object styles present in DIOR. Among baselines as Table 5, ORFENet and LSKNet show relatively strong performance, due to their design for fine-grained resolution and spatial consistency. However, our model surpasses all the baselines, achieving the highest average precision (35 .21%). These results show the strength of our hierarchical routing framework in adapting to unseen spatial distributions. 
+
+(b) Generalization to DOTA. In this experiment, models are trained on DIOR, xView, and NWPU, and evaluated on the DOTA. As shown in Table 6, all mod-els have reduced performance compared to their per-dataset results, with noticeable drops in AP 75 and AP S , reflecting the difficulty in precise localization and small                                                                                        
+
+> Table 5 Cross-dataset generalization on the DIOR. Methods AP ↑AP 50 ↑AP 75 ↑AP S↑AP M↑AP L↑Avg. (%) FR-CNN [74] 21.83 44.68 20.46 15.02 23.22 40.91 27.69 CR-CNN [76] 23.16 45.91 21.14 16.21 24.10 42.45 28.83 Me R-CNN [77] 24.53 46.68 21.98 17.35 26.12 43.67 30.06 RTMDet [38] 22.75 44.84 20.83 15.16 23.96 41.89 28.24 H2RBox [27] 25.44 47.31 23.57 19.04 27.36 44.78 31.25 DAMEX [20] 25.37 48.26 23.18 17.31 28.57 44.41 31.35 AFD [3] 25.02 46.26 22.73 18.43 26.83 43.65 30.49 MoCaE [43] 26.14 47.85 24.67 19.80 28.41 44.83 31.95 ORFENet [37] 26.37 49.12 25.38 21.01 28.96 44.71 32.59 LSKNet [1] 26.59 49.34 24.93 20.72 29.13 45.10 32.63 HMR-Net (Ours) 28.72 52.20 27.63 22.79 31.54 48.36 35.21
+
+20 Table 6 Cross-dataset generalization on the DOTA. Methods AP ↑ AP 50 ↑ AP 75 ↑ AP S ↑ AP M ↑ AP L↑ Avg. (%) FR-CNN [74] 40.72 68.35 41.09 29.84 47.08 65.04 48.69 CR-CNN [76] 42.05 69.14 42.57 31.33 48.85 66.27 50.04 Me R-CNN [77] 44.32 72.79 47.51 34.85 50.62 67.08 52.86 RTMDet [38] 44.28 72.60 47.68 35.17 50.76 67.01 52.92 H2RBox [27] 43.07 69.84 45.34 33.08 49.71 66.98 51.34 DAMEX [20] 45.40 73.33 46.86 34.19 51.32 68.06 53.19 AFD [3] 46.72 73.01 49.18 38.22 53.19 67.90 54.70 MoCaE [43] 47.58 74.53 50.91 40.85 54.67 68.42 56.16 ORFENet [37] 48.52 75.24 52.58 43.11 56.32 69.31 57.51 LSKNet [1] 48.93 75.78 52.41 42.47 56.25 69.48 57.55 HMR-Net (Ours) 50.38 77.61 54.05 43.26 58.23 71.74 59.21 
+
+object detection. Despite these challenges, our model achieves the highest overall per-formance (Avg. 59.21%). This demonstrates that the proposed network effectively captures transferable structural representations, enabling robust detection under spa-tial and geometric variability without requiring access to the target domain during training. As illustrated in Fig. 6, our method produces sharper and more spatially aligned feature maps, resulting in more accurate detections compared to LSKNet. 
+
+(c) Generalization to xView. The models are trained on DIOR, DOTA, NWPU, and tested on xView. This highlights the models ability to handle scale imbalance and cluttered small-object environments. xView contains the most difficult target domain due to its dense scenes and tiny, imbalanced objects. As shown in Table 7, all models see significant drops, representing the limits of cross-domain transfer in such settings. While MoCaE, ORFENet and LSKNet retain some stability, our model performs the best, indicating that its modular structure captures domain-agnostic spatial patterns and provides robust specialization, enabling effective detection even under extreme distribution shifts. 
+
+(d) Generalization to NWPU. The models are trained on DIOR, DOTA, xView, and evaluated on NWPU. This measures performance in relatively simpler scenes with larger objects and clearer backgrounds. Table 8 shows, our model outperforms                                                                                        
+
+> Table 7 Cross-dataset generalization on the xView. Methods AP ↑AP 50 ↑AP 75 ↑AP S↑AP M↑AP L↑Avg. (%) FR-CNN [74] 13.24 33.15 12.17 5.83 16.24 34.21 19.14 CR-CNN [76] 14.68 34.52 13.89 6.12 17.51 35.03 20.29 Me R-CNN [77] 14.61 34.46 13.71 6.07 17.44 35.10 20.23 RTMDet [38] 15.75 36.31 14.75 7.24 18.19 35.78 21.34 H2RBox [27] 17.03 37.96 16.83 8.41 19.60 36.54 22.73 DAMEX [20] 16.14 36.55 16.12 8.03 19.27 36.17 22.05 AFD [3] 18.27 39.02 18.09 10.37 20.54 36.90 23.87 MoCaE [43] 19.64 41.23 19.93 11.69 21.65 38.14 25.38 ORFENet [37] 20.53 41.62 20.31 12.52 22.49 37.88 25.90 LSKNet [1] 20.61 40.96 20.05 11.87 21.84 38.05 25.56 HMR-Net (Ours) 21.40 42.36 20.74 12.38 23.14 39.51 26.59
+
+21 Table 8 Cross-dataset generalization on NWPU VHR-10. Methods AP ↑ AP 50 ↑ AP 75 ↑ AP S ↑ AP M ↑ AP L↑ Avg. (%) FR-CNN [74] 48.24 74.92 49.08 35.26 54.77 72.25 55.76 CR-CNN [76] 49.37 75.88 50.46 36.41 56.10 73.42 56.94 Me R-CNN [77] 49.28 75.93 50.34 36.29 55.97 73.40 56.87 RTMDet [38] 51.02 77.35 54.92 39.60 58.34 74.08 59.22 H2RBox [27] 50.89 76.70 53.64 41.22 58.92 74.59 59.33 DAMEX [20] 52.16 78.26 55.12 40.97 57.20 74.11 59.64 AFD [3] 53.08 79.60 57.06 43.24 60.84 76.08 61.65 MoCaE [43] 55.21 81.19 60.28 47.12 62.95 77.40 64.03 ORFENet [37] 56.10 81.45 60.71 48.36 63.56 77.31 64.58 LSKNet [1] 55.74 81.61 60.45 47.93 63.42 78.02 64.53 HMR-Net (Ours) 56.86 82.54 61.24 48.57 64.43 78.71 65.39 
+
+all baselines. This indicates that it benefits from stronger generalization in structured layouts and maintains high localization accuracy. Rather than overfitting to domain-specific features, it appears to use more transferable geometric representations, which are especially effective in cleaner and less ambiguous imagery. In these evaluations, our model consistently achieves top performance, demon-strating strong generalization to unseen domains with varying complexity. The results confirm that our proposed method supports both adaptability and robustness under domain shift. This highlights its effectiveness as a transferable detection framework across aerial image distributions.   
+
+> Fig. 7
+
+Qualitative results for unseen objects. Our method detects novel categories with improved precision and semantic alignment, compared to CastDet. 
+
+22 Table 9 Comparison with state-of-the-art methods under ZSD setting on the DIOR and DOTA. Performance is reported in terms of RE@100 at multiple IoU thresholds and mAP.                                                          
+
+> Method
+> DIOR DOTA RE@100 mAP RE@100 mAP IoU=0.4 IoU=0.5 IoU=0.6 IoU=0.4 IoU=0.5 IoU=0.6 ViLD [66] 34.68 30.83 28.34 11.55 32.60 26.52 21.73 5.29 Detic [67] 36.06 33.29 30.53 13.31 35.14 30.89 26.34 6.57 DetPro [68] 36.42 34.15 31.82 15.47 37.23 33.69 29.14 8.91 AlignDet [69] 37.75 34.81 31.19 15.76 36.34 34.28 29.57 9.12 CastDet [70] 37.93 35.03 31.24 16.11 36.52 34.86 29.74 9.35 Ours 38.21 34.84 31.76 16.42 37.56 34.63 29.95 9.78
+
+4.2.3 Open-Category Detection 
+
+Table 9 presents a comparison with existing open-category detection methods on DIOR and DOTA under the ZSD setting. Our model achieves the highest mAP on both benchmarks, outperforming prior methods across most IoU thresholds. Notably, our method achieves 16 .42% mAP on DIOR and 9 .78% on DOTA, reflecting improvements in both large-scale and complex aerial scenes. These gains can be attributed to our model capacity to maintain discriminative semantic alignment for unseen categories, without compromising on localization accuracy. The strong RE@100 performance at higher IoUs (0.6), further demonstrates its ability to represent precise open-category predictions, even under challenging visual conditions as shown in Fig. 7. Fig. 8 shows zero-shot inference results, where each row presents a ground-truth image alongside activation maps generated from a descriptive prompt. We observe “solar panel beside car and boat ”   
+
+> “playground nearby parked vehicles ”
+> Input Ours w/o HA CastDet ViLD Ours
+> Fig. 8
+
+Visualization results for Zero-shot inference. In both examples, ViLD fails to dis-tinguish the referent structure, while CastDet and our model with bipartite localize partial entities. Our model with Hungarian algorithm (HA) shows finegrained attention and accu-rately interprets the entire prompt. Objects like “solar panel” or “playground” are not labeled in training, but are localized through our textual alignment process. 
+
+23 Global only Local only Ours Fig. 9 Comparison of feature maps generated by global routing, local routing, and their combined approach. 
+
+that ViLD shows weak and diffuse attention across the entire image. This is expected, as ViLD relies on fixed vocabulary classification heads and cannot accurately detect unseen or compositional phrases. CastDet exhibits more spatially aligned activations due to its explicit localization, yet it struggles when the target objects are absent from the annotated training set. Ours without the Hungarian algorithm replaces optimal bipartite matching with a greedy top-1 pairing between region and prompt embeddings, similar to CasDet misses fine-grained correspondences in these complex scenes. In contrast, in HMR-Net we use the Hungarian algorithm for optimal matching between predicted regions and prompt tokens, resulting in precise and concentrated activations for both seen and unseen objects, capturing complex relationships between entities described in the prompts. 
+
+## 4.3 Ablation Studies 
+
+We conduct a comprehensive analysis of the modules and training strategy of HMR-Net. This allows us to quantify the impact of individual modules on both general-domain and open-category detection performance.                                  
+
+> Table 10 Ablation study on DOTA and xView comparing the contributions of global and local expert routings.
+> Method
+> DOTA xView AP 50 AP SAP MAP LAP 50 AP SAP MAP L
+> HMR-Net (Global only) 77.61 44.15 59.78 73.26 45.83 13.59 25.32 44.39 HMR-Net (Local only) 79.43 47.06 62.18 74.42 46.12 15.75 26.74 44.76 HMR-Net (Ours) 81.24 49.82 63.18 75.91 49.57 19.59 28.75 46.92
+
+24 Classification Detection Fig. 10 Evaluation of router network representation collapse. In the resulting distributions, lighter regions indicate higher feature attention. The heatmaps having uniform intensity sug-gest improved balance in expert selection and reduced likelihood of representational collapse. 
+
+4.3.1 Hierarchical Modular Routing 
+
+To assess the contribution of each routing stage, we compare three configurations: global-only, local-only, and the full model. In the global-only setting, images are assigned to a single expert based on dataset-specific embeddings, and detection is per-formed using the expert dedicated head over shared region features. In the local-only setting, global routing is disabled, and tokens are directly assigned to local experts via a content-aware gating function, with outputs aggregated for detection. The full model combines both stages, enabling hierarchical routing from domain-level assignment to token-level specialization. As shown in Table 10 and Fig. 9, both routing components contribute positively to overall detection performance. The global routing achieves reasonable results by using dataset-level priors. However, it underperforms on smaller and medium-sized objects, indicating limited capacity to adapt to fine-grained variations within an image. The local region routing improves performance across all object scales by enabling content-driven expert specialization, leading to stronger AP S and AP M scores, particularly on complex datasets (e.g. xView). Still, without global domain features, the model is prone to suboptimal expert usage in cases of strong dataset-level shifts. The full HMR-Net consistently outperforms both variants across all metrics and datasets, demonstrating the effectiveness of combining domain-aware routing with fine-grained token-level specialization. Notably, it achieves 81 .24 AP 50 on DOTA and 49 .57 on xView, with consistent gains across all object sizes. These results highlight that hierarchical routing enables the model to maintain global consistency while capturing local structural and semantic diversity. We evaluate the effect of our model regularization strategy with respect to both rep-resentation collapse and convergence. To assess potential collapse in routing behaviour, we visualize the diversity of hidden representations from the router networks using Gaussian kernel density estimation, as illustrated in Fig. 10. The resulting heatmaps for both classification and detection tasks show a uniform distribution of hidden states, indicating balanced expert allocation and a reduced risk of representation collapse. 25 (a) DIOR (b) DOTA Fig. 11 ROC curves on the DIOR and DOTA. The results illustrating the impact of the CEKD, Complexity Estimation (CE) and global distillation (GD) modules. The full model outperforms all ablated variants, confirming the complementary benefits of all modules. 
+
+To evaluate the contributions of the CEKD, Complexity Estimation (CE) and global distillation (GD) modules, we perform an ablation study illustrated in Fig. 11, using ROC curves on the DIOR and DOTA datasets. The HMR-Net, with CEKD, CE and GD consistently shows the strongest performance, achieving the highest true positive rates across all false positive regions. This demonstrates the advantage of combining expert consistency with adaptive region-aware specialization. When CE is removed while retaining CEKD, the model shows moderate performance degradation, suggesting that although CEKD helps align expert outputs, it lacks the fine-grained spatial discrimination that CE provides. On the other hand, when CEKD is ablated and CE is kept, the performance drops are more noticeable in the lower FPR range, indicating instability in expert selection due to the lack of cross-expert regularization. Removing GD also impacts accuracy, confirming that GD is important for aligning the output spaces of global experts and maintaining stable utilization of the shared local experts. The configuration without all three modules performs the worst on both  
+
+> Fig. 12
+
+The distribution of expert utilization across different layers (layers 1, 3). The visual-isation of the distribution of expert utilisation for MoE variants. Our HMR-Net shows more intense specialisation. (even in the early layer): each dataset is consistently routed to its assigned experts, leading to interpretable and stable specialisation without auxiliary balanc-ing losses. In MoE, the routing distributes samples uniformly across experts, resulting in flat usage patterns with no clear dataset-expert alignment across layers. 
+
+26 Table 11 Ablation on detector head: Faster R-CNN vs. DETR. Methods AP 50 ↑ AP 75 ↑ AP S ↑ AP M ↑ AP L↑ Params (M) Ours w Faster R-CNN 52.20 27.63 22.79 31.54 48.36 59 Ours w DINO-DETR 51.97 27.40 20.33 30.72 48.49 71 
+
+datasets, with ROC curves approaching the diagonal, showing that these components are critical for enabling discriminative and reliable expert behaviour. Fig. 12 shows expert utilization distributions for vanilla MoE [80] and HMR-Net on the 4 datasets. The heatmap for MoE shows a flat spread, which means that routing spreads samples evenly among experts without aligning them based on the dataset. In contrast, our HMR-Net demonstrates a clear diagonal pattern in experts utilization, where each dataset is perfectly mapped to the best experts. This structured alignment facilitates effective specialization and enhances overall generalization across datasets. 
+
+Proposal-based vs. query-based detectors. To verify that HMR-Net is detector-agnostic, we replace the proposal-based head with the DETR query head while keeping the routing stack unchanged. In this experiment, the fused feature map oij ∈ Rh×w×c′
+
+is used as the transformer encoder input with positional encodings. The decoder with 300 object queries predicts boxes and labels via the DETR matching loss [75] and other HMR-Net losses remain unchanged. In Table 11 we show performance between the Faster R-CNN and the DETR heads, confirming that HMR-Net can adapt to both proposal-based and query-based detectors without modifying the routing mechanism. Additionally, Fig. 13 illustrates the impact of varying number of global experts on detection performance and expert usage while training on the full four-dataset mix-ture and report results on DOTA. As shown in Fig. 13 (a), increasing the number of experts from three to six results in a consistent improvement in average mAP. This trend suggests that additional expert capacity enables better specialization and more effective handling of intra-domain variability. However, the performance gain becomes marginal beyond six experts, with a slight decrease observed at seven, indicating that    
+
+> Fig. 13 Impact of the number of global experts EGwhen training on the 4-dataset mixture, reported on DOTA. (a) mAP as the number of global experts increases. (b) Expert utilization across different expert configurations. The routing distribution becomes more balanced as the number of experts increases, with all experts actively contributing in the six-expert setting.
+
+27 Fig. 14 Performance vs com-putation for varying number of alignments. The blue line indi-cates mAP and the red line shows relative inference time range. The shaded band represents min–max overhead across multiple runs. By setting the number of alignments to 16 per image, accuracy is improved significantly with minor latency increase. 
+
+increasing the number of experts beyond this point does not lead to further improve-ments and introduces redundancy. The trends in expert employment in Fig. 13 (b) provide additional insight. With four experts, the distribution of routed samples is less uniform, indicating that some experts control the processing load. As the number of experts increases, the routing becomes more balanced, and in the case of six experts, all modules are actively used. This indicates that the routing mechanism is capable of effectively using the available capacity at this configuration. Overall, this results suggest that using six global experts provides an optimal trade-off between model complexity and detection accuracy, while ensuring efficient use of expert modules. Fig. 14 illustrates the relationship between the number of visual–text alignments processed by the CEM and the resulting detection accuracy and runtime. Increasing the number of alignments from 4 to 16 results in a consistent improvement in accu-racy, after which the gains become marginal. The corresponding increase in inference time remains minor across the evaluated range, with the 16-alignment configuration providing an effective balance between accuracy enhancement and computational cost. 
+
+# 5 Conclusion 
+
+In this paper, we introduce Hierarchical Modular Routing Network (HMR-Net), a modular detection framework that enables structured specialization across datasets and within complex aerial scenes. By introducing global expert routing, local region segmentation, and a conditional expert module for open-category detection, HMR-Net achieves strong adaptability and transferability. Extensive experiments show that our model outperforms existing methods in multi-domain generalization, region-level spe-cialization, and zero-shot detection. These results highlight HMR-Net as an effective and scalable solution for remote sensing object detection. While HMR-Net achieves strong specialization with a moderate number of experts, scaling to larger expert pools may lead to redundancy. An important extension will be to design adaptive expert pruning, so that the architecture remains efficient while preserving functional diversity. 28 Data Availability 
+
+This study uses four publicly available datasets: 
+
+• DIOR 
+
+• DOTA 
+
+• xView 
+
+• NWPU VHR-10 These datasets are obtained from their official websites under their respective licenses. The exact train/validation/test splits, preprocessing steps, and evaluation metadata used in our experiments are described in the paper. 
+
+# References 
+
+[1] Li, Y., Li, X., Dai, Y., Hou, Q., Liu, L., Liu, Y., Cheng, M.-M., Yang, J.: Lsknet: A foundation lightweight backbone for remote sensing. International Journal of Computer Vision, 1–22 (2024) [2] Hu, H., Han, T., Wang, Y., Zhong, W., Yue, J., Zan, P.: Hierarchical active learning for low-altitude drone-view object detection. International Journal of Computer Vision, 1–13 (2024) [3] Shamsolmoali, P., Chanussot, J., Zhou, H., Lu, Y.: Efficient object detection in optical remote sensing imagery via attention-based feature distillation. IEEE Transactions on Geoscience and Remote Sensing (2023) [4] Wang, K., Fu, X., Ge, C., Cao, C., Zha, Z.-J.: Towards generalized uav object detection: A novel perspective from frequency domain disentanglement. International Journal of Computer Vision, 1–29 (2024) [5] Yang, X., Yan, J.: On the arbitrary-oriented object detection: Classification based approaches revisited. International Journal of Computer Vision 130 (5), 1340– 1365 (2022) [6] Deng, C., Jing, D., Han, Y., Chanussot, J.: Towards hierarchical adaptive align-ment for aerial object detection in remote sensing images. IEEE Transactions on Geoscience and Remote Sensing (2023) [7] Shamsolmoali, P., Zareapoor, M., Chanussot, J., Zhou, H., Yang, J.: Rotation equivariant feature image pyramid network for object detection in optical remote sensing imagery. IEEE Transactions on Geoscience and Remote Sensing 60 , 1–14 (2021) [8] Huang, Z., Yan, H., Zhan, Q., Yang, S., Zhang, M., Zhang, C., Lei, Y., Liu, Z., Liu, Q., Wang, Y.: A survey on remote sensing foundation models: From vision to multimodality. arXiv preprint arXiv:2503.22081 (2025) 29 [9] Lin, T.-Y., Maire, M., Belongie, S., Hays, J., Perona, P., Ramanan, D., Doll´ ar, P., Zitnick, C.L.: Microsoft coco: Common objects in context. In: European Conference Computer Vision, pp. 740–755 (2014) [10] Deng, J., Dong, W., Socher, R., Li, L.-J., Li, K., Fei-Fei, L.: Imagenet: A large-scale hierarchical image database. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 248–255 (2009) [11] Li, K., Wan, G., Cheng, G., Meng, L., Han, J.: Object detection in optical remote sensing images: A survey and a new benchmark. ISPRS Journal of Photogrammetry and Remote Sensing 159 , 296–307 (2020) [12] Xia, G.-S., Bai, X., Ding, J., Zhu, Z., Belongie, S., Luo, J., Datcu, M., Pelillo, M., Zhang, L.: Dota: A large-scale dataset for object detection in aerial images. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 3974–3983 (2018) [13] Lam, D., Kuzma, R., McGee, K., Dooley, S., Laielli, M., Klaric, M., Bulatov, Y., McCord, B.: xview: Objects in context in overhead imagery. arXiv preprint arXiv:1802.07856 (2018) [14] Cheng, G., Yuan, X., Yao, X., Yan, K., Zeng, Q., Xie, X., Han, J.: Towards large-scale small object detection: Survey and benchmarks. IEEE Transactions on Pattern Analysis and Machine Intelligence 45 (11), 13467–13488 (2023) [15] Liu, W., Liu, J., Su, X., Nie, H., Luo, B.: Source-free domain adaptive object detection in remote sensing images. arXiv preprint arXiv:2401.17916 (2024) [16] Zhang, X., He, Y., Xu, R., Yu, H., Shen, Z., Cui, P.: Nico++: Towards bet-ter benchmarking for domain generalization. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 16036–16047 (2023) [17] Bi, Q., Zhou, B., Yi, J., Ji, W., Zhan, H., Xia, G.-S.: Good: Towards domain generalized oriented object detection. ISPRS Journal of Photogrammetry and Remote Sensing 223 , 207–220 (2025) [18] Wallingford, M., Li, H., Achille, A., Ravichandran, A., Fowlkes, C., Bhotika, R., Soatto, S.: Task adaptive parameter sharing for multi-task learning. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7561–7570 (2022) [19] Liu, Y., Lu, Y., Liu, H., An, Y., Xu, Z., Yao, Z., Zhang, B., Xiong, Z., Gui, C.: Hierarchical prompt learning for multi-task learning. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 10888–10898 (2023) [20] Jain, Y., Behl, H., Kira, Z., Vineet, V.: Damex: Dataset-aware mixture-of-experts for visual understanding of mixture-of-datasets. Advances in Neural Information 30 Processing Systems 36 , 69625–69637 (2023) [21] Fan, Z., Sarkar, R., Jiang, Z., Chen, T., Zou, K., Cheng, Y., Hao, C., Wang, Z., 
+
+et al. : M 3vit: Mixture-of-experts vision transformer for efficient multi-task learn-ing with model-accelerator co-design. Advances in Neural Information Processing Systems 35 , 28441–28457 (2022) [22] Le, M., Nguyen, H., Nguyen, T., Pham, T., Ngo, L., Ho, N., et al. : Mixture of experts meets prompt-based continual learning. Advances in Neural Information Processing Systems 37 , 119025–119062 (2024) [23] Zhang, X., Zhang, T., Wang, G., Zhu, P., Tang, X., Jia, X., Jiao, L.: Remote sensing object detection meets deep learning: A metareview of challenges and advances. IEEE Geoscience and Remote Sensing Magazine 11 (4), 8–44 (2023) [24] Wu, X., Zhu, F., Zhao, R., Li, H.: Cora: Adapting clip for open-vocabulary detec-tion with region prompting and anchor pre-matching. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7031–7040 (2023) [25] Zareapoor, M., Shamsolmoali, P., Lu, Y.: Bimac: Bidirectional multimodal alignment in contrastive learning. The Annual AAAI Conference on Artificial Intelligence (2025) [26] Shamsolmoali, P., Chanussot, J., Zareapoor, M., Zhou, H., Yang, J.: Multipatch feature pyramid network for weakly supervised object detection in optical remote sensing images. IEEE Transactions on Geoscience and Remote Sensing 60 , 1–13 (2021) [27] Yang, X., Zhang, G., Li, W., Wang, X., Zhou, Y., Yan, J.: H2rbox: Horizontal box annotation is all you need for oriented object detection. International Conference on Learning Representations (2023) [28] Xie, X., Cheng, G., Wang, J., Yao, X., Han, J.: Oriented r-cnn for object detection. In: IEEE/CVF International Conference on Computer Vision (2021) [29] Lin, J., Zhao, Y., Wang, S., Tang, Y.: Yolo-da: An efficient yolo-based detector for remote sensing object detection. IEEE Geoscience and Remote Sensing Letters 
+
+20 (2023) [30] Wei, X., Li, Z., Wang, Y.: Sed-yolo based multi-scale attention for small object detection in remote sensing. Scientific Reports 15 (1), 3125 (2025) [31] He, H., Ding, J., Xu, B., Xia, G.-S.: On the robustness of object detection models on aerial images. IEEE Transactions on Geoscience and Remote Sensing (2024) [32] Miao, T., Zeng, H., Yang, W., Chu, B., Zou, F., Ren, W., Chen, J.: An improved lightweight retinanet for ship detection in sar images. IEEE Journal of Selected 31 Topics in Applied Earth Observations and Remote Sensing 15 , 4667–4679 (2022) [33] Sun, X., Liu, Y., Yan, Z., Wang, P., Diao, W., Fu, K.: Sraf-net: Shape robust anchor-free network for garbage dumps in remote sensing imagery. IEEE Transactions on Geoscience and Remote Sensing 59 (7), 6154–6168 (2020) [34] Liu, W., Li, Q., Lin, X., Yang, W., He, S., Yu, Y.: Ultra-high resolution image segmentation via locality-aware context fusion and alternating local enhancement. International Journal of Computer Vision 132 (11), 5030–5047 (2024) [35] Zhu, J., Chen, X., Zhang, H., Tan, Z., Wang, S., Ma, H.: Transformer based remote sensing object detection with enhanced multispectral feature extraction. IEEE Geoscience and Remote Sensing Letters 20 , 1–5 (2023) [36] Zhao, J., Ding, Z., Zhou, Y., Zhu, H., Du, W.-L., Yao, R., El Saddik, A.: Ori-entedformer: An end-to-end transformer-based oriented object detector in remote sensing images. IEEE Transactions on Geoscience and Remote Sensing (2024) [37] Liu, D., Zhang, J., Qi, Y., Wu, Y., Zhang, Y.: Tiny object detection in remote sensing images based on object reconstruction and multiple receptive field adap-tive feature enhancement. IEEE Transactions on Geoscience and Remote Sensing (2024) [38] Lyu, C., Zhang, W., Huang, H., Zhou, Y., Wang, Y., Liu, Y., Zhang, S., Chen, K.: Rtmdet: An empirical study of designing real-time object detectors. arXiv preprint arXiv:2212.07784 (2022) [39] Azimi, S.M., Vig, E., Bahmanyar, R., K¨ orner, M., Reinartz, P.: Towards multi-class object detection in unconstrained remote sensing imagery. In: Asian Conference on Computer Vision, pp. 150–165 (2018) [40] Luo, S., Ma, L., Yang, X., Luo, D., Du, Q.: Self-training based unsuper-vised domain adaptation for object detection in remote sensing imagery. IEEE Transactions on Geoscience and Remote Sensing (2024) [41] Ma, Y., Chai, L., Jin, L., Yan, J.: Hierarchical alignment network for domain adaptive object detection in aerial images. ISPRS Journal of Photogrammetry and Remote Sensing 208 , 39–52 (2024) [42] Liu, Y.-C., Ma, C.-Y., Dai, X., Tian, J., Vajda, P., He, Z., Kira, Z.: Open-set semi-supervised object detection. In: European Conference on Computer Vision, pp. 143–159 (2022) [43] Oksuz, K., Kuzucu, S., Joy, T., Dokania, P.K.: Mocae: Mixture of calibrated experts significantly improves object detection. Transactions on Machine Learning Research (2024) 32 [44] Chen, Y., Wang, M., Mittal, A., Xu, Z., Favaro, P., Tighe, J., Modolo, D.: Scaledet: A scalable multi-dataset object detector. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7288–7297 (2023) [45] Meng, L., Dai, X., Chen, Y., Zhang, P., Chen, D., Liu, M., Wang, J., Wu, Z., Yuan, L., Jiang, Y.-G.: Detection hub: Unifying object detection datasets via query adaptation on language embedding. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 11402–11411 (2023) [46] Shi, C., Zhu, Y., Yang, S.: Plain-det: A plain multi-dataset object detector. In: European Conference on Computer Vision, pp. 210–226 (2024) [47] Yang, H., Wu, H., Chen, H.: Detecting 11k classes: Large scale object detection without fine-grained bounding boxes. In: IEEE/CVF International Conference on Computer Vision, pp. 9805–9813 (2019) [48] Wang, X., Cai, Z., Gao, D., Vasconcelos, N.: Towards universal object detection by domain attention. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7289–7298 (2019) [49] Zhou, X., Koltun, V., Kr¨ ahenb¨ uhl, P.: Simple multi-dataset detection. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7571–7580 (2022) [50] Jin, P., Zhu, B., Yuan, L., Yan, S.: Moe++: Accelerating mixture-of-experts methods with zero-computation experts. International Conference on Learning Representations (2025) [51] Mittal, S., Bengio, Y., Lajoie, G.: Is a modular architecture enough? Advances in Neural Information Processing Systems 35 , 28747–28760 (2022) [52] Ponti, E.M., Sordoni, A., Bengio, Y., Reddy, S.: Combining modular skills in multitask learning. arXiv preprint arXiv:2202.13914 (2022) [53] Al-Maamari, M., Amor, M.B., Granitzer, M.: Mixture of modular experts: Dis-tilling knowledge from a multilingual teacher into specialized modular language models. arXiv preprint arXiv:2407.19610 (2024) [54] Lepikhin, D., Lee, H., Xu, Y., Chen, D., Firat, O., Huang, Y., Krikun, M., Shazeer, N.: Gshard: Scaling giant models with conditional computation and automatic sharding. International Conference on Learning Representations (2021) [55] Shazeer, N., Mirhoseini, A., Maziarz, K., Davis, A., Le, Q., Hinton, G., Dean, J.: Outrageously large neural networks: The sparsely-gated mixture-of-experts layer. International Conference on Learning Representations (2017) [56] Zhou, Y., Lei, T., Liu, H., Du, N., Huang, Y., Zhao, V., Dai, A.M., Le, Q.V., 33 Laudon, J., et al. : Mixture-of-experts with expert choice routing. Advances in Neural Information Processing Systems 35 , 7103–7114 (2022) [57] Clark, A., Las Casas, D., Guy, A., Mensch, A., Paganini, M., Hoffmann, J., Damoc, B., Hechtman, B., Cai, T., Borgeaud, S., et al. : Unified scaling laws for routed language models. In: International Conference on Machine Learning, pp. 4057–4086 (2022) [58] Liu, T., Puigcerver, J., Blondel, M.: Sparsity-constrained optimal transport. International Conference on Learning Representations (2022) [59] Fedus, W., Zoph, B., Shazeer, N.: Switch transformers: Scaling to trillion param-eter models with simple and efficient sparsity. Journal of Machine Learning Research 23 (120), 1–39 (2022) [60] Gupta, S., Mukherjee, S., Subudhi, K., Gonzalez, E., Jose, D., Awadallah, A.H., Gao, J.: Sparsely activated mixture-of-experts are robust multi-task learners. arXiv preprint arXiv:2204.07689 (2022) [61] Huang, Q., An, Z., Zhuang, N., Tao, M., Zhang, C., Jin, Y., Xu, K., Chen, L., Huang, S., Feng, Y.: Harder tasks need more experts: Dynamic routing in moe models. Association for Computational Linguistics (2024) [62] Sanchez Aimar, E., Jonnarth, A., Felsberg, M., Kuhlmann, M.: Balanced product of calibrated experts for long-tailed recognition. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 19967–19977 (2023) [63] Sanchez Aimar, E., Helgesen, N., Xu, Y., Kuhlmann, M., Felsberg, M.: Flexible distribution alignment: Towards long-tailed semi-supervised learning with proper calibration. In: European Conference on Computer Vision, pp. 307–327 (2024) [64] Bansal, A., Sikka, K., Sharma, G., Chellappa, R., Divakaran, A.: Zero-shot object detection. In: European Conference on Computer Vision, pp. 384–400 (2018) [65] Pennington, J., Socher, R., Manning, C.D.: Glove: Global vectors for word repre-sentation. In: Conference on Empirical Methods in Natural Language Processing, pp. 1532–1543 (2014) [66] Gu, X., Lin, T.-Y., Kuo, W., Cui, Y.: Open-vocabulary object detection via vision and language knowledge distillation. International Conference on Learning Representations (2022) [67] Zhou, X., Girdhar, R., Joulin, A., Kr¨ ahenb¨ uhl, P., Misra, I.: Detecting twenty-thousand classes using image-level supervision. In: European Conference on Computer Vision, pp. 350–368 (2022) [68] Du, Y., Wei, F., Zhang, Z., Shi, M., Gao, Y., Li, G.: Learning to prompt for 34 open-vocabulary object detection with vision-language model. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition (2022) [69] Zareapoor, M., Shamsolmoali, P., Lu, Y.: Learning region-word alignment with attentive masking for open-vocabulary object detection. In: Advances in Neural Information Processing Systems Workshop (2024) [70] Li, Y., Guo, W., Yang, X., Liao, N., He, D., Zhou, J., Yu, W.: Toward open vocabulary aerial object detection with clip-activated student-teacher learning. arXiv preprint arXiv:2311.11646 (2024) [71] Radford, A., Kim, J.W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry, G., Askell, A., Mishkin, P., Clark, J., et al. : Learning transferable visual models from natural language supervision. In: International Conference on Machine Learning (2021) [72] Kuhn, H.W.: The hungarian method for the assignment problem. Naval research logistics quarterly 2(1-2), 83–97 (1955) [73] Cheng, G., Zhou, P., Han, J.: Learning rotation-invariant convolutional neu-ral networks for object detection in vhr optical remote sensing images. IEEE Transactions on Geoscience and Remote Sensing 54 (12), 7405–7415 (2016) [74] Ren, S., He, K., Girshick, R., Sun, J.: Faster r-cnn: Towards real-time object detec-tion with region proposal networks. Advances in neural information processing systems 28 (2015) [75] Zhang, H., Li, F., Liu, S., Zhang, L., Su, H., Zhu, J., Ni, L.M., Shum, H.-Y.: Dino: Detr with improved denoising anchor boxes for end-to-end object detection. International Conference on Learning Representations (2023) [76] Xu, C., Wang, J., Yang, W., Yu, H., Yu, L., Xia, G.-S.: Detecting tiny objects in aerial images: A normalized wasserstein distance and a new benchmark. ISPRS Journal of Photogrammetry and Remote Sensing 190 , 79–93 (2022) [77] Lee, H., Eum, S., Kwon, H.: Me r-cnn: Multi-expert r-cnn for object detection. IEEE Transactions on Image Processing 29 , 1030–1044 (2020) [78] Huang, P., Han, J., Cheng, D., Zhang, D.: Robust region feature synthesizer for zero-shot object detection. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7622–7631 (2022) [79] Wang, J., Yang, W., Guo, H., Zhang, R., Xia, G.-S.: Tiny object detection in aerial images. In: International Conference on Pattern Recognition (2021) [80] Puigcerver, J., Riquelme, C., Mustafa, B., Houlsby, N.: From sparse to soft mix-tures of experts. International Conference on Learning Representations (2024) 35

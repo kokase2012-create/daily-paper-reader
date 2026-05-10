@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.21198v1/fig-001.webp",
+      "caption": "Figure 2: Training image constructed using adjusted CopyPaste algorithm. Copy-pasted fish with augmented yellowgreen color are a result of algorithm used for improved training.",
+      "page": 3,
+      "index": 1,
+      "width": 483,
+      "height": 275
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21198v1/fig-002.webp",
+      "caption": "Figure 3: Second training batch for PSADA model training run on DeepFish dataset.",
+      "page": 3,
+      "index": 2,
+      "width": 404,
+      "height": 404
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21198v1/fig-003.webp",
+      "caption": "Figure 7: Mean number of fish detected in Florida Keys Dataset by each model vs. ground truth.",
+      "page": 6,
+      "index": 3,
+      "width": 498,
+      "height": 390
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21198v1/fig-004.webp",
+      "caption": "Figure 1: Bounding Box generated from a validation set segmentation mask",
+      "page": 2,
+      "index": 4,
+      "width": 468,
+      "height": 294
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21198v1/fig-005.webp",
+      "caption": "Figure 4: Training results for both models. From left to right, starting at the top row: (1) training box loss, (2) training classification loss, (3) training distribution focal loss (DFL), (4) precision (metrics/precision), and (5) recall (metrics/recall). The bottom row shows: (6) validation box loss, (7) validation classification loss, (8) validation DFL loss, (9) mean Average Precision at IoU threshold 0.5 (mAP50), and (10) mean Average Precision over IoU thresholds from 0.5 to 0.95 (mAP50-95).",
+      "page": 5,
+      "index": 5,
+      "width": 495,
+      "height": 535
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21198v1/fig-006.webp",
+      "caption": "Figure 5: Our annealing-based data augmentation algorithm model, the PSADA model, (b) outperforms our baseline model (a) in detecting crowded fish and fish in unpredictable natural environments.",
+      "page": 5,
+      "index": 6,
+      "width": 398,
+      "height": 550
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.19999v1/fig-001.webp",
+      "caption": "Fig. 2. Precision comparison across four datasets, highlighting the trade-off with mAP@50 results in Table II.",
+      "page": 5,
+      "index": 1,
+      "width": 511,
+      "height": 321
+    },
+    {
+      "url": "assets/figures/arxiv/2604.19999v1/fig-002.webp",
+      "caption": "Fig. 3. Qualitative comparison of the Copy-Paste method versus the proposed approach on the FDD dataset. (a) Copy-Paste results. (b) Proposed method results on corresponding frames. Zoomed insets highlight targets; bounding boxes indicate predicted locations and confidence scores.",
+      "page": 5,
+      "index": 2,
+      "width": 461,
+      "height": 581
+    },
+    {
+      "url": "assets/figures/arxiv/2604.19999v1/fig-003.webp",
+      "caption": "TABLE II QUANTITATIVE COMPARISON OF DATA AUGMENTATION STRATEGIES ACROSS FOUR SMALL UAV DETECTION BENCHMARKS. VALUES REPRESENT MEAN AVERAGE PRECISION (mAP@50), WITH THE BEST RESULTS MARKED IN BOLD.",
+      "page": 4,
+      "index": 3,
+      "width": 1062,
+      "height": 312
+    },
+    {
+      "url": "assets/figures/arxiv/2604.19999v1/fig-004.webp",
+      "caption": "Fig. 1. Overview of the proposed framework. The upper section (Reference Pipeline) illustrates the instance-aware strategy based on Copy-Paste. The lower section (Proposed Pipeline) depicts the Context-Aware approach, which trains the YOLOv11 Nano model via probabilistic Mosaic (P=0.75) and Photometric Adaptation (HSV).",
+      "page": 3,
+      "index": 4,
+      "width": 642,
+      "height": 339
+    }
+  ]
+}
