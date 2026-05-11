@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.12719v1/fig-001.webp",
+      "caption": "Figure 1. Architectural overview of the detectors used in our study: YOLOv8, Faster R-CNN, and RT-DETR. The expanded block diagrams (e.g., Bottleneck, Residual Layer, HGBlock) illustrate the specific insertion points within the residual paths where MCD, MCDB, and MCSD are applied.",
+      "page": 6,
+      "index": 1,
+      "width": 1000,
+      "height": 706
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12719v1/fig-002.webp",
+      "caption": "Figure 6. Qualitative comparison of detection and uncertainty for data under distribution shift, using RT-DETRx. Examples from the COCO-O dataset, comparing detection outputs across different uncertainty quantification methods. Each row represents a distinct domain shift: Row 1 (Weather), Row 2 (Painting), Row 3 (Handmake), and Row 4 (Sketch). Columns from left to right show: Ground Truth (green bounding boxes), Mean Detections (MCD) (red), Mean Detections (MCDB) (blue), and Mean Detections (MCSD) (orange).",
+      "page": 15,
+      "index": 2,
+      "width": 848,
+      "height": 700
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12719v1/fig-003.webp",
+      "caption": "Figure 2. Pareto front analysis of the accuracy (mAP) vs. uncertainty ranking (AUARC) trade-off for RT-DETRx on the COCO validation set. Each point represents a unique hyperparameter configuration. Non-competitive MCDB configurations (mAP < 0.1) are omitted.",
+      "page": 7,
+      "index": 3,
+      "width": 496,
+      "height": 284
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12719v1/fig-004.webp",
+      "caption": "Figure 4. Pareto front analysis of the accuracy (mAP) vs. uncertainty ranking (AUARC) trade-off for Faster R-CNN on the COCO validation set. Each point represents a unique hyperparameter configuration. Non-competitive configurations are omitted.",
+      "page": 14,
+      "index": 4,
+      "width": 496,
+      "height": 284
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12719v1/fig-005.webp",
+      "caption": "Figure 5. Pareto front analysis of the accuracy (mAP) vs. uncertainty ranking (AUARC) trade-off for YOLOv8x on the COCO validation set. Each point represents a unique hyperparameter configuration. Non-competitive configurations are omitted.",
+      "page": 14,
+      "index": 5,
+      "width": 496,
+      "height": 283
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12719v1/fig-006.webp",
+      "caption": "Table 3. Quantitative results under distribution shift. Comparison of mAP and Predictive Entropy across the COCO-O domains. Note the difference in Entropy measures between Faster R-CNN (Shannon Entropy) and the dense detectors (Binary Entropy).",
+      "page": 17,
+      "index": 6,
+      "width": 840,
+      "height": 448
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12719v1/fig-007.webp",
+      "caption": "Table 2. Impact of stochastic layer placement. Comparison of stochasticity applied to earlier vs. later stages in single and multiple (Half Block) layers. N/A denotes configurations that failed to meet minimum viability thresholds.",
+      "page": 16,
+      "index": 7,
+      "width": 454,
+      "height": 476
+    }
+  ]
+}

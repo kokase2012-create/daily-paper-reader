@@ -1,0 +1,819 @@
+Title: Monte Carlo Stochastic Depth for Uncertainty Estimation in Deep Learning
+
+URL Source: https://arxiv.org/pdf/2604.12719v1
+
+Published Time: Wed, 15 Apr 2026 01:30:37 GMT
+
+Number of Pages: 17
+
+Markdown Content:
+# Monte Carlo Stochastic Depth for Uncertainty Estimation in Deep Learning 
+
+## Adam T. M¨ uller Tobias R¨ ogelein Nicolaj C. Stache Heilbronn University of Applied Sciences, Germany   
+
+> {adam-theo.mueller, tobias.roegelein, nicolaj.stache }@hs-heilbronn.de
+
+## Abstract 
+
+The deployment of deep neural networks in safety-critical systems necessitates reliable and efficient uncertainty quan-tification (UQ). A practical and widespread strategy for UQ is repurposing stochastic regularizers as scalable approx-imate Bayesian inference methods, such as Monte Carlo Dropout (MCD) and MC-DropBlock (MCDB). However, this paradigm remains under-explored for Stochastic Depth (SD), a regularizer integral to the residual-based backbones of most modern architectures. While prior work demon-strated its empirical promise for segmentation, a formal the-oretical connection to Bayesian variational inference and a benchmark on complex, multi-task problems like object de-tection are missing. In this paper, we first provide theoretical insights connect-ing Monte Carlo Stochastic Depth (MCSD) to principled approximate variational inference. We then present the first comprehensive empirical benchmark of MCSD against MCD and MCDB on state-of-the-art detectors (YOLO, RT-DETR) using the COCO and COCO-O datasets. Our results position MCSD as a robust and computation-ally efficient method that achieves highly competitive predictive accuracy (mAP), notably yielding slight im-provements in calibration (ECE) and uncertainty ranking (AUARC) compared to MCD. We thus establish MCSD as a theoretically-grounded and empirically-validated tool for efficient Bayesian approximation in modern deep learning. 
+
+## 1. Introduction 
+
+The deployment of deep neural networks (DNNs) in safety-critical applications such as autonomous driving, robotics, and medical diagnostics poses a present-day engineering challenge. While these models have achieved remarkable predictive accuracy [9, 17], their standard deterministic na-ture is a fundamental limitation [18, 38]. Such models are often poorly calibrated and can produce high-confidence predictions for inputs far from their training data, fail-ing to signal uncertainty for out-of-distribution (OOD) in-puts [18]. This propensity for high-confidence errors is un-acceptable in high-stakes environments where an overcon-fident error can be catastrophic. Consequently, equipping such models with reliable, computationally-efficient uncer-tainty quantification is a critical and necessary step for their trustworthy deployment. The Bayesian framework [36, 50] offers a principled so-lution by learning a posterior distribution over model pa-rameters, naturally capturing epistemic uncertainty. How-ever, exact Bayesian inference in deep networks is computa-tionally intractable. A practical breakthrough was achieved by Gal, Y. and Ghahramani, Z. [11], who re-framed stochas-tic regularization as a form of approximate Bayesian vari-ational inference. Their method, Monte Carlo Dropout (MCD), applies dropout at inference time to sample from the model’s approximate posterior, providing a scalable way to estimate epistemic uncertainty. This paradigm of repur-posing a regularizer for Bayesian approximation was later extended [12, 33, 56]. As standard dropout is less effec-tive in convolutional networks, Monte Carlo DropBlock (MCDB) was proposed by Yelleni, S. H. et al . [54], ap-plying the same Monte Carlo (MC) principle to the more suitable, architecture-aware DropBlock regularizer. This progression from MCD to MCDB reveals a pow-erful meta-strategy: stochastic regularization techniques implicitly define an approximate posterior, which can be sampled at inference time. This naturally leads to a new research question: can this principle be extended to other, more architecturally-ingrained regularizers? Stochas-tic Depth (SD) [22] is a prime candidate. It is a powerful regularization technique applicable to the residual-based ar-chitectures that form the backbones of most modern, high-performance models, including state-of-the-art object de-tectors (e.g. YOLO) [48] and Vision Transformer (ViT) architectures [19]. Repurposing SD for inference-time sam-pling would create an implicit ensemble of models with varying depths, a stochastic process that is fundamentally different from the unit-dropping of MCD or the region-dropping of MCDB. This idea has recently seen preliminary validation. Yao, L. et al . [53] provided the first empirical evidence that Bayesian inference based on SD can yield well-calibrated 
+
+> arXiv:2604.12719v1 [cs.LG] 14 Apr 2026
+
+uncertainty estimates, demonstrating its promise for seman-tic segmentation. However, this prior work leaves two criti-cal gaps, which our paper addresses. First, the work remains purely empirical, lacking the formal theoretical connection to Bayesian variational inference – a limitation acknowl-edged in the original study [53]. Second, its performance on complex, multi-task problems like object detection re-mains unexplored. This paper bridges these gaps. We provide theoret-ical insights positioning Monte Carlo Stochastic Depth (MCSD) as a valid approximate Bayesian inference tech-nique. We then conduct the first comprehensive empiri-cal benchmark of MCSD for object detection, validating it against MCD and MCDB on state-of-the-art architectures. Our findings establish MCSD as a theoretically-grounded and empirically-validated tool for efficient Bayesian ap-proximation in modern deep learning. Our main contributions are as follows: (1) We formally derive that MCSD is equivalent to a variational approxima-tion of a Bayesian neural network. (2) We adapt and vali-date MCSD for the task of object detection, conducting its first empirical study in this domain. (3) We provide compre-hensive experiments of MCSD against MCD and MCDB on current architectures (FasterRCNN [41], YOLO [40], RT-DETR [57]), establishing compatibility with multiple Deep Neural Network (DNN) architectures, provided they are equipped with skip-connections. 
+
+## 2. Related Work 
+
+Deploying deep neural networks in high-stakes environ-ments necessitates rigorous predictive uncertainty quantifi-cation [4]. This uncertainty is conventionally decomposed into irreducible data noise ( aleatoric ) and reducible model ignorance due to a lack of data ( epistemic ) [21, 23, 25, 26]. Our work focuses on estimating epistemic uncertainty. This remains a central challenge, as it requires characterizing the high-dimensional posterior weight distribution, p(W |D ), a task that is analytically and computationally intractable for modern DNNs [7]. 
+
+Bayesian Approximation and Ensemble Methods. 
+
+Bayesian Neural Networks (BNNs) [7, 16] provide a prin-cipled framework for capturing this uncertainty by learning a distribution over weights rather than point estimates. As the exact posterior is intractable, scalable approximation methods are required. These can be broadly divided into: • Markov Chain Monte Carlo (MCMC): [29, 34, 51] These methods can, in theory, converge to the true poste-rior but are computationally prohibitive and too slow for deep learning. • Variational Inference (VI): This family of methods [6, 13] approximates the true posterior p(W |D ) with a sim-pler, tractable variational distribution qθ (W ) (e.g., a diag-onal Gaussian). This optimization-based approach is far more scalable and, as we will detail in Sec. 3, forms the theoretical basis for many modern techniques. While BNNs offer a formal approach, Deep Ensembles [27, 39] have emerged as an empirically powerful and robust method for uncertainty quantification. This non-Bayesian method trains multiple identical models with different ran-dom initializations and treats the variance of their predic-tions as uncertainty. However, Ensemble methods incur a significant computational burden, requiring N-times the cost for both training and inference. 
+
+Post-Hoc and Monte Carlo Approximations. As a com-putationally efficient alternative to ensembles, post-hoc methods have garnered significant interest [46]. These approaches aim to extract uncertainty from a single, pre-trained model without costly re-training. This is espe-cially valuable for large-scale computer vision applications, where model and dataset sizes continue to grow, as it pro-vides a way to equip large models with uncertainty quantifi-cation (UQ) [10]. • Laplace Approximation [5, 58] is a post-hoc technique that fits a Gaussian to the posterior centered at a Maxi-mum A Posteriori (MAP) estimate, using the local cur-vature (Hessian) of the loss. While scalable variants like last-layer or diagonal approximations exist [42, 55], their utility can be limited. • Stochastic Regularization for Bayesian Approxima-tion is a paradigm more central to our work. Gal, Y. and Ghahramani, Z. [11] provided the critical insight that a standard NN trained with dropout (or generalized weight-dropping variants like DropConnect [49]) is equivalent to an approximation of a deep Gaussian Process. Con-sequently, performing multiple stochastic forward passes at inference time constitutes a form of variational infer-ence. This principle has been extended to other stochastic techniques, such as MC-DropBlock [54] and Stochastic Batch Normalization [3]. Seminal to our work, Yao, L. et al . [53] introduced the idea of VI with SD as a Bayesian approximation. Concurrently, Depth Uncertainty Net-works (DUNs) [2] have explored treating network depth as a categorical random variable, marginalizing predic-tions over subnetworks of increasing depth in a single for-ward pass. 
+
+Single-Pass Uncertainty. Distinct from sampling tech-niques, deterministic methods quantify uncertainty in a sin-gle forward pass. Approaches like Evidential Deep Learn-ing [43] and Epistemic Neural Networks [35] are highly ef-ficient but require specialized loss functions or architectural modifications. Conversely, MCSD leverages native stochas-tic regularizers, requiring no structural overhead or custom training regimes. 
+
+Uncertainty in Object Detection. Beyond standard classi-fication, UQ is increasingly vital for object detection. Prior works adapt MCD to extract spatial and label uncertainty for improved open-set performance [31] and corner-case detection [20]. Our evaluation of MCSD advances this do-main by offering an efficient, architecturally native alterna-tive to MCD. Building upon these insights, we present the theoretical properties of Bayesian VI using stochastic depth. We pro-pose MCSD as a novel stochastic process, that yields ro-bust uncertainty estimates in deployment across a variety of model architectures. To provide mathematical grounding for both established methods like MCD and the proposed MCSD, the following section presents the theoretical back-ground on VI and MC sampling. 
+
+## 3. Background 
+
+In a standard BNN, the aim is to learn a full posterior dis-tribution p(W |D ) over the weights given the training data 
+
+D. Making a prediction y∗ for a new input x∗ involves marginalizing over this posterior, an operation known as Bayesian model averaging [44]: 
+
+p(y∗|x∗, D) = 
+
+Z
+
+p(y∗|x∗, W )p(W |D )dW (1) Here, p(y∗|x∗, W ) is the likelihood of the prediction given a specific set of weights, and p(W |D ) is the posterior dis-tribution of the weights given the data. However, as noted in Sec. 2, the posterior p(W |D ) is intractable for any non-trivial deep neural network (DNN). 
+
+3.1. Variational Inference 
+
+VI reformulates this intractable integration problem as an optimization problem [13]. The core idea is to introduce a simpler, tractable variational distribution qθ (W ), to approx-imate the true posterior. The goal is to find the parameters 
+
+θ that minimize the distance between qθ (W ) and p(W |D ).This is conventionally achieved by minimizing the 
+
+Kullback-Leibler (KL) divergence between the approxi-mation and the true posterior [1]: 
+
+θ∗ = arg min  
+
+> θ
+
+KL (qθ (W )|| p(W |D )) (2) Minimizing this KL divergence is still intractable because it depends on the posterior. However, it can be shown to be equivalent to maximizing a different, tractable objective: the Evidence Lower Bound (ELBO) , denoted LVI (θ) [1]: 
+
+log p(D) = KL (qθ (W )|| p(W |D )) + LVI (θ) (3) Since the evidence log p(D) is constant with respect to θ,maximizing the ELBO is equivalent to minimizing the KL divergence. The ELBO itself is defined as [13]: 
+
+LVI (θ) = Eqθ (W )[log p(D| W )] 
+
+| {z }
+
+> Expected Log-Likelihood
+
+− KL (qθ (W )|| p(W )) 
+
+| {z }
+
+> Complexity Penalty
+
+(4) Here, p(W ) is the prior distribution over the weights, mak-ing this objective tractable. The first term encourages the distribution qθ (W ) to find weights that explain the data well, while the second term (the KL penalty) acts as a regu-larizer, forcing the approximation to stay close to the prior. 
+
+3.2. Bayesian Prediction via Monte Carlo Sampling 
+
+Once qθ (W ) is optimized by maximizing the ELBO, it can be used to approximate the predictive posterior from Eq. (1): 
+
+p(y∗|x∗, D) ≈
+
+Z
+
+p(y∗|x∗, W )qθ (W )dW (5) While qθ (W ) is tractable, this integral often is not. It is therefore approximated using MC sampling [10]. T sets of weights {Wt}Tt=1 are drawn from the optimized variational distribution and the model’s predictions are averaged: 
+
+p(y∗|x∗, D) ≈ 1
+
+T
+
+> T
+
+X
+
+> t=1
+
+p(y∗|x∗, W t),
+
+where Wt ∼ qθ (W )
+
+(6) The challenge lies in defining a variational distribution 
+
+qθ (W ) that is (1) expressive enough to capture meaningful uncertainty and (2) simple enough to optimize via Eq. (4) and sample from for Eq. (6). 
+
+3.3. Monte Carlo Dropout (MCD) 
+
+MCD [11] re-interprets the Dropout [47] regularizer as ap-proximate Bayesian inference, showing that a neural net-work trained with dropout and L2 regularization implicitly optimizes the ELBO (Eq. (4)). In this framework, the variational distribution qθ (W )
+
+is defined by the dropout mechanism itself. For a single weight matrix W l in layer l, the variational distribution 
+
+q(W l) is defined over a matrix of learnable parameters M l
+
+(the weights θ) and a random binary mask zl:
+
+W l = M l · diag (zl), where zlj ∼ Bernoulli (p) (7) Here, p is the dropout probability. Critically, sampling from this qθ (W ) is trivial: it is simply a standard forward pass with dropout enabled. Thus, MCD applies this insight at inference time. By performing T stochastic forward passes (with dropout en-abled) and averaging the results, one is directly computing the Monte Carlo approximation of the predictive posterior (Eq. (6)). This provides a theoretically-grounded method for uncertainty quantification from a single model. 
+
+3.4. Monte Carlo DropBlock (MCDB) 
+
+While MCD provides a powerful framework, standard dropout is known to be less effective for convolutional lay-ers, as spatial correlations limit its regularizing effect. To address this, DropBlock (DB) [15] was proposed as a struc-tured regularizer that drops contiguous feature map regions. MCDB [54] extends the variational formalism of MCD to DB. Applying DB to a feature map Al is equivalent to imposing a structured variational distribution on the convo-lutional weights W l+1 .In this formalism, q( ˜W l) is defined as a product of Bernoulli distributions over blocks of the weight tensor. Sampling from q( ˜W l) is equivalent to either zeroing out a block of weights or keeping them set to learned values W l:
+
+q(W li ) = W l · zli, where zli ∼ Bernoulli (γ) (8) Here, i indexes a block in the filter and γ is the DB prob-ability. Similar to MCD, performing T stochastic forward passes with DB enabled at inference time constitutes a valid MC approximation (Eq. (6)) of the predictive posterior. 
+
+## 4. Monte Carlo Stochastic Depth 
+
+Following the framework established in Sec. 3, we now ex-tend the paradigm of scalable Bayesian approximation to SD. We first formalize the SD mechanism and then demon-strate its connection to variational inference, thereby pro-viding the theoretical grounding for the method we term 
+
+Monte Carlo Stochastic Depth (MCSD) as a principled UQ method. 
+
+4.1. Formalism for Stochastic Depth 
+
+SD is a training regularizer designed explicitly for deep residual networks [22]. A standard residual block l (with, for simplicity, a skip connection) defines the transformation of its input xl to its output xl+1 as: 
+
+xl+1 = xl + Fl(xl; Wl) (9) where Wl are the parameters of the residual function Fl.SD introduces a Bernoulli random variable bl ∼
+
+Bernoulli (pl) for each block l, where pl is the ”survival probability” of the block. The forward pass is modified to: 
+
+xl+1 = xl + bl · F l(xl; Wl) (10) During training, if bl = 1 (with probability pl), the block is active. If bl = 0 (with probability 1 − pl), the entire resid-ual function Fl is ”dropped,” and the output is simply the identity: xl+1 = xl. This effectively shortens the network, as only the identity path is active. At inference time, the standard SD protocol deactivates this stochasticity and uses a deterministic, scaled output: xl+1 = xl + pl · F l(xl; Wl).
+
+4.2. Stochastic Depth as Approximate Variational Inference 
+
+We posit that, analogous to MCD and MCDB, a network trained with SD is implicitly performing approximate vari-ational inference. The key is to define the variational distri-bution qθ (W ) that this mechanism represents. Unlike MCD/MCDB, which place a distribution over in-dividual weights or small weight blocks, SD places a distri-bution over the inclusion of entire network stages. Let the full set of learnable parameters be θ = {Wl}Ll=1 
+
+for all L residual blocks. We define our variational distribu-tion qθ (W ) as a discrete distribution over the network pa-rameters. Specifically, qθ (W ) places mass on a finite col-lection of parameter values by stochastically zeroing out the weights of entire residual blocks, effectively simulat-ing the selection of a sub-network. This process is gov-erned by a vector of L independent Bernoulli variables, 
+
+B = {b1, . . . , b L}, where bl ∼ Bernoulli (pl).A sample W (B) ∼ qθ (W ) is a specific sub-network con-figuration defined by the sampled vector B. The model’s computation for this sample, f (x | W (B)), is performed by applying Eq. (10) at each block. 
+
+qθ (W ) ≡ p(B) = 
+
+> L
+
+Y
+
+> l=1
+
+p(bl) = 
+
+> L
+
+Y
+
+> l=1
+
+pbl 
+
+> l
+
+(1 − pl)1−bl (11) The learnable parameters θ = {Wl} are the parameters of this variational distribution, and sampling from qθ (W )
+
+is trivially achieved by performing a standard SD forward pass. 
+
+4.3. Optimizing the ELBO 
+
+The standard SD training objective can be interpreted as a practical surrogate for optimizing the ELBO under this vari-ational distribution, rather than a strict analytical maximiza-tion. The first term of the ELBO (Eq. (4)) is the expected log-likelihood. For a dataset D and a loss function L (e.g., cross-entropy), this evaluates to: 
+
+EB∼qθ [ X
+
+> (x,y )∈D
+
+log p(y|x, W (B))] 
+
+≈ X
+
+> (x,y )∈D
+
+L(y, f (x | W (B))) 
+
+(12) This expectation is approximated using Monte Carlo sam-pling. The standard SD training procedure, which samples one path B per forward pass (or mini-batch) and computes the loss, is a stochastic gradient ascent optimization of this first ELBO term. The second ELBO term (Eq. (4)) is the complexity penalty. As with MCD [11], we assume a simple Gaus-sian prior p(W ) over the learnable parameters θ = {Wl}.We acknowledge that rigorously computing the KL diver-gence between a discrete mixture distribution and a contin-uous prior is ill-posed. Following established methodolo-gies for approximate Bayesian inference in deep learning, this KL divergence term is not optimized analytically but is instead approximated by the standard L2 regularization (weight decay) applied to the weights Wl during training. Thus, the standard Stochastic Depth training procedure (stochastic forward pass + L2 regularization) is shown to be a practical proxy for the optimization of the ELBO for the proposed variational distribution qθ (W ).
+
+4.4. Prediction and Uncertainty with MCSD 
+
+The established connection to variational inference provides the theoretical grounding for applying this framework to Bayesian prediction. We follow the Monte Carlo approx-imation of the predictive posterior (Eq. (6)) from Sec. 3. We define MCSD as the approximation of the predic-tive posterior by performing T stochastic forward passes at inference time, each with a new, independently sampled Bernoulli vector Bt:
+
+p(y∗|x∗, D) ≈ 1
+
+T
+
+> T
+
+X
+
+> t=1
+
+p(y∗|x∗, W (Bt)),
+
+where Bt ∼ qθ (W )
+
+(13) This discards the standard deterministic SD inference rule and instead utilizes the stochasticity to sample from the ap-proximate posterior. Resulting metrics over the T resulting predictions p(y∗|x∗, W (Bt)) provide a robust, theoretically-grounded measure of epistemic uncertainty. This formal-ism provides a theoretical interpretation for using SD as a Bayesian approximation and positions MCSD as a valid peer to MCD and MCDB. 
+
+4.5. Algorithmic Formulation 
+
+The theoretical framework culminating in Eq. (13) trans-lates directly into a practical algorithm. We formalize this practical implementation in Algorithm 1. The core require-ment is the retention of stochastic path sampling during the inference phase, enabled by a direct implementation of the Monte Carlo sampling step (Eq. (13)). 
+
+Algorithm 1 Monte Carlo Stochastic Depth                                                   
+
+> Input: Feature representation from a residual path ( Ares ), iden-tity shortcut ( x)
+> Parameters: mode, pdrop
+> 1: if mode == training or mode == inference then
+> 2: Set survival probability: pkeep = 1 .0−pdrop
+> 3: Get batch size Bfrom Ares
+> 4: Randomly sample a per-sample mask M:Mb∼
+> Bernoulli (pkeep )for b∈[1 , . . . , B ]
+> 5: Reshape Mto broadcast across Ares (e.g., shape
+> [B, 1,1,1] )
+> 6: Apply the mask: Ares =Ares ×M
+> 7: Normalize the features: Ares =Ares /p keep
+> 8: end if
+> 9: Return x+Ares
+
+The per-sample mask M (Line 4) is the practical real-ization of the Bernoulli variable bl (Eq. (10)), and normal-ization (Line 8) maintains output consistency. It is criti-cal to note that MCSD inherently requires skip-connections to function as a Bayesian approximation, as it relies on stochastically nullifying the residual function Fl (realized as Ares ) while preserving the identity path (Line 9). This makes it a natural fit for the residual-based backbones of modern detectors. 
+
+## 5. Experiments 
+
+To validate our theoretical derivation and assess the practi-cal utility of MCSD, we present a comprehensive empirical study. We benchmark its performance against prominent stochastic UQ methods on modern object detection archi-tectures. Our evaluation focuses on three main objectives: (i) Effectiveness in Predictive Performance: Assess MCSD for uncertainty estimation and calibration against the prevalent methods MCD and MCDB. (ii) Performance in Distribution Shift Scenarios: Ex-amine the efficacy of UQ on distributionally shifted datasets for MCSD. (iii) Adaptability across Architectures and Implemen-tation Parameters: Demonstrate the applicability of MCSD across different DNN architectures. 
+
+5.1. Experimental Setup 
+
+Models. We conduct experiments on a diverse set of state-of-the-art object detectors to investigate the broad applica-bility of MCSD. This includes Faster R-CNN [41] (CNN-based, two-stage), YOLOv8x [24] (CNN-based, single-stage), and RT-DETRx [57] (Transformer-based, single-stage). 
+
+Baselines. We compare MCSD against the two most promi-nent stochastic regularizer-based UQ methods: Monte Carlo Dropout (MCD) [11] and Monte Carlo DropBlock (MCDB) [54]. 
+
+Datasets. We use the large-scale COCO dataset (Com-mon Objects in Context) [28]. We follow standard lit-erature practices, training on the train2017 split and using val2017 as our in-distribution (ID) test set. To evaluate robustness and uncertainty quality under distribu-tion shift, we use the COCO-O (COCO-Out-of-distribution) dataset [30]. 
+
+Evaluation Metrics. We evaluate all methods across three key dimensions: predictive accuracy, uncertainty calibra-tion, and uncertainty ranking. We report the standard COCO metric, mean Average Precision (mAP), computed at an IoU threshold of 0.5:0.95. This assesses the core detection performance of the models. To quantify predictive uncertainty, we require a scalar score U (x) for each prediction. To consolidate the raw de-tections across the T stochastic forward passes into indi-vidual object observations, we employ the Basic Sequen-tial Algorithmic Scheme (BSAS) with spatial and semantic P1  
+
+> P2
+> P3
+> P4
+> P5
+> P3
+> P4
+> P5
+> C
+> Conv
+> C2f
+> U
+> Detect
+> (with C2f)
+> (with C2f)
+> (with C2f)
+> (with C2f)
+> C
+> C
+> C2f
+> U
+> C2f
+> C2f
+> Conv
+> CDetect
+> Detect
+
+Backbone  Head 
+
+C2f 
+
+> Conv
+
+Bottleneck 
+
+Conv 
+
+> n
+> shortcut = ?
+
+Residual Layer  (ResNet50)   
+
+> conv_1  Bear
+> Backbone
+> PPHGNetV2
+> IoU-aware Query Selection
+> Efficient Hybrid Encoder
+> AIFI
+> CCFM
+> Fusion
+> s1 s2
+> Decoer & Head
+> Fusion
+> Fusion
+> s1 s2
+
+RT-DETR  F5 
+
+> S5
+> S4
+> S3
+
+PPHGNetV2  HGBlock Stem  
+
+> Stage 1
+> Stage 2
+> Stage 3
+> Stage 4
+> GAP
+> Conv
+> FC
+> DWConv HGBlock
+> DWConv
+> DWConv
+> HGBlock
+> HGBlock
+> HGBlock
+> 2x
+> 2x
+> 5x
+> Conv 3x3
+> Conv 3x3
+> Conv 3x3
+> Conv 3x3
+> Conv 3x3
+> Conv 3x3
+> Conv 1x1
+> Input
+> Output
+> Conv 1x1
+> 3x3
+> 13x13
+> 5x5
+> 7x7
+> 11x11
+> 9x9
+> Feature Map
+> ROI Pooling
+> Softmax Detection
+> Box Regressor
+> Object Proposals
+> Anchor Boxes
+> Feature Map
+
+Faster-RCNN 
+
+> ResNet50
+> FC, softmax
+> conv_2
+> conv_5
+> conv_4
+> conv_3
+
+YOLOv8 
+
+> Split
+> Bottleneck
+> Bottleneck
+> Concat
+> Conv
+> k=3, s=1, p=1
+> Bear
+> shortcut = False
+> shortcut = True
+> Stochastic Depth
+> rate = ?
+
+Conv k=3, s=1, p=1 
+
+Conv 
+
+> k=3, s=1, p=1
+
+Conv 
+
+> k=3, s=1, p=1
+> Dropout
+> rate = ?
+> DropBlock
+> rate = ?
+> Stochastic Depth
+> rate = ?
+> Dropout
+> rate = ?
+> DropBlock
+> rate = ?
+> Stochastic Depth
+> rate = ?
+> Dropout
+> rate = ?
+> DropBlock
+> rate = ?
+> 1x1 conv
+> size = n x 256
+> 3x3 conv
+> size = n x 64
+> 1x1 conv
+> size = n x 64
+> L1
+> L2
+> L3
+> L4
+> C
+
+Figure 1. Architectural overview of the detectors used in our study: YOLOv8, Faster R-CNN, and RT-DETR. The expanded block diagrams (e.g., Bottleneck, Residual Layer, HGBlock) illustrate the specific insertion points within the residual paths where MCD, MCDB, and MCSD are applied. 
+
+affinity [32]. Given the architectural differences, we adapt our uncertainty metric as follows: • For Faster R-CNN (multi-class): The model uses a soft-max output for class predictions. We compute the Shan-non Entropy [45] over the mean predictive probability distribution ¯p = 1
+
+T
+
+PTt=1 pt for the C object classes. • For YOLO & RT-DETR (multi-label): These models use per-class sigmoid activations, treating detection as a multi-label problem. We first compute the mean predic-tive probability ¯pc = 1
+
+T
+
+PTt=1 pt,c for each class c. The total uncertainty is the mean of binary entropies across all 
+
+C classes. For uncertainty calibration we evaluate how well the model’s predictive confidence aligns with its empirical ac-curacy: • Brier Score (BS) [8] : Measures the mean squared er-ror between the predicted probabilities and the one-hot ground-truth labels y. A lower Brier Score indicates bet-ter calibration. • Expected Calibration Error (ECE) [18] : This metric bins predictions based on their confidence score (e.g., 
+
+max c ¯pc) and computes the weighted average difference between accuracy and confidence within each bin. Alower ECE indicates better calibration. Uncertainty ranking is shown via the Area Under the Accuracy-Rejection Curve (AUARC) [14]. The accuracy-rejection curve plots accuracy against the fraction of data rejected θ ∈ [0 , 1] , by progressively rejecting the most un-certain predictions. A perfect uncertainty score would reject all incorrect predictions before any correct ones, where a higher AUARC shows a more reliable uncertainty ranking. 
+
+5.1.1. Implementation Details Model Implementations. Our models are based on stan-dard public implementations: Torchvision [37] for Faster R-CNN, and Ultralytics [24] for YOLOv8x and RT-DETRx. We integrated the stochastic methods (MCD, MCDB, MCSD) by modifying the primary skip-connection blocks Figure 2. Pareto front analysis of the accuracy (mAP) vs. uncer-tainty ranking (AUARC) trade-off for RT-DETRx on the COCO validation set. Each point represents a unique hyperparameter con-figuration. Non-competitive MCDB configurations (mAP < 0.1)are omitted. 
+
+within each architecture (Fig. 1). For Faster R-CNN, we utilized the timm [52] library for DropBlock and DropPath. For the Ultralytics models, we designed custom Bottleneck (YOLOv8x) and HGBlock (RT-DETRx) modules incorpo-rating DropBlock based on the work of Yelleni et al . [54] and Stochastic Depth as detailed in Algorithm 1 (Sec. 4). 
+
+Training and Adaptation. Initialized with COCO pre-trained weights, models were finetuned with active stochas-tic layers. Faster R-CNN was finetuned end-to-end for 12 epochs (learning rate 5×10 −3). Conversely, YOLOv8x and RT-DETRx utilized parameter-efficient finetuning, updating only the modified stochastic layers for 20 epochs (learning rate 1 × 10 −4). This extended finetuning duration was criti-cal; minimal finetuning made the models fragile, necessitat-ing impractically low drop rates ( ≈0.01). Finally, we mod-ified both frameworks to extract the full class probability vectors, which are not natively returned (see Sec. 8.1). 
+
+Ablation Parameters. To ensure a rigorous comparison, we conduct extensive ablation studies. We vary the drop rate (0.01 to 0.25), the number of Monte Carlo samples T (5 to 20), and the prediction confidence threshold (0.05 to 0.7). Furthermore, we analyze the impact of where stochasticity is introduced by varying the set of adapted blocks (e.g., all blocks, only early blocks, or only late blocks). 
+
+5.2. Results 
+
+Accuracy-Uncertainty Trade-off. Figure 2 illustrates a Pareto front for the trade-off between predictive perfor-mance (mAP) and uncertainty ranking (AUARC). This plot is generated from a sweep of hyperparameter configurations for RT-DETRx; we omit YOLOv8x and Faster R-CNN for clarity, as they demonstrated similar trends. First, MCSD and MCD demonstrate a similar Pareto frontier, with MCD often holding a slight advantage in mAP and MCSD showing a slight advantage in AUARC. Second, MCDB proved highly sensitive in YOLOv8x and RT-DETRx; applying DropBlock anywhere but the final backbone layer (see Fig. 1) resulted in severe performance degradation and were thus omitted as non-competitive. This fragility likely accounts for MCDB’s slightly lower perfor-mance in our configurations, suggesting its optimal place-ment is highly architecture-specific and may lie outside the backbone entirely, such as closer to the final detection head, as was successfully demonstrated by Yelleni, S.H. et al . [54]. Finally, while the Monte Carlo sample size ( T )has a minor effect, the confidence threshold is the dominant tuning parameter for navigating the mAP-AUARC balance. 
+
+Quantitative In-Distribution Results. Table 1 isolates the Pareto-optimal configuration (best mAP/AUARC balance) for each model-method combination. The table confirms the trends from the Pareto plot: MCD consistently yields the highest mAP, while MCSD generally delivers superior un-certainty quantification, achieving the best AUARC or ECE in the majority of configurations. Contrasting prior related work [53] noting improvements in both accuracy and ECE for segmentation, our detec-tion benchmark reveals a clearer trade-off: MCD excels in predictive accuracy, whereas MCSD provides more ro-bust uncertainty and calibration. Faster R-CNN, our weak-est mAP baseline, produced the poorest calibration scores, suggesting a link between high overconfidence (high ECE) and lower predictive performance. Architecturally, the finer weight-level perturbations in MCD preserve baseline accu-racy whereas the coarser dropping of entire residual paths by MCSD generates the information variance required for superior uncertainty ranking. 
+
+Ablation on Stochastic Layer Placement. Furthermore, our study reveals that the optimal placement of the stochas-tic layers is a critical, architecture-dependent hyperparame-ter. We observe distinct behaviors across the models: • Faster R-CNN: For MCD and MCSD, applying stochas-ticity to earlier layers yielded improvements in calibra-tion (ECE) and ranking (AUARC). Conversely, MCDB performed best when applied to later layers. • YOLOv8x: This model showed a clear divergence. Stochasticity in earlier layers produced optimal calibra-tion (ECE), while placement in later layers optimized un-certainty ranking (AUARC). MCDB was non-viable in earlier layers, causing a significant drop in performance. • RT-DETRx: In contrast to the other models, all three methods (MCD, MCDB, and MCSD) achieved their best ECE and AUARC scores when stochasticity was applied to the later layers of the network. 
+
+5.2.1. Distribution Shift Analysis 
+
+To evaluate performance on OOD data, we use the COCO-O benchmark, which introduces increasing stylistic and contextual shifts such as weather variations, cartoons, and Table 1. Quantitative comparison of the best Pareto-optimal configurations on COCO. This table isolates the top-performing setup for each method, evaluating accuracy (mAP), calibration (Brier, ECE), and uncertainty ranking (AUARC). Bold values highlight the best method for each metric and model.                                                                                                
+
+> Model Method Adapted Layers Drop Rate MC-Samples Conf. Thresh. mAP.5.95 ↑Brier ×10 −3↓ECE ↓AUARC ↑
+> Faster R-CNN MCD All layers 0.20 20 0.40 0.270 5.36 0.213 0.680 Faster R-CNN MCDB All layers 0.20 20 0.40 0.258 5.22 0.200 0.653 Faster R-CNN MCSD Layer 4 0.10 20 0.50 0.266 5.97 0.247 0.741
+> YOLOv8x MCD Last 15 layers 0.20 20 0.15 0.505 2.43 0.060 0.668 YOLOv8x MCDB Last layer 0.05 10 0.15 0.473 2.08 0.063 0.771 YOLOv8x MCSD First 15 layers 0.05 20 0.20 0.496 1.93 0.035 0.778
+> RT-DETRx MCD Last six layers 0.20 20 0.50 0.484 5.07 0.088 0.726 RT-DETRx MCDB Last layer 0.20 20 0.50 0.420 6.64 0.077 0.813
+> RT-DETRx MCSD Last six layers 0.20 20 0.50 0.463 6.08 0.073 0.784
+
+Figure 3. Performance under domain shift on the COCO-O bench-mark for Faster-RCNN (top), YOLOv8x (middle), and RT-DETRx (bottom). Solid lines track mAP, dashed lines predictive entropy. 
+
+sketches. Figure 3 plots the resulting mAP degradation against the change in predictive entropy to measure how well each method’s uncertainty reflects the increasing shift. As Fig. 3 illustrates, all methods exhibit a significant drop in mAP as the domain shift intensifies (e.g., from ’weather’ to ’tattoo’). While this sharp accuracy degrada-tion is met with only a slight increase in predictive entropy, a consistent upward trend is nonetheless observable for all methods, indicating sensitivity to the domain shift. Cru-cially, the performance of MCSD under these shifts, both in mAP and entropy response, is nearly identical to that of MCD. This parity demonstrates that MCSD is not only a peer to MCD on in-distribution data but also an equally ro-bust alternative under significant domain shift, reinforcing its viability as a practical UQ method. 
+
+## 6. Limitations 
+
+While MCSD improves relative uncertainty ranking, abso-lute calibration remains sensitive to the underlying model architecture. As detailed in the supplementary mate-rial Tab. 3, dense detectors (YOLOv8x, RT-DETRx) ex-hibit a compressed entropy range under severe domain shift compared to the two-stage model Faster R-CNN, hinting at intrinsic overconfidence. Furthermore, evaluating uncer-tainty in object detection is inherently sensitive to the confi-dence thresholds used to filter bounding boxes prior to met-ric calculation. Future work should explore standardized, threshold-free evaluation protocols to decouple uncertainty quantification from standard detection filtering. Additional structural constraints are discussed in Sec. 10.5. 
+
+## 7. Conclusion 
+
+In this work, we establish Monte Carlo Stochastic Depth (MCSD) as a principled approximate Bayesian method, grounding its use for UQ. We validated this theory with the first comprehensive empirical benchmark of MCSD for the task of object detection, evaluating it against MCD and MCDB on state-of-the-art architectures (YOLO, RT-DETR) using the COCO and COCO-O datasets. Our results reveal a compelling trade-off: while MCD often maintains a slight edge in predictive accuracy (mAP), MCSD achieves superior uncertainty quality in calibra-tion (ECE) and uncertainty ranking (AUARC). We estab-lish MCSD as a theoretically-grounded, and empirically-validated tool, positioning it as a strong alternative, espe-cially in safety-critical systems where reliable calibration and uncertainty-ranking are paramount. References 
+
+[1] Luigi Acerbi. Variational bayesian monte carlo. In Ad-vances in Neural Information Processing Systems . Curran Associates, Inc., 2018. 3 [2] Javier Antoran, James Allingham, and Jos´ e Miguel Hern´ andez-Lobato. Depth Uncertainty in Neural Networks. In Advances in Neural Information Processing Systems ,pages 10620–10634. Curran Associates, Inc., 2020. 2 [3] Andrei Atanov, Arsenii Ashukha, Dmitry Molchanov, Kirill Neklyudov, and Dmitry Vetrov. Uncertainty Estimation via Stochastic Batch Normalization. In Advances in Neural Net-works – ISNN 2019 , pages 261–269, Cham, 2019. Springer International Publishing. 2 [4] Edmon Begoli, Tanmoy Bhattacharya, and Dimitri Kusne-zov. The need for uncertainty quantification in machine-assisted medical decision making. Nature Machine Intelli-gence , 1(1):20–23, 2019-01. Publisher: Nature Publishing Group. 2 [5] Federico Bergamin, Pablo Moreno-Mu˜ noz, Søren Hauberg, and Georgios Arvanitidis. Riemannian laplace approxima-tions for bayesian neural networks. Advances in Neural In-formation Processing Systems , 36:31066–31095, 2023-12-15. 2 [6] David M. Blei, Alp Kucukelbir, and Jon D. McAuliffe. Vari-ational inference: A review for statisticians. Journal of the American Statistical Association , 112(518):859–877, 2017-04-03. 2 [7] Charles Blundell, Julien Cornebise, Koray Kavukcuoglu, and Daan Wierstra. Weight uncertainty in neural network. In International Conference on Machine Learning , pages 1613–1622. PMLR, 2015-06-01. ISSN: 1938-7228. 2 [8] Glenn W Brier. Verification of forecasts expressed in terms of probability. Monthly Weather Review , 78(1):1–3, 1950. 6 [9] Jeffrey De Fauw, Joseph R. Ledsam, Bernardino Romera-Paredes, Stanislav Nikolov, Nenad Tomasev, Sam Black-well, Harry Askham, Xavier Glorot, Brendan O’Donoghue, Daniel Visentin, George van den Driessche, Balaji Lakshmi-narayanan, Clemens Meyer, Faith Mackinder, Simon Bou-ton, Kareem Ayoub, Reena Chopra, Dominic King, Alan Karthikesalingam, C´ ıan O. Hughes, Rosalind Raine, Ju-lian Hughes, Dawn A. Sim, Catherine Egan, Adnan Tufail, Hugh Montgomery, Demis Hassabis, Geraint Rees, Trevor Back, Peng T. Khaw, Mustafa Suleyman, Julien Cornebise, Pearse A. Keane, and Olaf Ronneberger. Clinically appli-cable deep learning for diagnosis and referral in retinal dis-ease. Nature Medicine , 24(9):1342–1350, 2018-09. Pub-lisher: Nature Publishing Group. 1 [10] Gianni Franchi, Olivier Laurent, Maxence Legu´ ery, An-drei Bursuc, Andrea Pilzer, and Angela Yao. Make me a BNN: A simple strategy for estimating bayesian uncer-tainty from pre-trained models. In IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , number arXiv:2312.15297, 2024. 2, 3 [11] Yarin Gal and Zoubin Ghahramani. Dropout as a bayesian approximation: Representing model uncertainty in deep learning. In International Conference on Machine Learning ,pages 1050–1059. PMLR, 2016-06-11. ISSN: 1938-7228. 1, 2, 3, 4, 5 [12] Yarin Gal, Jiri Hron, and Alex Kendall. Concrete dropout. In 
+
+Advances in Neural Information Processing Systems . Curran Associates, Inc., 2017. 1 [13] Ankush Ganguly and Samuel W. F. Earp. An introduction to variational inference. arXiv:2108.13083 , 2021-11-22. 2, 3 [14] Yonatan Geifman, Guy Uziel, and Ran El-Yaniv. Bias-reduced uncertainty estimation for deep neural classifiers. In-ternational Conference on Learning Representations (ICLR) ,2019-04-25. 6 [15] Golnaz Ghiasi, Tsung-Yi Lin, and Quoc V Le. DropBlock: A regularization method for convolutional networks. In Ad-vances in Neural Information Processing Systems . Curran Associates, Inc., 2018. 4 [16] Ethan Goan and Clinton Fookes. Bayesian neural networks: An introduction and survey. pages 45–87. 2020. 2 [17] Xingtai Gui, Tengteng Huang, Haonan Shao, Haotian Yao, and Chi Zhang. FipTR: A simple yet effective transformer framework for future instance prediction in autonomous driving. In Computer Vision – ECCV 2024 , pages 19–35. Springer Nature Switzerland, 2025. 1 [18] Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Weinberger. On calibration of modern neural networks. In International Conference on Machine Learning , pages 1321–1330. PMLR, 2017-07-17. ISSN: 2640-3498. 1, 6 [19] Kai Han, Yunhe Wang, Hanting Chen, Xinghao Chen, Jianyuan Guo, Zhenhua Liu, Yehui Tang, An Xiao, Chunjing Xu, Yixing Xu, Zhaohui Yang, Yiman Zhang, and Dacheng Tao. A survey on vision transformer. IEEE Transactions on Pattern Analysis and Machine Intelligence , 45(1):87–110, 2023-01. 1 [20] Florian Heidecker, Abdul Hannan, Maarten Bieshaar, and Bernhard Sick. Towards Corner Case Detection by Modeling the Uncertainty of Instance Segmentation Networks. In Pat-tern Recognition. ICPR International Workshops and Chal-lenges , pages 361–374, Cham, 2021. Springer International Publishing. 3 [21] Stephen C. Hora. Aleatory and epistemic uncertainty in probability elicitation with an example from hazardous waste management. Reliability Engineering & System Safety , 54 (2):217–223, 1996-11-01. 2 [22] Gao Huang, Yu Sun, Zhuang Liu, Daniel Sedra, and Kil-ian Q. Weinberger. Deep networks with stochastic depth. In Computer Vision – ECCV 2016 , pages 646–661. Springer International Publishing, 2016. 1, 4 [23] Eyke H¨ ullermeier and Willem Waegeman. Aleatoric and epistemic uncertainty in machine learning: an introduction to concepts and methods. Machine Learning , 110(3):457– 506, 2021-03-01. 2 [24] Glenn Jocher, Jing Qiu, and Ayush Chaurasia. Ultralytics YOLO, 2023. 5, 6 [25] Alex Kendall and Yarin Gal. What uncertainties do we need in bayesian deep learning for computer vision? In Ad-vances in Neural Information Processing Systems . Curran Associates, Inc., 2017. 2 [26] Armen Der Kiureghian and Ove Ditlevsen. Aleatory or epis-temic? does it matter? Structural Safety , 31(2):105–112, 2009-03-01. 2 [27] Balaji Lakshminarayanan, Alexander Pritzel, and Charles Blundell. Simple and scalable predictive uncertainty esti-mation using deep ensembles. In Advances in Neural Infor-mation Processing Systems . Curran Associates, Inc., 2017. 2[28] Tsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Doll´ ar, and C. Lawrence Zitnick. Microsoft COCO: Common objects in context. In 
+
+Computer Vision – ECCV 2014 , pages 740–755. Springer In-ternational Publishing, 2014. 5 [29] Yi-An Ma, Tianqi Chen, and Emily Fox. A complete recipe for stochastic gradient MCMC. In Advances in Neural Infor-mation Processing Systems . Curran Associates, Inc., 2015. 2[30] Xiaofeng Mao, Yuefeng Chen, Yao Zhu, Da Chen, Hang Su, Rong Zhang, and Hui Xue. COCO-o: A benchmark for ob-ject detectors under natural distribution shifts. In Proceed-ings of the IEEE/CVF International Conference on Com-puter Vision , pages 6339–6350, 2023. 5 [31] Dimity Miller, Lachlan Nicholson, Feras Dayoub, and Niko S¨ underhauf. Dropout Sampling for Robust Object Detection in Open-Set Conditions. In 2018 IEEE International Confer-ence on Robotics and Automation (ICRA) , pages 3243–3249, 2018. ISSN: 2577-087X. 3 [32] Dimity Miller, Feras Dayoub, Michael Milford, and Niko S¨ underhauf. Evaluating Merging Strategies for Sampling-based Uncertainty Techniques in Object Detection. In 
+
+2019 International Conference on Robotics and Automation (ICRA) , pages 2348–2354, 2019. ISSN: 2577-087X. 6 [33] Jishnu Mukhoti and Yarin Gal. Evaluating bayesian deep learning methods for semantic segmentation. 
+
+arXiv:1811.12709 , 2019-03-23. 1 [34] Radford M. Neal. MCMC using hamiltonian dynamics. In 
+
+Handbook of Markov Chain Monte Carlo . Chapman and Hall/CRC, 2011. Num Pages: 50. 2 [35] Ian Osband, Zheng Wen, Seyed Mohammad Asghari, Vikranth Dwaracherla, Morteza Ibrahimi, Xiuyuan Lu, and Benjamin Van Roy. Epistemic Neural Networks. Advances in Neural Information Processing Systems , 36:2795–2823, 2023. 2 [36] Theodore Papamarkou, Maria Skoularidou, Konstantina Palla, Laurence Aitchison, Julyan Arbel, David Dun-son, Maurizio Filippone, Vincent Fortuin, Philipp Hennig, Jos´ e Miguel Hern´ andez-Lobato, Aliaksandr Hubin, Alexan-der Immer, Theofanis Karaletsos, Mohammad Emtiyaz Khan, Agustinus Kristiadi, Yingzhen Li, Stephan Mandt, Christopher Nemeth, Michael A. Osborne, Tim G. J. Rudner, David R¨ ugamer, Yee Whye Teh, Max Welling, Andrew Gor-don Wilson, and Ruqi Zhang. Position: Bayesian deep learn-ing is needed in the age of large-scale AI. arXiv:2402.00809 ,2024-08-06. 1 [37] Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, Alban Desmaison, Andreas Kopf, Edward Yang, Zachary DeVito, Martin Rai-son, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner, Lu Fang, Junjie Bai, and Soumith Chintala. PyTorch: An imperative style, high-performance deep learning library. In 
+
+Advances in Neural Information Processing Systems . Curran Associates, Inc., 2019. 6 [38] Paul Patrone and Anthony Kearsley. Probabilistic consis-tency in machine learning and its connection to uncertainty quantification. (arXiv:2507.21670), 2025-09-26. 1 [39] Rahul Rahaman and alexandre thiery. Uncertainty quantifi-cation and deep ensembles. In Advances in Neural Informa-tion Processing Systems , pages 20063–20075. Curran Asso-ciates, Inc., 2021. 2 [40] Joseph Redmon, Santosh Divvala, Ross Girshick, and Ali Farhadi. You only look once: Unified, real-time object de-tection. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition , pages 779–788, 2016. 2 [41] Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun. Faster r-CNN: Towards real-time object detection with re-gion proposal networks. In Advances in Neural Information Processing Systems . Curran Associates, Inc., 2015. 2, 5 [42] Hippolyt Ritter, Aleksandar Botev, and David Barber. A scal-able laplace approximation for neural networks. 2018. 2 [43] Murat Sensoy, Lance Kaplan, and Melih Kandemir. Eviden-tial Deep Learning to Quantify Classification Uncertainty. In 
+
+Advances in Neural Information Processing Systems . Curran Associates, Inc., 2018. 2 [44] Ronald Seoh. Qualitative analysis of monte carlo dropout. 
+
+arXiv:2007.01720 , 2020-07-06. 3 [45] C. E. Shannon. A mathematical theory of communication. 
+
+The Bell System Technical Journal , 27(3):379–423, 1948-07. 6[46] Dylan Slack, Anna Hilgard, Sameer Singh, and Himabindu Lakkaraju. Reliable post hoc explanations: Modeling uncer-tainty in explainability. In Advances in Neural Information Processing Systems , pages 9391–9404. Curran Associates, Inc., 2021. 2 [47] Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan Salakhutdinov. Dropout: a simple way to prevent neural networks from overfitting. J. Mach. Learn. Res. , 15(1):1929–1958, 2014-01-01. 3 [48] Juan Terven, Diana-Margarita C´ ordova-Esparza, and Julio-Alejandro Romero-Gonz´ alez. A comprehensive review of yolo architectures in computer vision: From yolov1 to yolov8 and yolo-nas. Machine Learning and Knowledge Ex-traction , 5(4):1680–1716, 2023. 1 [49] Li Wan, Matthew Zeiler, Sixin Zhang, Yann Le Cun, and Rob Fergus. Regularization of Neural Networks using DropCon-nect. In Proceedings of the 30th International Conference on Machine Learning , pages 1058–1066. PMLR, 2013. 2 [50] Hao Wang and Dit-Yan Yeung. A survey on bayesian deep learning. ACM Comput. Surv. , 53(5):108:1–108:37, 2020-09-28. 1 [51] Max Welling and Yee Whye Teh. Bayesian learning via stochastic gradient langevin dynamics. In Proceedings of the 28th International Conference on International Conference on Machine Learning , pages 681–688. Omnipress, 2011-06-28. 2 [52] Ross Wightman. PyTorch Image Models. https : //github.com/huggingface/pytorch- image-models . Version 1.0.11. DOI: 10.5281/zenodo.4414861. License: Apache 2.0. 7, 1 [53] Linghong Yao, Denis Hadjivelichkov, Andromachi Maria Delfaki, Yuanchang Liu, Brooks Paige, and Dimitrios Kanoulas. Balancing calibration and performance: Stochas-tic depth in segmentation BNNs, 2024. 1, 2, 7 [54] Sai Harsha Yelleni, Deepshikha Kumari, Srijith P.k., and Kr-ishna Mohan C. Monte carlo DropBlock for modeling uncer-tainty in object detection. Pattern Recognition , 146:110003, 2024-02-01. 1, 2, 4, 5, 7 [55] Peng Yun and Ming Liu. Laplace approximation based epis-temic uncertainty estimation in 3d object detection. In Con-ference on Robot Learning , pages 1125–1135. PMLR, 2023-03-06. ISSN: 2640-3498. 2 [56] Tal Zeevi, Ravid Shwartz-Ziv, Yann LeCun, Lawrence H. Staib, and John A. Onofrey. Rate-in: Information-driven adaptive dropout rates for improved inference-time uncer-tainty estimation. In IEEE/CVF Conference on Com-puter Vision and Pattern Recognition (CVPR) , number arXiv:2412.07169, 2025-06-04. 1, 2 [57] Yian Zhao, Wenyu Lv, Shangliang Xu, Jinman Wei, Guanzhong Wang, Qingqing Dang, Yi Liu, and Jie Chen. DETRs beat YOLOs on real-time object detection. In Pro-ceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 16965–16974, 2024. 2, 5 [58] Maksim Zhdanov, Stanislav Dereka, and Sergey Kolesnikov. Identity curvature laplace approximation for improved out-of-distribution detection. In 2025 IEEE/CVF Winter Con-ference on Applications of Computer Vision (WACV) , pages 7019–7028, 2025-02. ISSN: 2642-9381. 2 Monte Carlo Stochastic Depth for Uncertainty Estimation in Deep Learning 
+
+# Supplementary Material 
+
+## 8. Appendix A: Reproducibility 
+
+Complete source code reproducing all methods (MCD, MCDB, MCSD) and models (Faster R-CNN, YOLOv8x, RT-DETRx) is provided in the GitHub 1 repository. 
+
+Hardware and Software. Experiments were conducted us-ing Python 3.10.12, PyTorch 2.6.0, and Ultralytics 8.3.171. The codebase is hardware-agnostic; however, all reported results were generated on a single NVIDIA GeForce RTX 3090 GPU. Run-times may vary across different hardware configurations. Installation guides and Quick Start instruc-tions are included in the repository, with dependencies listed in requirements.txt .
+
+8.1. Framework Adaptations 
+
+Network Architectures. Integrating stochastic regular-ization into the standard architectures of Faster R-CNN, YOLOv8x, and RT-DETRx (as visualized in Fig. 1) neces-sitated specific modifications to the underlying framework definitions. • Faster R-CNN: We extended the Bottleneck class within Torchvision’s resnet.py . To incorporate Drop-Block and Stochastic Depth, we leveraged existing im-plementations from the timm [52] library. This custom 
+
+Bottleneck was then integrated into the backbone in-stantiation via the fasterrcnn resnet50 fpn func-tion in faster rcnn.py .• YOLOv8x / RT-DETRx: For the Ultralytics-based networks, we modified nn/modules/block.py to support the proposed stochastic methods. We inte-grated the MCDB implementation by Yelleni et al . [54] and the MCSD logic defined in Algorithm 1. These stochastic mechanisms were injected directly into the 
+
+Bottleneck class for YOLOv8x and the HGBlock 
+
+class for RT-DETRx. For MCD, we utilized the frame-work’s native Dropout modules. 
+
+Inference Outputs. To compute the entropy-based uncer-tainty scores described in Sec. 5.1, access to the full class probability vectors, which are typically discarded during post-processing, was required. We adapted the inference pipelines of both frameworks as follows: • Ultralytics: We modified the inference flow to retain the full class probability vector prior to thresholding. This involved updating the postprocess method within the DetectionPredictor class (found in the model-specific predict.py files), the BasePredictor 
+
+> 1https://github.com/code-supplement-2026/mc-val
+
+class in engine/predictor.py , and the 
+
+non max suppression logic in utils/ops.py .• Torchvision: We modified the 
+
+postprocess detections function within the RoIHeads class (located in 
+
+detection/roi heads.py ) to preserve and re-turn the full probability tensors alongside the standard detection outputs. 
+
+8.2. Uncertainty and Calibration Metrics 
+
+We evaluated model calibration and predictive uncertainty using four primary metrics. Aligning with Sec. 5.1 the for-mulations are detailed below. 
+
+Predictive Entropy. Entropy measures the uncertainty inherent in a probability distribution. As some detec-tors (YOLOv8x, RT-DETRx) produce independent sigmoid probabilities pi = ( pi, 1, . . . , p i,C ) for each class, where probabilities do not sum to 1, we distinguish between two formulations: 1. Mean Binary Entropy: We compute the entropy for each class c as an independent Bernoulli trial and then average these entropies. The binary entropy for a single class probability pi,c is: 
+
+H(pi,c ) = −pi,c log 2(pi,c ) − (1 − pi,c ) log 2(1 − pi,c )
+
+The final metric for detection i, is the mean of these bi-nary entropies: 
+
+Hbinary (pi) = 1
+
+C
+
+> C
+
+X
+
+> c=1
+
+H(pi,c )
+
+2. Shannon Entropy: The standard Shannon entropy is used for models that output a single multinomial prob-ability distribution where PCc=1 pi,c = 1 (i.e., a softmax output): 
+
+Hshannon (pi) = −
+
+> C
+
+X
+
+> c=1
+
+pi,c log 2(pi,c )
+
+Predictive Uncertainty. We assessed the quality and prac-tical utility of the predictive uncertainties. This was eval-uated using metrics that measure calibration (Brier Score, ECE) and the effectiveness of the uncertainty score in iden-tifying potential errors (AUARC). • Brier Score (BS): The Brier Score measures the accu-racy of probabilistic predictions by computing the mean squared error (MSE) between the predicted probability vector and the one-hot encoded true label vector. Our implementation computes the average MSE over all N
+
+detections and all C classes. BS = 1
+
+N · C
+
+> N
+
+X
+
+> i=1
+> C
+
+X
+
+> c=1
+
+(pi,c − yi,c )2
+
+where N is the total number of detections (True Positives in this context), C is the number of classes, pi,c is the predicted probability for detection i of class c, and yi,c is the one-hot true label ( 1 if c is the true class for detection 
+
+i, 0 otherwise). • Expected Calibration Error (ECE): ECE measures cal-ibration by partitioning all N detections (True Positives and False Positives) into M equally-spaced confidence bins. It then computes a weighted average of the absolute difference between the mean accuracy and mean confi-dence in each bin. ECE =
+
+> M
+
+X
+
+> m=1
+
+|Bm|
+
+N |acc (Bm) − conf (Bm)|
+
+where Bm is the set of detections whose confidence falls into bin m, acc (Bm) is the accuracy (fraction of True Pos-itives) of the detections in Bm, and conf (Bm) is the aver-age confidence of detections in Bm.• Area Under the Accuracy-Rejection Curve (AUARC): 
+
+AUARC evaluates the trade-off between predictive accu-racy and the fraction of predictions rejected based on an uncertainty score. Following [56], detections are sorted by their uncertainty score (e.g., entropy) in descending order. AUARC =
+
+Z 10
+
+Acc (r)dr 
+
+where r is the rejection fraction (from 0 to 1). Acc (r) is the precision (i.e., T P T P +F P ) of the retained (non-rejected) predictions after rejecting the top r fraction of most un-certain detections. A higher AUARC value indicates that the uncertainty measure is a good proxy for error, allow-ing for the effective rejection of false positives. 
+
+## 9. Appendix B: Theoretical Derivations 
+
+In this section, we provide the formal derivation connecting the Stochastic Depth (SD) training objective to the Varia-tional Inference (VI) framework utilized in the main paper. 
+
+9.1. Derivation of the ELBO Objective for MCSD 
+
+As defined in the main paper, our objective is to maximize the Evidence Lower Bound (ELBO): 
+
+LVI (θ) = Eqθ (W )[log p(D| W )] 
+
+| {z }
+
+> Expected Log-Likelihood
+
+− KL( qθ (W )|| p(W )) 
+
+| {z }
+
+> Complexity Penalty
+
+Here, we demonstrate that the standard SD training proce-dure constitutes a stochastic gradient optimization of this objective. 
+
+9.1.1. The Expected Log-Likelihood Term 
+
+Let the training dataset be D = {(xn, y n)}Nn=1 . In the MCSD framework, the variational distribution qθ (W ) rep-resents the stochastic process of selecting a sub-network 
+
+W (B) conditioned on a Bernoulli vector B ∈ { 0, 1}L, as defined in Eq. (12) of the main text. The expected log-likelihood term of LVI (θ) can be ex-panded as: 
+
+Eqθ (W )[log p(D| W )] = EB∼p(B)
+
+" NX
+
+> n=1
+
+log p(yn|xn, W (B))
+
+#
+
+Exact computation of this expectation requires summation over 2L possible sub-networks, which is intractable. We ap-proximate this via Monte Carlo sampling. For a mini-batch of size M , we sample a mask Bm ∼ p(B) and compute the estimator: 
+
+EB∼p(B)
+
+" NX
+
+> n=1
+
+log p(.. )
+
+#
+
+≈ NM
+
+> M
+
+X
+
+> m=1
+
+log p(ym|xm, W (Bm))
+
+For standard discriminative tasks, the model’s log-likelihood corresponds to the negative of the task loss function (e.g., Cross-Entropy or Focal Loss), such that 
+
+log p(y|x, W ) ∝ −L task (y, f (x; W )) .Consequently, maximizing the expected log-likelihood is equivalent to minimizing the expected task loss: 
+
+arg max  
+
+> θ
+
+Eqθ (W )[log p(D| W )] 
+
+⇐⇒ arg min  
+
+> θ
+
+EB∼p(B)[Ltask (y, f (x | W (B)))] 
+
+The standard SD training algorithm, which performs a for-ward pass with a sampled path B and minimizes Ltask , is therefore a direct stochastic gradient ascent optimization of the first term of the ELBO. 
+
+9.2. The KL Divergence as L2 Regularization 
+
+Having established the optimization of the likelihood term, we address the complexity penalty, KL( qθ (W )|| p(W )) .In our framework, qθ (W ) is a discrete mixture distribu-tion over sub-networks, while the prior p(W ) is assumed to be a standard Gaussian N (0 , I ). Direct computation of the KL divergence between a discrete mixture and a continuous prior is ill-posed. Following the established methodology for approximate Bayesian inference in deep learning [11], we approximate the complexity penalty via L2 regularization (weight de-cay). We assume a prior length-scale, such that the mini-mization of the KL divergence corresponds to minimizing the L2 norm of the variational parameters (the weights Wl
+
+of the residual blocks). The resulting surrogate training objective becomes: 
+
+Lfinal = 1
+
+M
+
+> M
+
+X
+
+> m=1
+
+Ltask (ym, f (xm | W (Bm)))+ λ
+
+> L
+
+X
+
+> l=1
+
+|| Wl|| 22
+
+This confirms that training with Stochastic Depth and weight decay optimizes a valid proxy for the full ELBO, justifying MCSD as a theoretically grounded Bayesian ap-proximation. 
+
+9.3. Justification for Probabilistic Scaling 
+
+Algorithm 1 details the implementation of the MCSD resid-ual block. A critical component is the scaling of the residual features Ares by the inverse survival probability 1/p l during the forward pass. This scaling ensures that the stochastic gradients com-puted during training (and the predictions during MCSD in-ference) act as unbiased estimators of the full network. Let 
+
+xl+1 be the output of block l. The expected output over the distribution of masks bl is: 
+
+Ebl [xl+1 ] = Ebl
+
+
+
+xl + bl
+
+pl
+
+· F l(xl; Wl)
+
+
+
+= xl + E[bl]
+
+pl
+
+· F l(xl; Wl)= xl + Fl(xl; Wl)
+
+Since E[bl] = pl, the term cancels out, ensuring the ex-pected output of the stochastic pass equals the output of the deterministic, fully active block. This preserves the feature magnitude distribution between training and Monte Carlo inference, preventing distributional shift when sampling T
+
+predictions for uncertainty quantification. 
+
+## 10. Appendix C: Additional Results 
+
+10.1. Extended Pareto Analysis 
+
+Complementing Fig. 2 in the main text, we provide the com-plete Pareto trade-off plots for the Faster R-CNN (Fig. 4) and YOLOv8x (Fig. 5) architectures. Consistent with the RT-DETR results discussed in the main paper, we observe that the confidence threshold 
+
+acts as the dominant variable governing the trade-off be-tween predictive performance (mAP) and uncertainty rank-ing (AUARC). Higher thresholds generally improve uncer-tainty ranking at the cost of precision, while lower thresh-olds maximize mAP but degrade calibration and ranking ca-pabilities. 
+
+Sensitivity to Regularization Magnitude. In the case of Faster R-CNN (Fig. 4), we observe a distinct drop in pre-dictive performance based on the regularization magnitude   
+
+> Figure 4. Pareto front analysis of the accuracy (mAP) vs. uncer-tainty ranking (AUARC) trade-off for Faster R-CNN on the COCO validation set. Each point represents a unique hyperparameter con-figuration. Non-competitive configurations are omitted.
+> Figure 5. Pareto front analysis of the accuracy (mAP) vs. un-certainty ranking (AUARC) trade-off for YOLOv8x on the COCO validation set. Each point represents a unique hyperparameter con-figuration. Non-competitive configurations are omitted.
+
+(drop rate). We evaluated a wider range of regularization in-tensities to capture this behavior. The analysis reveals that lower drop rates ( ≈ 0.1) yield the highest mAP, whereas increasing the rate ( ≈ 0.3) significantly degrades predictive performance without a commensurate gain in uncertainty quality. 
+
+Selection of Pareto-Optimal Configurations To facilitate the tabular comparison in Tab. 1 of the main paper, we re-quired a principled criterion to select a single representa-tive configuration from the Pareto frontiers shown in Fig. 4, Fig. 5, and Fig. 2. We define the Ideal Performance Point (IPP) as the coor-dinate combining perfect accuracy and perfect uncertainty ranking, assuming normalized metrics where mAP ∈ [0 , 1] 
+
+(higher is better) and AUARC ∈ [0 , 1] (higher is better). For each method (MCD, MCDB, MCSD), we selected the configuration that minimizes the Euclidean distance dFigure 6. Qualitative comparison of detection and uncertainty for data under distribution shift, using RT-DETRx. Examples from the COCO-O dataset, comparing detection outputs across different uncertainty quantification methods. Each row represents a distinct domain shift: Row 1 ( Weather ), Row 2 ( Painting ), Row 3 ( Handmake ), and Row 4 ( Sketch ). Columns from left to right show: Ground Truth (green bounding boxes), Mean Detections (MCD) (red), Mean Detections (MCDB) (blue), and Mean Detections (MCSD) (orange). 
+
+to this IPP: 
+
+d(c) = p(xIP P − AUARC c)2 + ( yIP P − mAP c)2
+
+where c represents a specific hyperparameter configuration. This approach balances the two competing objectives, en-suring the selected configuration represents the best overall compromise between predictive power and safety-critical reliability. 
+
+10.2. Qualitative Evaluation 
+
+To complement the quantitative aggregate metrics presented in the main paper, we provide illustrative qualitative exam-ples in Fig. 6. These samples are drawn from the COCO-O dataset, representing distribution-shifted scenarios where reliable uncertainty quantification is most critical. 
+
+Comparison with Prior Work. Previous work by Yelleni 
+
+et al . [54] posited, based on a limited set of examples, that MCDB is superior to MCD because it eliminates specific misclassifications (e.g., misclassifying a loaf of bread as a sheep). While our visual analysis corroborates that MCDB produces fewer false positive detections (hallucinations or misclassifications) than MCD, we observe that this behav-ior stems from a significantly more conservative detection threshold. 
+
+The Precision-Recall Trade-off. As illustrated in Fig. 6, this conservatism often extends to false negatives. In the first row of the figure (Car scenario), while MCD and MCSD successfully identify the majority of the vehicles de-spite the domain shift, MCDB suppresses some predictions entirely. This suggests that the ”safety” observed in [54] comes at the cost of reduced recall. In contrast, MCSD maintains a detection density comparable to MCD, thus capturing the true positives while offering the calibration benefits detailed in our quantitative tables. This visual ev-idence aligns with the quantitative findings where MCDB generally yielded lower mAP scores compared to MCD and MCSD across the tested architectures. Table 2. Impact of stochastic layer placement. Comparison of stochasticity applied to earlier vs. later stages in single and multi-ple ( Half Block ) layers. N/A denotes configurations that failed to meet minimum viability thresholds.                                                                                                              
+
+> Adapted Layers Single Layer Half Block Model Method Metric First Last First Last
+> Faster R-CNN MCD ECE ↓0.236 0.254 0.223 0.234
+> AUARC ↑0.680 0.672 0.683 0.675 MCDB ECE ↓0.260 0.263 0.257 0.224 AUARC ↑0.572 0.668 0.612 0.661
+> MCSD ECE ↓0.231 0.244 0.226 0.218 AUARC ↑0.668 0.664 0.666 0.661 YOLOv8x MCD ECE ↓0.057 0.064 0.056 0.059
+> AUARC ↑0.725 0.824 0.757 0.781
+> MCDB ECE ↓N/A 0.060 N/A N/A
+> AUARC ↑N/A 0.801 N/A N/A MCSD ECE ↓0.044 0.064 0.048 0.060
+> AUARC ↑0.7890 0.826 0.771 0.823
+> RT-DETRx MCD ECE ↓0.073 0.042 0.109 0.077 AUARC ↑0.822 0.894 0.731 0.818
+> MCDB ECE ↓0.454 0.037 N/A N/A
+> AUARC ↑0.197 0.897 N/A N/A MCSD ECE ↓0.063 0.037 0.060 0.050 AUARC ↑0.874 0.908 0.835 0.865
+
+10.3. Sensitivity to Stochastic Layer Placement 
+
+We observed that the efficacy of stochastic regularization for variational inference is dependent on the architectural depth at which it is applied. To quantify this architectural inductive bias, we compare performance when stochastic layers are restricted to the earlier stages of the adjusted blocks against the later stages. Table 2 presents the mean calibration (ECE) and uncertainty ranking (AUARC) met-rics across these configurations, verifying the trends re-ported in the main paper. 
+
+Data Inclusion Criteria. Unlike the Pareto-optimal re-sults reported in the main text (which isolate the single best trade-off configuration), Table 2 reports the mean perfor-mance across all configurations that met a minimum viabil-ity threshold in mAP and AUARC. Entries marked as N/A 
+
+indicate configurations that resulted in severe performance degradation, rendering them non-viable for deployment. It is important to note that because this table averages over a broader set of ”viable” models rather than selecting the strict Pareto-best, certain uncertainty metrics (specifi-cally AUARC) may appear higher here than in Tab. 1 in the main paper. 
+
+10.4. Distribution Shift Results 
+
+To supplement the visual trends presented in Fig. 3 of the main paper, Tab. 3 provides the granular quantitative met-rics comparing In-Distribution (ID) (COCO) performance against the six distribution shifts in COCO-O. 
+
+Quantification of Degradation. The tabular data high-lights the severity of the domain shift. Across all ar-chitectures, we observe a precipitous drop in predictive performance as the domain shifts from photorealistic ID (COCO) to abstract representations. For instance, on the ’tattoo’ split, which represents one of the most se-vere shifts, mAP 50 −95 degrades by approximately 76% for Faster R-CNN and 69% for RT-DETRx compared to their in-distribution baselines. 
+
+Architecture-Specific Uncertainty Scaling. A critical in-sight revealed by Tab. 3 is the disparity in the magnitude of the uncertainty response between studied detectors. Faster R-CNN exhibits a dynamic range of entropy, nearly dou-bling from 0.796 (ID) to 1.569 (Tattoo), indicating a ro-bust ability to express epistemic uncertainty. In contrast, the dense detectors (YOLOv8x, RT-DETRx) exhibit only a marginal entropy range even when detection performance collapses. While their relative trend is correct (entropy rises as mAP falls), their apparent overconfidence suggests that dense detectors require stronger calibration scaling to be in-terpretable in safety-critical OOD contexts. 
+
+Methodological Robustness. Finally, the data confirms that MCSD maintains strict parity with MCD under shift. On the hardest split (Tattoo), the performance gap between MCD and MCSD is negligible ( < 0.5% mAP difference on RT-DETRx), confirming that the computational efficiency of MCSD does not come at the cost of OOD robustness. 
+
+10.5. Further Limitations 
+
+While MCSD offers a theoretically grounded and empiri-cally robust method for uncertainty quantification, we ac-knowledge specific limitations inherent to the approach. First, unlike MCD, which can be applied to almost any neural architecture, MCSD imposes a strict architec-tural dependency: it requires the presence of residual skip-connections to function as a valid Bayesian approximation. Second, consistent with all ensemble-based and Monte Carlo methods, MCSD incurs a computational overhead at inference time. Generating a calibrated uncertainty esti-mate requires T forward passes, scaling the inference la-tency linearly. While this is acceptable for safety-critical offline analysis, it poses challenges for real-time constraints compared to single-pass deterministic methods. Finally, our empirical analysis is currently restricted to the COCO and COCO-O datasets. Applying MCSD across a wider variety of object detection datasets is necessary to fully confirm the generalizability of these findings. Table 3. Quantitative results under distribution shift. Comparison of mAP and Predictive Entropy across the COCO-O domains. Note the difference in Entropy measures between Faster R-CNN (Shannon Entropy) and the dense detectors (Binary Entropy). 
+
+Dataset Model Method Metric COCO (ID) weather painting handmake cartoon sketch tattoo 
+
+Faster R-CNN MCD mAP.5.95 ↑ 0.270 0.168 0.148 0.102 0.090 0.059 0.064 
+
+Entropy ↓ 0.796 1.101 1.289 1.505 1.374 1.310 1.569 MCDB mAP.5.95 ↑ 0.258 0.156 0.157 0.091 0.090 0.061 0.061 
+
+Entropy ↓ 0.894 1.155 1.340 1.531 1.375 1.371 1.546 MCSD mAP.5.95 ↑ 0.266 0.161 0.147 0.085 0.088 0.059 0.054 
+
+Entropy ↓ 0.646 0.944 1.100 1.26 1.134 1.111 1.375 YOLOv8x MCD mAP.5.95 ↑ 0.499 0.413 0.382 0.261 0.211 0.201 0.156 
+
+Entropy ↓ 0.00920 0.01005 0.01026 0.01024 0.01040 0.01030 0.01121 MCDB mAP.5.95 ↑ 0.462 0.379 0.344 0.231 0.181 0.174 0.143 
+
+Entropy ↓ 0.00958 0.01014 0.01041 0.01055 0.01044 0.01068 0.01105 MCSD mAP.5.95 ↑ 0.491 0.407 0.376 0.259 0.201 0.194 0.148 
+
+Entropy ↓ 0.00909 0.00990 0.01017 0.01011 0.01025 0.01026 0.01096 RT-DETRx MCD mAP.5.95 ↑ 0.449 0.393 0.414 0.284 0.226 0.201 0.137 
+
+Entropy ↓ 0.0936 0.0942 0.1000 0.1141 0.1099 0.1051 0.1247 MCDB mAP.5.95 ↑ 0.396 0.335 0.372 0.247 0.191 0.179 0.119 
+
+Entropy ↓ 0.0864 0.0875 0.0931 0.1062 0.1000 0.0973 0.1198 MCSD mAP.5.95 ↑ 0.437 0.380 0.395 0.263 0.217 0.200 0.135 
+
+Entropy ↓ 0.0916 0.0939 0.0989 0.1143 0.1071 0.1039 0.1218

@@ -1,0 +1,383 @@
+Title: BEM: Training-Free Background Embedding Memory for False-Positive Suppression in Real-Time Fixed-Background Camera
+
+URL Source: https://arxiv.org/pdf/2604.11714v1
+
+Published Time: Tue, 14 Apr 2026 02:50:58 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+# BEM: Training-Free Background Embedding Memory for False-Positive Suppression in Real-Time Fixed-Background Camera 
+
+Junwoo Park 1,2, Jangho Lee 1⋆, and Sunho Lim 3⋆ 
+
+> 1
+
+Department of Computer Science and Engineering, Incheon National University  
+
+> 2
+
+Army Artificial Intelligence Center, Republic of Korea Army  
+
+> 3
+
+Department of Computer Science, Texas Tech University 
+
+{moon175611, ubuntu }@inu.ac.kr, sunho.lim@ttu.edu 
+
+Abstract. Pretrained detectors perform well on benchmarks but often suffer performance degradation in real-world deployments due to distri-bution gaps between training data and target environments. COCO-like benchmarks emphasize category diversity rather than instance density, causing detectors trained under per-class sparsity to struggle in dense, single- or few-class scenes such as surveillance and traffic monitoring. In fixed-camera environments, the quasi-static background provides a stable, label-free prior that can be exploited at inference to suppress spurious detections. To address the issue, we propose Background Embed-ding Memory (BEM) , a lightweight, training-free, weight-frozen module that can be attached to pretrained detectors during inference. BEM estimates clean background embeddings, maintains a prototype memory, and re-scores detection logits with an inverse-similarity, rank-weighted penalty , effectively reducing false positives while maintaining recall. Em-pirically, background–frame cosine similarity correlates negatively with object count and positively with Precision–Confidence AUC (P-AUC) ,motivating its use as a training-free control signal. Across YOLO and RT-DETR families on LLVIP and simulated surveillance streams, BEM consistently reduces false positives while preserving real-time perfor-mance. Our code is available at https://github.com/Leo-Park1214/ Background-Embedding-Memory.git 
+
+Keywords: Object detection · Training-free · Background similarity ·
+
+Fixed cameras · False positives · YOLO · RT-DETR 
+
+## 1 Introduction 
+
+Modern object detectors such as YOLO and RT-DETR perform well on COCO and VOC [ 15 , 5], but their precision often drops sharply in surveillance or traffic monitoring deployments due to the distribution mismatch between pretraining datasets and deployment domains [ 23 ,7 ,2 ]. In many surveillance or industrial deployments, privacy and data-governance constraints also make it difficult to collect or annotate sufficient target-domain data for fine-tuning, even when retraining could mitigate distribution mismatch.  
+
+> arXiv:2604.11714v1 [cs.CV] 13 Apr 2026 2Junwoo Park, Jangho Lee ⋆, and Sunho Lim ⋆
+
+Benchmark datasets emphasize category diversity rather than per-class den-sity , leading to per-class sparsity , where each image contains only a few instances of any given category. In dense, single- or few-class fixed-camera streams (e.g., pedestrians or vehicles), detectors may misinterpret repetitive background struc-tures or shadows as foreground objects, inflating false positives. Domain-specific retraining can reduce these errors but requires substantial annotation effort and repeated training cycles, and risks overfitting or catastrophic forgetting [11,1]. In fixed-camera scenarios, the scene provides a quasi-static background prior 
+
+that remains largely underutilized. This prior can be quantified via the embed-ding similarity between a frame and a clean background prototype, expressed as c = E⊤ 
+
+> I
+
+EB . Empirical analysis shows that this similarity decreases as the number of objects in the scene increases, and higher similarity correlates with improved stability in P-AUC, indicating more consistent precision across confi-dence thresholds. These trends highlight that background–frame similarity can act as a training-free control signal for reducing false positives (see Fig. 2). Motivated by these observations, we propose Background Embedding Memory (BEM) , a simple and training-free inference-time module that can be attached to existing detectors without modifying any weights. BEM maintains a lightweight background embedding prototype and applies a similarity-based logit adjustment to suppress background-induced false positives. The module operates with negligible latency cost and requires no supervision, additional training, or architectural changes. Experiments on fixed-camera datasets show that BEM consistently reduces false positives while preserving recall and real-time performance. The key contributions of this paper are summarized in four-fold: 
+
+– We analyze how per-class sparsity in common benchmarks harms robustness in dense, single-class fixed-camera environments. 
+
+– We show that background-frame similarity correlates with scene density and confidence-precision stability, justifying its use as a training-free control signal. 
+
+– We propose BEM, a lightweight inference-time module that re-scores detec-tor outputs using background–background similarity, without retraining or modifying detector parameters. 
+
+– We demonstrate consistent false-positive suppression on LLVIP across YOLO and RT-DETR families with minimal computational overhead. 
+
+## 2 Motivation: Dataset Bias and Background Priors 
+
+2.1 Problem Setting and Assumptions 
+
+False positives often arise from a distribution mismatch between training and de-ployment data. Multi-class benchmark datasets such as COCO [ 15 ] and VOC [ 5]contain many categories but few instances per class per image, whereas fixed-camera datasets such as LLVIP [ 8] focus on one or two categories with dense occurrences and a stable background. Fig. 1 compares persons-per-image distribu-tions across datasets, showing that LLVIP exhibits substantially denser per-class Title Suppressed Due to Excessive Length 30 5 10 15 
+
+> Number of target-class objects per image
+> 0
+> 10
+> 20
+> 30
+> 40
+> Percentage (%)
+> COCO (n=122218)
+> LLVIP (n=30976)
+
+(a) COCO vs LLVIP 0 5 10 15  
+
+> Number of target-class objects per image
+> 0
+> 20
+> 40
+> 60
+> 80
+> Percentage (%)
+> VOC (n=21503)
+> LLVIP (n=30976)
+
+(b) VOC vs LLVIP 
+
+Fig. 1: Persons-per-image distributions comparing COCO/VOC with LLVIP. LLVIP contain substantially denser per-class instances, reflecting real surveillance and traffic scenes [8]. occurrences than COCO and VOC. We leverage this background stability as a corrective prior for detection score calibration. We make two assumptions: (1) as the number of objects in a frame increases, the foreground area grows, reducing cosine similarity between frame and background embeddings; (2) dense frames with many objects tend to have lower precision than background-dominant frames. We empirically confirm on LLVIP that background similarity c ∈ [−1, 1] decreases with object count and that P-AUC increases with c (Fig. 2), supporting the use of c as a training -free control signal for inference - time confidence re -scoring. Further details are provided in Sec. 5. 
+
+2.2 Empirical Validation of Background Similarity 
+
+To assess whether background–frame similarity can act as a meaningful training-free control signal, we analyze its relationship with scene density and confi-dence–precision stability on LLVIP. Empirically, we observe that frames with higher background similarity tend to contain fewer objects and exhibit more sta-ble precision across confidence thresholds, as measured by P-AUC. These trends support the assumptions introduced in Sec. 2.1 and motivate the use of back-ground similarity for inference-time confidence re-scoring. Detailed experimental protocols and quantitative analyses are presented in Sec. 5.3. 4 Junwoo Park, Jangho Lee ⋆, and Sunho Lim ⋆2 4 6 8 10 Number of Objects per Image 0.725 0.750 0.775 0.800 0.825 0.850 0.875 0.900 Cosine Similarity 
+
+> Linear fit Cosine sim ilarity (avg)
+
+(a) Cosine similarity vs. objects per image (negative correlation). 0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Cosine similarity
+> 0.85
+> 0.86
+> 0.87
+> 0.88
+> 0.89
+> 0.90
+> P-AUC
+> N=206730
+> Linear fit
+> P-AUC
+
+(b) P-AUC vs. cosine similarity c (positive association). 
+
+Fig. 2: Relationship between background–frame cosine similarity c and (a) number of objects, and (b) P-AUC on LLVIP. 
+
+## 3 Related Work 
+
+3.1 Training-Time FP Suppression and Its Limitations 
+
+In two-stage detectors, false positives are commonly reduced by refining proposals and filtering low-quality candidates, as exemplified by the Full-Stage Refined Proposal (FRP) algorithm [ 6]. In open-vocabulary detectors, BIRDet focuses on handling background samples through background information modeling and partial object suppression [ 26 ]. A shared characteristic of these approaches is that they assume access to labeled data in the target (or augmented) domains and often introduce tight coupling between architecture, loss design, and training recipes. However, such assumptions are frequently violated in practical deployment settings, where privacy regulations and data-governance policies can preclude the collection or long-term retention of raw video data, rendering supervised retraining pipelines largely infeasible despite their potential benefits. Consequently, most existing FP-suppression techniques operate purely at training time and depend on supervised retraining or explicit architectural modifications, while the paradigm of 
+
+training-free, plug-in, background-aware suppression—especially in fixed-camera deployments—has received comparatively limited attention. 
+
+3.2 Training-Free Memory and Scene-Aware Calibration 
+
+Memory-augmented methods exploit spatiotemporal cues to facilitate video un-derstanding, typically through external memory modules and learned read–write mechanisms [ 25 ,17 ,19 ]. Most of these approaches, however, require supervision to learn how the memory is utilized. PerSense++ [ 22 ] is closer in spirit to our work in that it investigates a training-free exemplar bank for segmentation , but it is not designed for detection score calibration and assumes curated exemplar sets. Prior memory-based approaches therefore either rely on supervised training or target different tasks (e.g., segmentation), leaving a key limitation unresolved: Title Suppressed Due to Excessive Length 5
+
+the absence of an unsupervised background memory that can be built online from inference-time data and explicitly used to calibrate detection confidence scores in static-camera environments. In parallel, post-hoc calibration methods learn a mapping from raw logits or uncalibrated scores to well-calibrated probability estimates, with recent work introducing multivariate calibration frameworks and detector-specific strategies [ 13 , 20 , 14 ]. These methods typically treat the detector as a black box and fit a global calibration function (e.g., via temper-ature scaling, Platt scaling, or isotonic regression) on labeled validation data, thereby improving confidence reliability without modifying the detector’s learned weights. However, existing calibrators operate under a scene-agnostic assumption and enforce a single global mapping across all frames, neglecting the quasi-static background characteristics of fixed-camera environments and preventing scene-conditioned confidence calibration. In contrast, our method introduces a lightweight, training-free re-scoring mechanism that leverages background–frame similarity as a scene-aware control signal. 
+
+3.3 CLIP-Based Re-Scoring, Imbalance, and Domain Bias 
+
+Another line of work leverages large vision–language models such as CLIP to perform semantic similarity re-scoring between image regions and text prompts or concept embeddings [ 21 ]. In open-vocabulary detection, CLIP features are used as auxiliary semantics for adjusting detector logits and improving robustness under category shift. BIRDet [ 26 ] is particularly relevant to our use of background information: it introduces Background Information Modeling (BIM) to replace a single fixed background embedding with dynamic, scene-aware background representations derived from CLIP, and uses the resulting similarities to re-weight classifier scores in open-vocabulary detectors, thereby improving the ability to classify oversized or partially visible regions as background. However, CLIP-based re-scoring and BIM-style background modeling incur significant computational overhead and require extra supervision, making them unsuitable for training-free fixed-camera deployments. Moreover, they do not exploit per-scene background prototypes derived directly from the detector backbone. Imbalance and domain shift are additional well-known factors that degrade detection performance [ 18 ,4]. Typical remedies modify training objectives (e.g., re-weighting or re-sampling) or apply supervised domain adaptation to correct dataset-level statistics, but these strategies primarily address global distribution differences and do not explicitly leverage deployment-specific cues such as fixed-camera backgrounds. Training-time remedies can improve robustness on average yet overlook the quasi-static background prior that is readily available during inference in fixed-camera scenarios, and a deployment-aware, training-free mechanism that directly exploits this prior has been missing. 
+
+Positioning of Our Work. BEM is a training-free, weight-frozen module that: (i) builds a background prototype from recent unlabeled frames using the detector backbone, and (ii) performs logit re-scoring that is modulated by a simple scene-level statistic, namely the background–frame similarity. Empirically, we show 6 Junwoo Park, Jangho Lee ⋆, and Sunho Lim ⋆
+
+a connection between background similarity and precision stability (P-AUC), and demonstrate that this backbone-native similarity signal can suppress false positives with negligible computational overhead across YOLO and RT-DETR families on LLVIP [8]. 
+
+## 4 Background Embedding Memory (BEM) 
+
+Fig. 3 provides an overview of the proposed Background Embedding Memory (BEM) architecture. BEM is integrated with a pretrained detector at inference time and operates without any modification to the detector’s weights. The framework comprises three stages: (1) background estimation, (2) construction of a background embedding memory, and (3) similarity-driven re-scoring, all performed with the detector weights kept frozen .
+
+4.1 Background Estimation 
+
+Given a sequence of recent frames {It}Lt=1 and the corresponding binary masks 
+
+{Mt}Lt=1 , where Mt = 0 indicates detected object regions and Mt = 1 elsewhere, we estimate a clean background image B as: 
+
+B =
+
+PLt=1 It ⊙ Mt
+
+PLt=1 Mt
+
+. (1) This formulation performs a masked temporal aggregation that suppresses fore-ground regions while averaging the remaining background pixels across time. Such masked averaging is a widely adopted strategy for background modeling in fixed-camera scenarios, as it effectively leverages temporal redundancy to recover static scene content. Similar background extraction mechanisms have been employed in prior work. In particular, Zhang and Hoai [ 27 ] utilize a related masked temporal aggregation scheme within a self-supervised scene adaptation framework for object detection under static camera settings. In practice, slow illumination variations and gradual scene changes are accommodated through temporal filtering and periodic background refresh, ensuring robustness over extended deployment. 
+
+4.2 Background Embedding Memory 
+
+Let f (·) denote the detector backbone. We extract globally pooled and ℓ2-normalized feature embeddings as: 
+
+EB = norm(pool( f (B))) , EI = norm(pool( f (I))) , (2) where B denotes background images used for background feature extraction, and I denotes input images that are excluded from the background extraction process. Here, EB represents the background embedding, and EI represents Title Suppressed Due to Excessive Length 7…Input Buffer Detector Backbone Detector Head 
+
+> Detector Input Background Embedding Memory
+> Input Image
+> Extracted Background Background Extractor (Eq. (1)) Similarity Function (Eq. (3)) Input Embedding (Eq. (2)) Background Embedding (Eq. (2)) Detections BEM Re-scoring (Eq. (4)) Similarity Score Detections w/ BEM re-scoring
+
+Fig. 3: Overview of the Background Embedding Memory (BEM) pipeline. During inference, BEM attaches to a frozen detector without retraining. The module first extracts a background embedding from fixed-scene frames via the shared backbone, computes cosine similarity with the current input embedding, and re-scores the detector’s output logits to suppress background-induced false positives. the embedding of the current input frame. We maintain a single background prototype ¯b, instantiated as EB , to form the background embedding memory. The frame-background similarity is computed via cosine similarity: 
+
+c = E⊤ 
+
+> I
+
+EB . (3) 
+
+4.3 Similarity-Driven Logit Re-Scoring 
+
+Given raw detection scores {si} over N object proposals, we first obtain a calibrated confidence ˜si by optionally clipping or temperature-based sharpening to {si}. We further define ri ∈ { 1, . . . , N } as the rank of proposal i when proposals are sorted in descending order of confidence. We then apply similarity-aware re-scoring in logit space: 
+
+z′ 
+
+> i
+
+= logit(˜ si) − αγwi
+
+max( c, δ ) , s′ 
+
+> i
+
+= σ(z′
+
+> i
+
+), (4) where wi =   N −ri 
+
+> N+1
+
+ is a rank-based weighting term that assigns smaller penal-ties to higher-ranked (higher-confidence) proposals. The hyperparameters ( α, γ )jointly control the magnitude and sharpness of the penalty: α sets the overall penalty scale, while γ acts as a temperature parameter that normalizes the penalty via 1 
+
+> γ
+
+. The similarity term c reflects background–frame similarity, and δ
+
+is a small positive constant (e.g., 10 −6) introduced to ensure numerical stability. 8 Junwoo Park, Jangho Lee ⋆, and Sunho Lim ⋆
+
+Subtracting the similarity-weighted penalty in logit space results in a mono-tonic suppression of proposals that are less consistent with the estimated back-ground. This formulation is conceptually related to recent approaches on logit normalization and confidence calibration [ 24 ,16 ,12 ], while remaining training-free and inference-time only. Intuitively, lower background similarity c induces stronger penalties, leading to more aggressive down-weighting in frames containing many objects or under-going significant background changes. Conversely, frames with high background similarity are minimally affected. This frame-level control is further modulated by the proposal-wise rank weighting wi, which prevents over-penalization of the most confident detections. Here, the hyperparameter δ serves as a numerical floor to avoid division by zero. 
+
+## 5 Experiments 
+
+5.1 Dataset and Experimental Setup 
+
+We evaluate the proposed BEM on the LLVIP dataset [ 8], which represents a fixed-camera surveillance scenario with dense object instances and limited category diversity. The LLVIP dataset contains 16 , 836 paired visible and infrared images captured from 26 street locations. Visible images have a resolution of 1920 × 1080, while infrared images are 1280 × 720, and each pair is precisely aligned in both time and space. All image pairs include at least one pedestrian and are annotated with a single pedestrian category. To assess the generality of BEM across detector architectures, we consider a diverse set of pretrained object detectors, including YOLO v11m [ 10 ], YOLO v8s [ 9 ], YOLO-World v2(s, l) [ 3], and RT-DETR [ 28 ]. All YOLO-family models are initialized using the official pretrained weights released by Ultralytics 4. For each detector, we evaluate two training variants: (i) COCO-pretrained models ,which directly use the Ultralytics-released checkpoints trained on COCO, and (ii) 
+
+VOC-finetuned models , obtained by fine-tuning the COCO-pretrained weights on the PASCAL VOC dataset (COCO →VOC) following the default Ultralytics training recipe with SGD. This results in a total of six detector variants, all of which are evaluated on LLVIP. Importantly, all detector weights remain frozen during evaluation. BEM is applied as an external inference-time module, without any additional training or parameter updates to the underlying detectors. This setup ensures that any observed performance differences can be attributed solely to the proposed inference-time mechanism rather than retraining effects. The code will be released available upon publication. 
+
+5.2 Evaluation Metrics 
+
+We report three evaluation metrics: mAP@0.50 to measure standard detection accuracy, Precision-Confidence AUC (P-AUC) to assess confidence-precision   
+
+> 4https://docs.ultralytics.com/ Title Suppressed Due to Excessive Length 9
+
+stability under confidence thresholding, and latency to evaluate real-time deploy-ment efficiency. Key hyperparameters of BEM, including the inverse-similarity penalty scale α, temperature τ , background window size L, and memory size K
+
+are summarized in Table 3. Additional details on the selection of the background window size L are provided in Sec. 5.3. 
+
+mAP@0.50. Detection performance is evaluated using the standard COCO-style mean Average Precision (mAP) at an IoU threshold of 0.50. 
+
+Precision-Confidence AUC (P-AUC). To quantify the stability of preci-sion with respect to confidence thresholding, we integrate precision over decreasing confidence thresholds. Let τ ∈ [0 , 1] denote a confidence threshold; precision P (τ )is computed using detections with scores greater than or equal to τ . We define P-AUC as follows: P-AUC = 
+
+Z 10
+
+P (τ ) dτ ≈
+
+> J−1
+
+X
+
+> j=1
+
+P (τj ) ( τj − τj+1 ), (5) where {τj } denotes a uniform or score-quantile grid. Unlike PR-AUC (i.e., AP), which integrates precision over recall , P-AUC integrates precision over confidence ,and thus directly reflects how robust a detector’s precision is to variations in the confidence threshold. 
+
+Interpretation. A higher P-AUC indicates that precision remains high across a broad range of confidence thresholds, implying that the detector’s confidence scores are well aligned with correctness. We further connect P-AUC to background similarity; see Fig. 2 and the analysis in Sec. 5.3 for empirical evidence. 
+
+5.3 Main Results 
+
+Table 1 reports the quantitative comparison of mAP@0.50 and P-AUC between the proposed BEM and the baseline detectors across all evaluated architectures, including YOLO v11 [ 10 ], YOLO v8 [ 9 ], YOLO-World [ 3 ], and RT-DETR [ 28 ]. This comprehensive evaluation allows us to assess the consistency of BEM across both detector families and data distributions. Overall, BEM yields consistent but modest improvements in both mAP@0.50 and P-AUC across all settings. While the gains in mAP@0.50 are relatively small, they are systematically positive, indicating that the proposed similarity-aware re-scoring does not degrade standard detection accuracy. At the same time, the observed improvements in P-AUC suggest that BEM effectively stabilizes precision across confidence thresholds, reflecting a reduction in false positives without sacrificing recall. As further illustrated in Fig. 4, the improvements in P-AUC are not uniformly distributed across all frames. Instead, they are concentrated in high-similarity, background-dominant frames, where the quasi-static background prior is most informative. This observation is consistent with our underlying assumption that background–frame similarity provides a reliable control signal for suppressing spurious detections in fixed-camera scenarios. 10 Junwoo Park, Jangho Lee ⋆, and Sunho Lim ⋆
+
+Table 1: Quantitative comparison of mAP@0.50 and P-AUC across six detectors on the LLVIP dataset. Base denotes the baseline detector without BEM, while 
+
+BEM applies the proposed similarity-driven re-scoring. 
+
+P-AUC mAP@0.5 Model (Variant) Base BEM Base BEM YOLO v11m (COCO) 89.82 92.87 (±0.034) 80.49 80.99 (±0.001) 
+
+YOLO v8s (COCO) 88.44 91.63 (±0.017) 75.34 75.90 (±0.028) 
+
+RT-DETR-L (COCO) 77.60 82.85 (±0.030) 79.26 79.59 (±0.022) 
+
+YOLO v11m (COCO →VOC) 93.39 94.24 (±0.004) 68.71 69.51 (±0.012) 
+
+YOLO v8s (COCO →VOC) 92.67 93.51 (±0.013) 66.17 66.88 (±0.021) 
+
+RT-DETR-L (COCO →VOC) 78.44 84.19 (±0.027) 66.19 66.58 (±0.027) 
+
+YOLO v8s-Worldv2 81.78 81.88 (±0.011) 90.23 91.36 (±0.001) 
+
+YOLO v8l-Worldv2 86.22 86.27 (±0.005) 91.20 92.36 (±0.003) 
+
+Table 2: Latency comparison between baseline detectors and BEM-equipped variants. Base denotes the original de-tector without BEM, while BEM ap-plies the proposed inference-time re-scoring. 
+
+Model Latency (ms/frame) YOLOv11m (Base) 370.15 ( ±1.22) YOLOv11m (BEM) 415.02 ( ±3.81) YOLOv8s (Base) 318.49 ( ±1.97) YOLOv8s (BEM) 368.26 ( ±5.93) RT-DETR-l (Base) 30.87 ( ±0.14) RT-DETR-l (BEM) 54.44 ( ±0.34) YOLOv8s-Worldv2 (Base) 23.52 ( ±0.10) YOLOv8s-Worldv2 (BEM) 41.67 ( ±0.12) YOLOv8l-Worldv2 (Base) 25.51 ( ±0.08) YOLOv8l-Worldv2 (BEM) 44.44 ( ±0.08) 0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Cosine similarity
+> 0.00
+> 0.25
+> 0.50
+> 0.75
+> 1.00
+> 1.25
+> 1.50
+> 1.75
+> P-AUC
+> P-AUC
+
+Fig. 4: Increase in P-AUC as a function of background-frame cosine similarity. Frames are grouped into similarity bins, and the P-AUC improvement is aver-aged within each bin. Higher similarity corresponds to background-dominant frames, where BEM yields larger preci-sion gains. 
+
+Assumption Validation To support the two assumptions stated in Sec. 2.1, we analyze how background-frame similarity relates to (i) the number of objects in a scene and (ii) the stability of precision under confidence thresholding. For each LLVIP frame I, we extract a frozen backbone embedding EI = norm ( pool (f (I))), using the same detector backbone as in the main experiments. The background embedding EB is obtained by the temporal masked aggregation described in Sec. 4.1, with the embedding period fixed at the optimal value ( L=25) determined by our background window analysis; this choice ensures that the similarity signal is consistent with the background prior used throughout our evaluation. Title Suppressed Due to Excessive Length 11 
+
+Where Does BEM Improve Precision–Confidence Stability? In addition to these raw correlations, we analyze where BEM yields the largest improvements in precision-confidence stability. For each cosine-similarity bin, we compute the change in P-AUC when enabling BEM (i.e., P − AUC BEM - P − AUC Base ) on LLVIP using YOLO v11m (COCO) with the optimal penalty scale α selected on a held-out validation split. As shown in Fig. 4, most of the gains arise in high-similarity, background-dominant frames-precisely the regime where background-induced false positives are most problematic. 
+
+Selecting the Background Window Size L We explain how to determine the background window size L used for estimating the clean background B. We empirically swept L ∈ { 5, 10 , 15 , 20 , 25 , 30 } on multiple fixed-camera sequences and selected the value that minimized a background-quality score. 
+
+Setup. For each sliding window of L consecutive frames, we computed a masked temporal average to obtain the background estimate B, where foreground regions (identified by detector bounding boxes) were excluded before averaging. Given a current image I and background B, we computed the residual: R = |I − B|,using channel-wise means. Background quality is evaluated on non-object pixels only using two com-plementary metrics. The first metric is the mean absolute error (MAE) ,which captures the overall magnitude of residual background noise. The MAE is calculated by averaging the residual R. The second metric is the ghost rate ,defined as the proportion of non-object pixels whose residual exceeds a fixed threshold ( τ = 30 /255), reflecting the presence of ghosting artifacts caused by incomplete foreground suppression or background contamination. The ghost rate is defined as: ghost rate = 1
+
+Nbg 
+
+X
+
+> p∈Ωbg
+
+1 Rp > τ , (6) where 1[·] is the indicator function. These two metrics are combined into a single background-quality score by summing the ghost rate and the MAE with equal weighting. For each candidate window size L, the score is averaged across all sliding windows and all evaluated sequences, and the value of L that yields the lowest mean score is selected as the optimal background window size. 
+
+Data and detector. We evaluated both infrared and visible streams captured from multiple fixed stations and used a single person detector to supply bounding boxes for masking. Masked averaging prevented foreground leakage into the background estimate. 
+
+Result. Across the sweep L ∈ { 5, 10 , 15 , 20 , 25 , 30 }, we found that L = 25 consistently minimized the average score. This value strikes a balance between temporal robustness (reduced noise and ghosting artifacts) and adaptability to mild illumination changes. Accordingly, we adopt L = 25 as the default background window size for all experiments, unless otherwise specified (see also Hyperparameters). 12 Junwoo Park, Jangho Lee ⋆, and Sunho Lim ⋆0.2 0.4 0.6 0.8 1.0 
+
+> alpha
+> 0.50
+> 0.55
+> 0.60
+> 0.65
+> 0.70
+> 0.75
+> 0.80
+> mAP@0.5
+> 0.001
+> 0.005
+> 0.01
+> 0.05
+> 0.1
+> 0.5
+> 1.0
+
+(a) YOLO v11m (COCO). 0.2 0.4 0.6 0.8 1.0  
+
+> alpha
+> 0.50
+> 0.55
+> 0.60
+> 0.65
+> 0.70
+> 0.75
+> 0.80
+> 0.85
+> mAP@0.5
+> 0.001
+> 0.005
+> 0.01
+> 0.05
+> 0.1
+> 0.5
+> 1.0
+
+(b) YOLO v8l-Worldv2. 
+
+Fig. 5: Ablation study of the BEM penalty scale α and temperature γ across different detector backbones. Each curve reports mAP@0.50 as a function of α
+
+for several fixed values of γ.Table 3: Summary of BEM hyperparameters. L denotes the number of recent frames used for temporal background estimation, while K denotes the number of background embeddings aggregated to form a single prototype. In our experiments, we set K = L.
+
+Symbol Range Role Description 
+
+α [0.0,1.0] Penalty scale Controls suppression strength in logit space 
+
+γ [0.0,1.0] Temperature Normalizes penalty magnitude (sharpness) 
+
+L - Temporal window Number of frames for background averaging 
+
+K - Prototype count Number of frames aggregated for one prototype 
+
+Hyperparameters for BEM This subsection consolidates all hyperparameters used in BEM and the rationale behind their configuration. The similarity-penalty scale α is tuned via a lightweight grid search, while the temperature γ is fixed per detector family to maintain a stable inverse-similarity–based penalty. The background window size L determines how many recent frames contribute to the masked temporal averaging used to obtain the clean background estimate B. As described in Sec. 5.3, we select L = 25 based on an empirical sweep over L ∈{5, 10 , 15 , 20 , 25 , 30 }. Unless stated otherwise, the value of L is used throughout all experiments. The memory size K controls how many background embeddings are aggregated when forming the prototype. In our default configuration, we tie 
+
+K to the background window and set K = L, updating the prototype once every 
+
+L frames. This makes the prototype refresh period equal to the background-estimation period, simplifying memory behavior without introducing additional hyperparameters. We also ablate the rank-weighting term wi to assess its role in false-positive suppression. As shown in Fig. 5, when the temperature is fixed to 
+
+γ = 0 .001, detection performance becomes highly sensitive to the penalty scale α
+
+for both YOLOv11m and YOLOv8l-Worldv2, whereas for larger temperature values, performance remains largely stable across different choices of α.Title Suppressed Due to Excessive Length 13 (a) ground-truth (b) baseline (c) baseline w/ FP (d) BEM (ours) 
+
+Fig. 6: Qualitative comparison of detection results. The top two rows show results from YOLO-based detectors, while the bottom two rows correspond to DETR-based detectors. (a) Ground-truth bounding boxes, (b) Detection results of the baseline detector, (c) Baseline detections with false positives highlighted with green color, and (d) Detection results with the proposed BEM applied. 
+
+## 6 Discussion 
+
+Deployment Interpretation We consider a common deployment scenario in which pretrained object detectors are applied to fixed-camera environments in a strict zero-shot manner, without any fine-tuning or supervision on the target domain, often due to practical constraints such as privacy regulations, data own-ership, or the infeasibility of collecting and annotating target-domain data after deployment. In such settings, detectors that perform well on standard benchmarks often exhibit a noticeable increase in false positives. Our key observation is that a substantial portion of these false positives arises not from insufficient model capacity, but from dataset bias induced by benchmark training. 
+
+Why Similarity Works In particular, detectors trained on datasets with strong per-class sparsity are prone to over-confident predictions on repetitive background patterns when deployed in dense, single- or few-class fixed-camera 14 Junwoo Park, Jangho Lee ⋆, and Sunho Lim ⋆
+
+scenes. From this perspective, background-frame similarity is not merely a de-scriptive statistic, but an actionable signal that reflects scene difficulty and susceptibility to background-induced errors. BEM addresses this issue by intro-ducing a deployment-aware, training-free re-scoring mechanism that leverages background-frame embedding similarity computed from a frozen backbone. This similarity serves as a scene-level control signal, allowing confidence scores to be modulated according to how strongly a frame deviates from its background prototype. To support this interpretation, we examined the relationship between background similarity, scene density, and precision-confidence stability, followed by ablation analyses that justify the choice of the background window size and penalty hyperparameters. We further analyze where BEM yields the largest gains and under which conditions its assumptions begin to break down. 
+
+## 7 Conclusion 
+
+In this study, we introduced Background Embedding Memory (BEM), a simple, training-free inference-time module for reducing false positives in fixed-camera deployment scenarios. By leveraging background–frame embedding similarity from 
+
+frozen detectors, BEM suppresses background-induced errors without additional supervision or retraining. Experiments in controlled fixed-camera settings show that BEM consistently reduces false positives while preserving recall and real-time performance across multiple detectors. These results demonstrate the effectiveness of background-aware confidence modulation for improving detector reliability under strict zero-shot constraints. While BEM is primarily designed for relatively stable scenes, it provides a practical foundation for deployment-time reliability enhancement. Future extensions include more localized similarity measures and adaptive memory updates to handle long-term background drift and abrupt illumination changes. 
+
+## References           
+
+> 1. Aljundi, R., et al.: Gradient based sample selection for online continual learning. NeurIPS 32 (2019) 2. Chen, Y., et al.: Domain adaptive faster r-cnn for object detection in the wild. In: CVPR. pp. 3339–3348 (2018) 3. Cheng, T., et al.: Yolo-world: Real-time open-vocabulary object detection. In: CVPR. pp. 16901–16911 (2024) 4. Crasto, N.: Class imbalance in object detection: an experimental diagnosis and study of mitigation strategies. arXiv preprint arXiv:2403.07113 (2024) 5. Everingham, M., et al.: The pascal visual object classes (voc) challenge. International journal of computer vision 88 (2), 303–338 (2010) 6. Guo, Q., et al.: A full-stage refined proposal algorithm for suppressing false positives in two-stage cnn-based detection methods. arXiv preprint arXiv:2508.01382 (2025) 7. Inoue, N., et al.: Cross-domain weakly-supervised object detection through progres-sive domain adaptation. In: CVPR. pp. 5001–5009 (2018)
+
+Title Suppressed Due to Excessive Length 15 8. Jia, X., Zhu, C., Li, M., Tang, W., Zhou, W.: Llvip: A visible-infrared paired dataset for low-light vision. In: ICCV. pp. 3496–3504 (2021) 9. Jocher, G., Ultralytics: Ultralytics yolov8. https://github.com/ultralytics/ ultralytics (2023) 10. Jocher, G., Ultralytics: Ultralytics yolov11: Real-time object detection. https: //github.com/ultralytics/ultralytics (2024), accessed: 2025-12-07 11. Kirkpatrick, J., et al.: Overcoming catastrophic forgetting in neural networks. Proceedings of the national academy of sciences 114 (13), 3521–3526 (2017) 12. Kuppers, F., et al.: Multivariate confidence calibration for object detection. In: CVPRW. pp. 326–327 (2020) 13. K¨ uppers, F., et al.: Confidence calibration for object detection and segmentation. In: Deep neural networks and data for automated driving: Robustness, uncertainty quantification, and insights towards safety, pp. 225–250. Springer International Publishing Cham (2022) 14. Kuzucu, S., et al.: On calibration of object detectors: Pitfalls, evaluation and baselines. In: ECCV. pp. 185–204. Springer (2024) 15. Lin, T.Y., et al.: Microsoft coco: Common objects in context. In: ECCV. pp. 740–755. Springer (2014) 16. Liu, B., et al.: The devil is in the margin: Margin-based label smoothing for network calibration. In: CVPR. pp. 80–88 (2022) 17. Oh, S.W., et al.: Video object segmentation using space-time memory networks. In: ICCV. pp. 9226–9235 (2019) 18. Oksuz, K., et al.: Imbalance problems in object detection: A review. IEEE transac-tions on pattern analysis and machine intelligence 43 (10), 3388–3415 (2020) 19. Park, H., et al.: Learning memory-guided normality for anomaly detection. In: CVPR. pp. 14372–14381 (2020) 20. Popordanoska, T., et al.: Beyond classification: Definition and density-based esti-mation of calibration in object detection. In: WACV. pp. 585–594 (2024) 21. Radford, A., et al.: Learning transferable visual models from natural language supervision. In: ICML. pp. 8748–8763. PmLR (2021) 22. Siddiqui, M.I., et al.: Towards persense++: Advancing training-free personalized instance segmentation in dense images. arXiv preprint arXiv:2508.14660 (2025) 23. Torralba, A., Efros, A.A.: Unbiased look at dataset bias. In: CVPR. pp. 1521–1528. IEEE (2011) 24. Wei, H., et al.: Mitigating neural network overconfidence with logit normalization. In: ICML. pp. 23631–23644. PMLR (2022) 25. Xiao, F., Lee, Y.J.: Video object detection with an aligned spatial-temporal memory. In: ECCV. pp. 485–501 (2018) 26. Zeng, R., et al.: Boosting open-vocabulary object detection by handling background samples. In: International Conference on Neural Information Processing. pp. 274– 289. Springer (2024) 27. Zhang, Z., Hoai, M.: Object detection with self-supervised scene adaptation. In: CVPR. pp. 21589–21599 (2023) 28. Zhao, Y., et al.: Detrs beat yolos on real-time object detection. In: CVPR. pp. 16965–16974 (2024)

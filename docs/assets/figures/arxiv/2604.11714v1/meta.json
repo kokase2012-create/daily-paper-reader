@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.11714v1/fig-001.webp",
+      "caption": "Fig. 3: Overview of the Background Embedding Memory (BEM) pipeline. During inference, BEM attaches to a frozen detector without retraining. The module first extracts a background embedding from fixed-scene frames via the shared backbone, computes cosine similarity with the current input embedding, and rescores the detector’s output logits to suppress background-induced false positives.",
+      "page": 7,
+      "index": 1,
+      "width": 723,
+      "height": 423
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11714v1/fig-002.webp",
+      "caption": "Table 1: Quantitative comparison of mAP@0.50 and P-AUC across six detectors on the LLVIP dataset. Base denotes the baseline detector without BEM, while BEM applies the proposed similarity-driven re-scoring.",
+      "page": 10,
+      "index": 2,
+      "width": 704,
+      "height": 288
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11714v1/fig-003.webp",
+      "caption": "Fig. 1: Persons-per-image distributions comparing COCO/VOC with LLVIP. LLVIP contain substantially denser per-class instances, reflecting real surveillance and traffic scenes [8].",
+      "page": 3,
+      "index": 3,
+      "width": 698,
+      "height": 278
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11714v1/fig-004.webp",
+      "caption": "Fig. 6: Qualitative comparison of detection results. The top two rows show results from YOLO-based detectors, while the bottom two rows correspond to DETRbased detectors. (a) Ground-truth bounding boxes, (b) Detection results of the baseline detector, (c) Baseline detections with false positives highlighted with green color, and (d) Detection results with the proposed BEM applied.",
+      "page": 13,
+      "index": 4,
+      "width": 725,
+      "height": 606
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11714v1/fig-005.webp",
+      "caption": "Fig. 2: Relationship between background–frame cosine similarity c and (a) number of objects, and (b) P-AUC on LLVIP.",
+      "page": 4,
+      "index": 5,
+      "width": 736,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11714v1/fig-006.webp",
+      "caption": "Fig. 5: Ablation study of the BEM penalty scale α and temperature γ across different detector backbones. Each curve reports mAP@0.50 as a function of α for several fixed values of γ.",
+      "page": 12,
+      "index": 6,
+      "width": 715,
+      "height": 244
+    }
+  ]
+}

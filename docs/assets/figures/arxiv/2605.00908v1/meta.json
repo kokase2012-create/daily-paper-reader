@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.00908v1/fig-001.webp",
+      "caption": "Fig. 1. Distribution of annotated instances in the GROUNDBASED_WEED dataset, highlighting class imbalance and ambiguous samples.",
+      "page": 5,
+      "index": 1,
+      "width": 630,
+      "height": 412
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00908v1/fig-002.webp",
+      "caption": "Table 1. Performance comparison of YOLOv26 nano, RT-DETR, and RF-DETR",
+      "page": 8,
+      "index": 2,
+      "width": 752,
+      "height": 235
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00908v1/fig-003.webp",
+      "caption": "Fig. 2. Example of YOLOv26-nano inference trained on the GROUNDBASED_WEED dataset",
+      "page": 10,
+      "index": 3,
+      "width": 652,
+      "height": 440
+    }
+  ]
+}

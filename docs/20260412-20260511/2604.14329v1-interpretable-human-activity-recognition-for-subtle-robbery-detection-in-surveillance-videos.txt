@@ -1,0 +1,190 @@
+Title: Interpretable Human Activity Recognition for Subtle Robbery Detection in Surveillance Videos
+
+URL Source: https://arxiv.org/pdf/2604.14329v1
+
+Published Time: Fri, 17 Apr 2026 00:15:54 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# Interpretable Human Activity Recognition for Subtle Robbery Detection in Surveillance Videos 
+
+Bryan Jhoan Cazáres Leyva ⋆1, Ulises Gachuz Davila ⋆1, José Juan González Fonseca ⋆1, Juan Irving Vasquez 2[0000 −0001 −8427 −9333] , Vanessa A. Camacho-Vázquez 1[0000 −0002 −1149 −3950] , and Sergio Isahí Garrido-Castañeda 2[0009 −0003 −4549 −7794]  
+
+> 1
+
+Escuela Superior de Cómputo, Instituto Politécnico Nacional, México City, México.  
+
+> 2
+
+Centro de Innovación y Desarollo Tecnológico en Cómputo, Instituto Politécnico Nacional, México City, México. 
+
+jvasquezg@ipn.mx 
+
+Abstract. Non-violent street robberies (snatch-and-run) are difficult to detect automatically because they are brief, subtle, and often indistin-guishable from benign human interactions in unconstrained surveillance footage. This paper presents a hybrid, pose-driven approach for detecting snatch-and-run events that combines real-time perception with an inter-pretable classification stage suitable for edge deployment. The system uses a YOLO-based pose estimator to extract body keypoints for each tracked person and computes kinematic and interaction features describ-ing hand speed, arm extension, proximity, and relative motion between an aggressor-victim pair. A Random Forest classifier is trained on these descriptors, and a temporal hysteresis filter is applied to stabilize frame-level predictions and reduce spurious alarms. We evaluate the method on a staged dataset and on a disjoint test set collected from internet videos, demonstrating promising generalization across different scenes and camera viewpoints. Finally, we implement the complete pipeline on an NVIDIA Jetson Nano and report real-time performance, supporting the feasibility of proactive, on-device robbery detection. 
+
+Keywords: Human activity recognition · surveillance · explainable AI. 
+
+## 1 Introduction 
+
+Public safety, particularly in regard to non-violent street robbery, remains a critical challenge for urban security [1]. Despite the global expansion of video surveillance infrastructure, its effectiveness is often hindered by heavy reliance on real-time human interpretation. Traditionally, action recognition relied on computationally intensive modali-ties like RGB image sequences or depth videos [2]. However, 3-dimensional (3D)  
+
+> ⋆
+
+These authors contributed equally to this work.   
+
+> arXiv:2604.14329v1 [cs.CV] 15 Apr 2026 2Cázares et al.
+> Fig. 1. General flow of the proposed method for the recognition of robbery in surveil-lance videos.
+
+skeleton-based action recognition (SAR) has emerged as a more robust alterna-tive, providing detailed topological representations of the human body through joints and bones [3]. Early methods primarily utilized handcrafted features to capture relative 3D rotations and translations among body parts [4]. Recent advancements have shifted toward deep learning architectures, specifically Re-current Neural Networks (RNNs) and Long Short-Term Memory (LSTM) net-works, which excel at capturing temporal dependencies in joint movements [5][6]. Despite their temporal proficiency, standard RNNs often lack spatial modeling capabilities [7]. To address this, Convolutional Neural Networks (CNNs) are frequently employed to identify spatial features and local patterns by trans-forming skeleton sequences into pseudo-image formats [8]. Furthermore, Graph Convolutional Networks (GCNs) have gained prominence by treating the human skeleton as a natural graph structure, effectively modeling the interdependence between joints and bones [9]. For high-stakes interactions like robbery, mod-ern approaches increasingly leverage Transformer-based architectures and hybrid models to capture long-range dependencies and global relationships within the data [10, 3]. These methodologies are typically evaluated on large-scale datasets such as NTU-RGB+D and NTU-RGB+D 120, which offer challenging cross-Robbery Detection in Surveillance Videos 3
+
+subject and cross-view evaluation protocols [2]. While existing studies explore violent behavior detection using pose estimation and neural networks, these mod-els target broad categories of aggression. Consequently, there remains a lack of specialized systems focusing on the specific subtle kinematics of non-violent rob-bery incidents between two individuals. Although AI-driven video analytics have significantly reduced false alarms and improved detection of defined actions such as shoplifting or explicit violent behaviors [11], research and technical deployments indicate substantial gaps re-main in automating the recognition of subtle, non-violent behavioral signatures (e.g., rapid snatching followed by immediate flight), which are harder to charac-terize and detect using current models. Furthermore, end-to-end methods based on deep learning lack of explainability. This paper addresses the detection of non-violent robbery (snatch-and-run) by proposing a method that combines neural-network-based perception with an explainable, feature-based classifier. The system uses the YOLO architecture to detect individuals and estimate their body keypoints. Next, an interpretable feature-extraction stage computes kinematic and interaction descriptors from the skeleton trajectories; a formally ranked subset of the most relevant features is then used to detect the event using a Random Forest classifier. The main contribution of this work is the proposed explainable classification pipeline for pose-driven robbery recognition. The implemented system is evaluated in controlled environments designed to replicate real-world theft dynamics. We report accuracy and response time to establish a baseline for proactive surveillance efficiency relative to traditional manual monitoring. In addition, the experiments show that the method can run on the NVIDIA Jetson Nano, supporting its suitability for edge deployment. 
+
+## 2 Robbery Recognition Methodology 
+
+Overall, the proposed method takes a raw video stream as input. First, a YOLO-based detector identifies people in each frame; then, for each detected ROI, a pose-estimation model computes the corresponding skeleton. Next, we assign consistent IDs to the detected individuals and smooth the resulting pose tra-jectories over time. For each person, we refine the pose sequence by computing relative features and then retain only a subset of the most informative ones. These selected features are fed into a previously trained Random Forest clas-sifier to predict the activity class. Because the classifier may produce sporadic misclassifications, we apply a hysteresis-based decision rule to stabilize predic-tions over time. Finally, when a robbery is detected, the system triggers an alert and stores the corresponding evidence. A general flow diagram is presented in Fig. 1, and the details are provided next. 
+
+2.1 Skeleton detection 
+
+The raw video is split into a frame buffer. Skeletons are then extracted in two stages: first, the YOLO detector identifies the people in the scene; next, 4 Cázares et al. 
+
+for each detected bounding box, a pose-estimation model predicts the corre-sponding skeleton. This produces a buffer of skeletons over time, denoted as 
+
+S = {S1, . . . , S n}, where n is the number of people in the scene. Each skeleton consists of 17 body keypoints: the nose (0), eyes (1,2), ears(3, 4), shoulders (5, 6), elbows (7, 8), wrists (9, 10), hips (11, 12), knees (13, 14), and ankles (15,16). 
+
+2.2 Pose estimation 
+
+To reduce noise in the skeleton measurements over time, S, we smooth each joint trajectory using an Exponential Moving Average (EMA). For a joint coordinate 
+
+xt at time t, the EMA is defined as shown in Eq. (1): 
+
+¯xt = αx t + (1 − α)¯ xt − 1, 0 < α < 1, (1) with initialization ¯x0 = x0. Applying this update to every joint and coordinate yields the smoothed skeleton sequence ¯S.In this human-to-human interaction scenario, there are two possible roles: victim and aggressor. Because we have no prior knowledge of each persons intent, we evaluate both role assignments and attach a probability to each one. Thus, we augment the set of detected and filtered skeletons with an aggressor label, represented by the set D in Eq. (2). 
+
+D = ( ¯S1, p (r = ’aggressor’ )) , . . . , ( ¯Sn, p (r = ’aggressor’ )) , (2) where the probability of being an aggressor is estimated from the mean trans-lation of the skeleton over time and converted into a normalized score using a softmax function. This heuristic assumes that the aggressor (or thief) exhibits more abrupt movements. 
+
+2.3 Explainable feature extraction 
+
+This section describes the interpretable kinematic and interaction features com-puted from the smoothed skeleton sequences. All distances and velocities are normalized by the torso height to reduce sensitivity to scale changes caused by subject–camera distance. We group the features into two categories: 
+
+Individual features per track. They characterize the motion and posture of each person independently. They are divided in four groups: 
+
+– Body-center kinematics features. velocity : normalized velocity of the person center. acceleration : normalized acceleration of the person center. 
+
+– Hand motion features. handVelocity : normalized wrist speed. High val-ues suggest rapid hand movement (e.g., a slap, grab, or snatch attempt). 
+
+fastHandPct : percentage of frames for which the wrist speed exceeds a fixed threshold. It measures the duration of fast hand motion. timeToPeakHandVel :number of frames required to reach the maximum wrist speed within the seg-ment (timing of the fastest motion). handAcceleration :(’aggressor’) wrist Robbery Detection in Surveillance Videos 5
+
+acceleration. handJerkMin :(’aggressor’) minimum wrist jerk (derivative of acceleration). 
+
+– Arm extension and posture features. armExtension : normalized arm extension (wrist-shoulder distance). timeToPeakArmExt (’aggressor’): frames until it reaches the max. arm extension. armRetraction0p2s (’aggressor’): drop in aggressor’s arm extension 0.2 s after its peak. This “retraction” metric captures whether the aggressor quickly withdraws the arm after reaching maximum reach. elbowFlexPct [L/R]: percentage of frames in which the elbow angle is below a threshold indicating a tendency to keep the arms flexed. elbowAngle [L/R ]: Estimation of the elbow angle. 
+
+– Bounding-box features. bboxAreaRate : relative derivative of the bounding-box area. Positive values may indicate motion toward the camera. 
+
+Interaction features. Characterize the joint movement. Subjects A and B. 
+
+– Distance and contact features: distance : normalized distance between the centers of subjects. distanceRate : distance change rate (approach/separation speed). iou : IoU between their bounding boxes (physical contact or crowd-ing). iouPeak : maximum IoU within the segment. iouDrop0p2s : IoU drop 
+
+0.2 s after the peak, measuring how quickly they separate after maximum overlap. 
+
+– Relative movement features. relativeSpeed : relative speed between the centers of subjects. handTowardCos : cosine similarity between A’s hand velocity vector and the vector from A to B’s torso. Values close to 1 in-dicate that A’s hand moves directly toward B, serving as an intent cue. 
+
+handTowardPct : percentage of frames with high directionality, measuring the duration of “attack intent.” 
+
+– Hand reaching features. handToTorsoMin : minimum normalized distance from A’s wrist to B’s torso center. closeHandPct : percentage of frames in which agrressor’s hand is very close to victims’s torso. handToHipMin : mini-mum normalized distance from aggressors’s wrist to victims’s hips, which can help detect interactions directed to the lower torso (e.g., pockets). fastAndClosePct :percentage overlap of “fast hand” and “close hand” conditions, combining rapid action with close interaction. fastAndCloseLongest : longest consecu-tive run (frames) satisfying the “fast and close” condition. postContactSepMean :mean center distance in a 0.4 s window after A’s hand reaches its closest point to B’s torso, capturing immediate withdrawal/separation. 
+
+– Relative face orientation features. BfacingToA : cosine similarity be-tween B’s facing direction and the vector from B to A. Values close to −1
+
+indicate that B is facing A, while values close to 1 indicate that B is turned away. AfacingToB : cosine similarity between A’s facing direction and the vec-tor from A to B. Values close to 1 indicate that A is facing B. facingRate :derivative of the facing direction. 6 Cázares et al. 
+
+2.4 Feature Selection Analysis 
+
+To select a compact and informative subset of variables, we first trained a Ran-dom Forest model using the full set of available features. We then used the model’s feature importances attribute to estimate the contribution of each fea-ture to the classifier’s decision process. Based on this ranking, we retained the 10 most important features, which helps reduce noise and redundancy while pre-serving discriminative power. The choice of 10 features was made empirically. Table 1 lists the selected features in descending order of importance. Among the top-10, AB_dist_p95 provides the highest contribution to classification, whereas AB_handTowardGt07Pct has the lowest contribution within the selected subset.                             
+
+> Table 1. Top 10 features ranked by Random Forest importance (Two columns).
+> Rank Feature Imp. ( 10 −2) Rank Feature Imp. ( 10 −2)
+> 1dist_p95 5.236 6distancet_max 4.188 2handToHip_max 4.802 7handToTorso_median 3.340 3handToTorso_mean 4.781 8handToHip_p95 2.763 4handToTorso_p95 4.297 9distance_mean 2.459 5handToTorso_max 4.239 10 closeHandPct 2.352
+
+Finally, to analyze class separability using the selected 10 features, we applied Principal Component Analysis (PCA) and visualized the projected samples as shown in Fig. 2. 
+
+2.5 Hysteresis filtering 
+
+Frame-by-frame predictions produced by the activity classifier may be unstable due to pose-estimation noise, partial occlusions, and short-term ambiguous mo-tion. To avoid raising spurious alarms, we apply a temporal hysteresis filter that enforces different activation and deactivation conditions. Let ˆyt ∈ { 0, 1} be the raw prediction at time t, where ˆyt = 1 denotes “rob-bery”. We define an internal alarm state st ∈ { 0, 1} updated as shown in Eq. (3). The alarm is activated only if the classifier predicts robbery for at least Non 
+
+frames within a sliding window of length W .
+
+st = 1 if 
+
+> t
+
+∑ 
+
+> k=t−W+1
+
+ˆyk ≥ Non (3) Once activated, the alarm remains on until the robbery prediction has been absent for at least Noff frames in the same window (with Noff < N on ), a condition expressed by Eq. (4). 
+
+st = 0 if 
+
+> t
+
+∑ 
+
+> k=t−W+1
+
+ˆyk ≤ N off . (4) Robbery Detection in Surveillance Videos 7−10 0 10 20 30 
+
+> Principal Component 1 (Explained Variance: 22.6%)
+> −10
+> −5
+> 0
+> 5
+> 10
+> 15
+> Principal Component 2 (Explained Variance: 14.5%)
+> Class Visualization using PCA
+> Class
+> Non -Robbery (0)
+> Robbery (1)
+
+Fig. 2. Class visualization using PCA. As we can observe, the projected samples are in a general way distinguishable. This graph is only a projection of the feature vectors of 10 elements. 
+
+Otherwise, the previous state is preserved ( st = st−1). This two-threshold mech-anism prevents rapid state switching and attenuates short bursts of false posi-tives/negatives. In practice, W is chosen according to the frame rate (e.g., W ≈ 0.4 s of video), and Non and Noff are tuned to trade off detection latency against robustness. When st transitions from 0 to 1, the system triggers an alert and stores the corresponding evidence clip. 
+
+## 3 Experiments 
+
+The experimentation is divided into two phases: the performance analysis of the behavioral classifier and the functional validation of the integrated prototype. The proposed method was implemented in Python 3.12 using isolated virtual environments to ensure reproducibility. Communication between the embedded device and the desktop application is mediated by a RESTful API built with Flask, where both the NVIDIA Jetson Nano and the desktop client run inde-pendent Flask instances with complementary roles. The data flow follows the sequence Jetson Nano (detection and upload) client Flask server (storage and REST API) Electron interface (visualization and control), enabling a decoupled design. For train and validation, we created a dataset focused on non-violent rob-bery. We recorded staged snatching events across different days, times, view-points, and locations to increase contextual diversity while keeping the target 8 Cázares et al.   
+
+> Fig. 3. Representative frames from the training/validation video dataset recorded for this work. Faces were deliberately blurred for this paper.
+> Fig. 4. Representative frames from the test video dataset. These videos are publicly available on YouTube. Faces were deliberately blurred for this paper.
+
+action consistent. The resulting dataset was labeled into two classes and then split into training and validation subsets. In total, it contains 90 examples: 29 robbery samples (positive class) and 61 non-robbery samples (negative class). Representative frames from the training/validation dataset are shown in Fig. 3. For testing, we collected a disjoint dataset from various sources on the in-ternet. To better assess robustness, these clips include substantial contextual variability (e.g., different camera angles, different subjects, and variations in how the snatching event is executed). The labeled test set contains 47 examples: 17 robbery samples and 30 non-robbery samples. Representative frames from the test dataset are shown in Fig. 4.  
+
+> Fig. 5. Example sequence of the functioning of the implemented method. The sequence shows the detection of a robbery.
+
+Classification was performed with a Random Forest model. To mitigate class imbalance, we used n_estimators = 500 , random _state = 42 , and class _weight =
+
+’balanced’. The validation results are reported in Table 2. The proposed method achieves an overall validation accuracy of 0.83 . For the non-robbery class, the model attains a precision of 0.91 and an F1-score of 
+
+0.87 . Importantly, for the robbery class–the target event of interest–the model Robbery Detection in Surveillance Videos 9                      
+
+> Table 2. Classification results for validation stage.
+> Class Acc. Prec. Recall F1-Score Support
+> Non-Robbery 0.83 0.91 0.83 0.87 12 Robbery 0.83 0.71 0.83 0.77 6
+> Table 3. Classification results for the test experiment.
+> Class Acc. Precision Recall F1-Score Support
+> Non-Robbery 73.3 0.78 0.83 0.81 30 Robbery 58.8 0.67 0.59 0.62 17
+
+reaches a recall of 0.83 and an F1-score of 0.77 , reflecting a favorable sensitivity to snatch-and-run behaviors while maintaining acceptable precision ( 0.71 ). These results support the capacity of the proposed pipeline to address the target task under realistic variability and limited data, providing a robust basis for proactive surveillance. Fig. 5 shows a sequence of frames of the implemented systems working on real time. The model was further evaluated on a held-out test set to assess generaliza-tion under higher contextual variability. As summarized in Table 3, the method achieves a class accuracy of 73 .3% for Non-Robbery samples, with precision, recall and F1-score of 0.78 , 0.83 and 0.81 .For the target Robbery class, the system obtains a precision of 0.67 , recall of 
+
+0.59 and F1-score of 0.62 . While these values reflect the increased difficulty of recognizing subtle snatch-and-run events in unconstrained internet videos, the results still demonstrate that the pose-driven, feature-based methodology can detect a substantial portion of robberies while maintaining moderate precision. The experimental data reveals that the system performs adequately even for the test set that uses quite different scenes. The occasional misclassifications ob-served in the test phase can be attributed to camera angles, lighting variations, and the inherent diversity of "snatch-and-run" movements in low-resolution in-ternet footage. Nevertheless, the results on the internet-based test set provide a benchmark for this variability. This performance reflects a deliberate design trade-off that prioritizes interpretability and real-time execution. The current effectiveness of the method is centered on rapid interactions between two in-dividuals in scenarios with adequate visibility and lighting. Additionally, the focus on binary interactions is consistent with the nature of snatching events, where the interaction typically involves two individuals in close proximity. De-spite these challenges, the use of a lightweight YOLO model combined with a Random Forest classifier allowed for an adequate response time on the NVIDIA Jetson Nano, validating the feasibility of the proposed architecture for real-time proactive surveillance. 10 Cázares et al. 
+
+## 4 Conclusions 
+
+This study presented a method for detecting non-violent robbery (snatch-and-run) in surveillance videos. Starting from raw video, the pipeline combines pose keypoints and an interpretable, feature-based classifier to recognize suspicious interactions. To improve temporal robustness, we incorporated a hysteresis filter-ing stage that reduces sporadic false positives in frame-level predictions. While the current findings are based on a limited dataset, the experimental results show promising performance across videos captured in different contexts. These results suggest the potential of the proposed approach for real-world surveillance. Finally, we validated the implementation on an NVIDIA Jetson device, demon-strating that the method can run on edge hardware. Future work will focus on addressing class imbalance and extending the model to additional behaviors. 
+
+## References 
+
+1. Tykesson, M., Se, M.T.: Effects of cctv on fear of crime: a systematic literature review. European Journal on Criminal Policy and Research 2025 pp. 1–29 (8 2025) 2. Liu, J., Shahroudy, A., Perez, M., Wang, G., Duan, L.Y., Kot, A.C.: Ntu rgb+ d 120: A large-scale benchmark for 3d human activity understanding. IEEE trans-actions on pattern analysis and machine intelligence 42 (10), 2684–2701 (2019) 3. Liu, Y., Huang, W., Jiang, S., Zhao, B., Wang, S., Wang, S., Zhang, Y.: Transtm: A device-free method based on time-streaming multiscale transformer for human activity recognition. Defence Technology 32 , 619–628 (2024) 4. Poppe, R.: A survey on vision-based human action recognition. Image and vision computing 28 (6), 976–990 (2010) 5. Shu, X., Zhang, L., Sun, Y., Tang, J.: Host–parasite: Graph lstm-in-lstm for group activity recognition. IEEE transactions on neural networks and learning systems 
+
+32 (2), 663–674 (2020) 6. Balakrishnan, T.S., Jayalakshmi, D., Geetha, P., Saju Raj, T., Hemavathi, R.: Ac-curate recognition of human abnormal behaviours using adaptive 3d residual at-tention network with gated recurrent units (gru) in the video sequences. Computer Methods in Biomechanics and Biomedical Engineering: Imaging & Visualization 
+
+12 (1), 2429402 (2024) 7. Wang, C., Yan, J.: A comprehensive survey of rgb-based and skeleton-based human action recognition. IEEE Access 11 , 53880–53898 (2023) 8. Ko, K.E., Sim, K.B.: Deep convolutional framework for abnormal behavior detec-tion in a smart surveillance system. Engineering Applications of Artificial Intelli-gence 67 , 226–234 (2018) 9. Liu, Z., Zhang, H., Chen, Z., Wang, Z., Ouyang, W.: Disentangling and unifying graph convolutions for skeleton-based action recognition. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 143–152 (2020) 10. Wang, L., Koniusz, P.: 3mformer: Multi-order multi-mode transformer for skeletal action recognition. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 5620–5631 (2023) 11. Mohammadi, H., Nazerfard, E.: Video violence recognition and localization using a semi-supervised hard attention model. Expert Systems with Applications 212 (9 2022)

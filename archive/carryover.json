@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-11T11:07:55.203960+00:00",
+  "generated_at": "2026-05-11T11:30:08.915690+00:00",
   "updated_date": "20260412-20260511",
   "carryover_days": 9,
   "tag_states": {
@@ -54,6 +54,11 @@
           "carry_days": 1
         }
       ]
+    },
+    "yolo mini": {
+      "updated_date": "20260412-20260511",
+      "carryover_days": 9,
+      "items": []
     },
     "yolo mini": {
       "updated_date": "20260412-20260511",

@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.14329v1/fig-001.webp",
+      "caption": "Fig. 1. General flow of the proposed method for the recognition of robbery in surveillance videos.",
+      "page": 2,
+      "index": 1,
+      "width": 581,
+      "height": 581
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14329v1/fig-002.webp",
+      "caption": "Fig. 2. Class visualization using PCA. As we can observe, the projected samples are in a general way distinguishable. This graph is only a projection of the feature vectors of 10 elements.",
+      "page": 7,
+      "index": 2,
+      "width": 560,
+      "height": 386
+    }
+  ]
+}
