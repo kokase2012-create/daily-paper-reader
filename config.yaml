@@ -252,6 +252,50 @@ subscriptions:
           source: manual
           note: ''
       updated_at: '2026-05-11T10:48:55.246Z'
+    - tag: yolo小目标
+      description: 基于YOLO的小目标检测与精度提升研究论文
+      enabled: true
+      paper_sources:
+        - arxiv
+        - biorxiv
+      keywords:
+        - keyword: yolo
+          keyword_cn: yolo算法
+          query: YOLO目标检测算法的改进与应用
+        - keyword: small object detection
+          keyword_cn: 小目标检测
+          query: methods for small object detection in images
+        - keyword: feature enhancement
+          keyword_cn: 特征增强
+          query: feature enhancement techniques for detecting small targets
+        - keyword: multi-scale feature fusion
+          keyword_cn: 多尺度特征融合
+          query: multi-scale feature fusion strategies for small object detection
+        - keyword: attention mechanism
+          keyword_cn: 注意力机制
+          query: 注意力机制在YOLO小目标检测中的应用与优化
+      intent_queries:
+        - query: recent research papers about YOLO based small object detection improvements
+          query_cn: 关于基于YOLO的小目标检测改进的最新研究论文
+          enabled: true
+          source: manual
+          note: ''
+        - query: literature on feature fusion and attention for small object detection using YOLO
+          query_cn: 使用YOLO进行小目标检测中特征融合与注意力机制的相关文献
+          enabled: true
+          source: manual
+          note: ''
+        - query: YOLO小目标检测算法及提升精度的最新研究进展
+          query_cn: YOLO小目标检测算法与精度提升研究
+          enabled: true
+          source: manual
+          note: ''
+        - query: 针对小目标的YOLO检测模型改进与特征增强策略
+          query_cn: 小目标YOLO模型改进与特征增强
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-05-11T14:56:55.929Z'
 source_backends:
   arxiv:
     papers_table: arxiv_papers
