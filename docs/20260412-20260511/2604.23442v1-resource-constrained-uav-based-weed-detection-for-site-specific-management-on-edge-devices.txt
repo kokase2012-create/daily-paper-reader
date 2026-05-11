@@ -1,0 +1,364 @@
+Title: Resource-Constrained UAV-Based Weed Detection for Site-Specific Management on Edge Devices
+
+URL Source: https://arxiv.org/pdf/2604.23442v1
+
+Published Time: Tue, 28 Apr 2026 00:51:59 GMT
+
+Number of Pages: 13
+
+Markdown Content:
+# Resource-Constrained UAV-Based Weed Detection for Site-Specific Management on Edge Devices 
+
+## Linyuan Wang a, Haibo Yao b, Te-Ming Tseng c, Kelvin Betitame d,e , Xin Sun d,e , Yanbo Huang b and Dong Chen a
+
+> a
+
+Department of Agricultural and Biological Engineering, Mississippi State University, Mississippi State, MS, USA 
+
+> b
+
+USDA-ARS, Genetics and Sustainable Agriculture Research Unit, Mississippi State, MS, USA 
+
+> c
+
+Department of Plant and Soil Sciences, Mississippi State University, Mississippi State, MS, USA 
+
+> d
+
+Department of Agricultural and Biosystems Engineering, North Dakota State University, Fargo, ND, USA 
+
+> e
+
+NDSU Peltier Institute for the Advancement of Agricultural Technology, North Dakota State University, Fargo, ND, USA *Dong Chen is the corresponding author 
+
+A R T I C L E I N F O 
+
+Keywords :Weed detection UAV imagery Edge devices YOLO Transformer Real-time inference 
+
+A B S T R A C T 
+
+Weeds compete with crops for light, water, and nutrients, resulting in reduced yield and crop quality. Efficient weed detection is critical for enabling site-specific weed management (SSWM) in crop production. While recent studies have demonstrated the feasibility of deploying deep learning models on edge systems based on Unmanned Aerial Vehicle (UAV), there remains a critical lack of systematic understanding of how different model architectures behave under real-world resource constraints. To address this gap, this study presents a deployment-oriented framework for real-time UAV-based weed detection on resource-constrained edge platforms. The framework integrates UAV-based data acquisition, model development, and on-device inference, with an emphasis on balancing detection accuracy and computational efficiency for practical field deployment. A diverse set of state-of-the-art object detection architectures, including convolutional models from the You Only Look Once (YOLO) family (v8–v12) and transformer-based models such as Real-Time Detection Transformer (RT-DETR) (v1–v2), are systematically evaluated to characterize their performance across different edge computing scenarios. Experiments on three representative edge devices, NVIDIA Jetson Orin Nano, Jetson AGX Xavier, and Jetson AGX Orin, reveal clear trade-offs between accuracy and inference latency across model families and hardware configurations. Results show that high-capacity models achieve up to 86.9% mAP 50 , but incur significantly higher latency, limiting their real-time applicability on edge devices. In contrast, lightweight models achieve 66%–71% mAP 50 while delivering substantially lower inference latency, enabling real-time performance in field conditions. Among the evaluated models, RT-DETRv2-R50-M achieves competitive accuracy ( 79% mAP 50 )with improved efficiency compared to comparable YOLO variants, while lightweight models such as YOLOv10n demonstrate the fastest inference speeds. Notably, YOLOv11s and RT-DETRv2-R50-M provide the most favorable trade-off between accuracy and speed, making them strong candidates for real-time UAV deployment. 
+
+## 1. Introduction 
+
+Weed pressure remains one of the major agronomic chal-lenges in crop production, primarily due to competition for light, water, and nutrients. Under uncontrolled conditions, weed interference has been estimated to cause an average potential yield loss of approximately 52% (Soltani et al., 2017). Herbicide application remains the dominant strategy for weed management in modern cropping systems (Ugljic et al., 2025). In practice, this often involves broadcast appli-cations across entire fields. Although such applications can suppress weeds, they are poorly matched to the patchy, spa-tially aggregated distribution of weeds across fields (Thorp and Tian, 2004). As a result, herbicides may be unnec-essarily applied to weed-free areas, potentially disturbing soil microbial communities and nutrient-cycling processes and affecting soil health and long-term crop productivity  
+
+> lw1789@msstate.edu
+
+(L. Wang); Haibo.Yao@usda.gov (H. Yao);  
+
+> tt1024@msstate.edu
+
+(T. Tseng); kelvin.betitame@ndsu.edu (K. Betitame);  
+
+> xin.sun@ndsu.edu
+
+(X. Sun); yanbo.huang@usda.gov (Y. Huang);  
+
+> dc2528@msstate.edu
+
+(D. Chen) 
+
+> ORCID
+
+(s): 
+
+(Ni et al., 2025). Effective herbicide application depends on both the spatial distribution and the specific composition of weed populations. Since herbicide efficacy varies between grassy and broadleaf species (Win et al., 2023), the need to distinguish these functional groups alongside their patchy distribution in the field significantly increases the difficulty of management planning in production. Machine vision has become essential to precision agri-culture, providing the visual perception needed for auto-mated field operations (Mavridou et al., 2019; Li et al., 2024). Modern agricultural vision systems typically use RGB (Ahmad et al., 2021) or multispectral (Candiago et al., 2015) sensors to capture high-resolution field images. By analyzing plant characteristics such as shape, texture, and spectral signature, the systems can distinguish crops from weeds and locate their exact position (Wang et al., 2019). As a result, vision-based detection has become a key component in the precision weed control while reducing unnecessary herbicide application (Gerhards et al., 2022). Real-world field environments are often characterized by significant illumination variations (Sun et al., 2024), 
+
+Linyuan et al.: Preprint submitted to Elsevier Page 1 of 13 
+
+> arXiv:2604.23442v1 [cs.CV] 25 Apr 2026 Real-Time Weed Detection in Soybean Fields
+
+complex soil backgrounds (Shuai et al., 2025), and dense crop occlusion (Lottes et al., 2018). These challenges jointly limit the accuracy and robustness of multi-class weed detec-tion. To overcome these limitations, advanced deep learning architectures are essential for achieving reliable and efficient automated weeding under such complex conditions. Single-stage object detection methods based on convolutional neu-ral networks (CNNs) have become the mainstream choice, with the YOLO series being the most representative (Ter-ven et al., 2023). By striking an optimal balance between detection accuracy and inference speed, YOLO models are highly capable of meeting the real-time detection demands of dynamic field environments (Ahmad et al., 2021). In recent years, numerous studies (Sulzbach et al., 2025; Gau-tam et al., 2025; Khan et al., 2025) have applied models, such as YOLOv8 (Jocher et al., 2023), to weed recogni-tion tasks, achieving highly reliable performance. Building upon this foundation, the YOLO series has continuously evolved to further enhance feature extraction capabilities and inference efficiency. Successive developments include YOLOv9 (Wang et al., 2024b), the introduction of an end-to-end detection mechanism without Non-Maximum Sup-pression (NMS) in YOLOv10 (Wang et al., 2024a), the structurally optimized YOLOv11 (Jocher et al., 2024), and the recent YOLOv12 (Tian et al., 2025), which incorporates a region attention mechanism. With the continuous evolution of YOLO architectures, their applications in intelligent weed detection have become widespread. For instance, Balasing-ham et al. (2024) deployed a YOLOv8 for real-time robotic spot-spraying. Also, Saltık et al. (2024) utilized standard YOLOv9 and YOLOv10 to establish highly efficient, low-latency detection baselines. YOLO models are highly effective for object detection (Saltık et al., 2024), but their fundamental dependence on local receptive fields often leads to missed detections in com-plex agricultural environments with small targets (Zhang et al., 2022) and heavy crop occlusion (Zhou et al., 2024). In recent years, the rapid development of vision Transformers has provided a new solution to overcome this limitation (Carion et al., 2020). As the first end-to-end Transformer-based object detection model capable of real-time inference, Real-Time Detection Transformer (RT-DETR) effectively alleviates the high computational cost of Transformers by introducing an efficient hybrid encoder (Zhao et al., 2024; Lv et al., 2024). The model also eliminates the time-consuming NMS post-processing step and demonstrates excellent per-formance in multi-object real-time detection tasks under complex farmland environments (Allmendinger et al., 2025). Building on these advantages, RT-DETR has significantly advanced the state-of-the-art in weed detection tasks. Build-ing on these advantages, RT-DETR has significantly ad-vanced the state-of-the-art in weed detection tasks (Gómez et al., 2025; García-Navarrete et al., 2025; Saltık et al., 2024). Despite the significant progress achieved by deep learn-ing–based object detection models in weed recognition and detection tasks in recent years, the training and evaluation of these models typically rely on high-performance computing environments (Srinivas et al., 2021). However, in practical agricultural applications, platforms such as spraying drones are constrained by limited payload capacity, power avail-ability, and network connectivity, limiting the integration of high-performance computing hardware (Arsenoaia et al., 2026). Consequently, these small platforms rely on edge computing devices to perform real-time inference locally, leveraging embedded systems designed for low-power and resource-constrained environments (Adhikari et al., 2026). In recent years, growing research attention has been directed toward validating deep learning models on edge devices in weed recognition and detection, with a particular focus on achieving real-time performance under limited computational resources (Upadhyay et al., 2024; Islam et al., 2025; Yang et al., 2026; Gauttam et al., 2026). For instance, Rai et al. (2024) proposed the YOLO-Spot model, based on the YOLOv7-tiny architecture, which was optimized for weed detection in aerial images and videos. By converting the YOLO-Spot_M model to half-precision (FP16) for de-ployment on a resource-constrained platform (NVIDIA Jet-son AGX Xavier), their approach achieved a 0.6% improve-ment in detection accuracy and approximately a 5 × increase in inference speed. Similarly, Yang et al. (2026) developed a low-cost, near real-time edge-computing system based on the Raspberry Pi 5 for multi-species weed detection. In ad-dition, Islam et al. (2025) deployed lightweight models such as YOLOv8n and MobileNetV4-Seg on platforms like the Jetson Orin Nano, demonstrating the feasibility of real-time inference under constrained hardware settings. However, these studies are typically limited to evaluations on a single edge device and a narrow set of lightweight models, which restricts their ability to provide comprehensive insights into how different model architectures perform across diverse hardware platforms. To bridge this gap, this study presents a deployment-oriented framework for systematically evaluating real-time weed detection models under edge constraints. Specifically, we conduct a comprehensive benchmarking study across multiple generations of convolutional models (YOLOv8-YOLOv12) and Transformer-based models (RT-DETRv1-v2), deployed on representative edge platforms including NVIDIA Jetson Orin Nano, Jetson AGX Xavier, and Jetson AGX Orin. Through this framework, we characterize the trade-offs between detection accuracy, inference latency, and model efficiency, providing practical guidelines for model selection in real-world agricultural applications. A closely related study by Ram et al. (2025) evaluated YOLOv8-YOLOv12 models for Palmer amaranth detection across multiple edge devices, demonstrating the feasibility of real-time deployment. In contrast, our work extends beyond a single model family by incorporating both convolutional and Transformer-based architectures and emphasizes cross-architecture comparison to provide more generalizable in-sights into model performance under diverse edge con-straints.    
+
+> Linyuan et al.: Preprint submitted to Elsevier Page 2 of 13 Real-Time Weed Detection in Soybean Fields
+> Figure 1: Class distribution of weed species in the dataset.
+
+## 2. Materials and Methods 
+
+This section first describes the dataset used in this study, followed by an overview of the two model architectures evaluated, namely YOLO-based convolutional models and Transformer-based detection models. Finally, the experi-mental setup, including training procedures, evaluation met-rics, and edge deployment configurations, is presented. 
+
+2.1. Data acquisition 
+
+The dataset used in this study was derived from the UAV imagery dataset reported in (Betitame et al., 2025). The data were collected during the summer of 2022 at the Casselton Agronomy Seed Farm (CASF) in North Dakota, USA. The experimental field consisted of XtendFlex soy-bean, and aerial imagery was acquired during the early vegetative growth stages (V2–V3). This timing corresponds to the critical early-season weed control window, during which weed competition has the greatest impact on yield and management interventions are most effective. RGB images were captured using a DJI Phantom 4 Pro UAV with a resolution of 5472 × 3648 pixels. During the data collection process, the UAV operated at an altitude of approximately 10 m above ground level, with about 75% front and side overlap between adjacent images. All images were captured using a mechanical shutter, which minimizes motion blur and preserves clear morphological details of crops and weeds, making the dataset suitable for weed detection tasks. Fig. 1 illustrates the class distribution of the dataset. The dataset is notably imbalanced, with Goosegrass (808 samples) and Waterhemp (577 samples) dominating the dataset, while Morningglory (188 samples), Cocklebur (174 samples), and Ragweed (46 samples) are underrepresented. The selected weed species represent a mixture of grasses and broadleaf weeds commonly encountered in soybean systems, many of which differ in competitiveness and her-bicide response, making accurate classification particularly important for guiding appropriate management strategies. 
+
+2.2. YOLO architecture models 
+
+The YOLO framework formulates object detection as a single-stage regression problem, enabling the model to directly predict object locations and categories from an input image. The architecture generally consists of three major components: a backbone network for hierarchical feature extraction, a neck module for aggregating features across multiple spatial scales, and a detection head that outputs bounding box coordinates along with class probabilities (Vijayakumar and Vairavasundaram, 2024). During training, the model is optimized using a composite loss function that jointly accounts for localization accuracy, classification performance, and objectness confidence. During inference, the network processes the entire image in a single forward pass and applies NMS to remove redundant overlapping predictions, producing the final detection results efficiently. This single-stage design makes YOLO particularly suitable for real-time applications, especially in resource-constrained edge environments (Adhikari et al., 2026). The following subsections present the YOLO variants (v8–v12). Earlier versions are excluded to ensure a fair and consistent comparison, as YOLOv8 and subsequent models share more unified design principles and optimization strate-gies tailored for modern real-time and edge deployment scenarios. 
+
+2.2.1. YOLOv8 
+
+YOLOv8 represents a significant advancement in object detection architecture and addresses several limitations of previous YOLO variants. It adopts an anchor-free detec-tion framework in place of the traditional anchor-based design, reducing reliance on manual design choices and simplifying the detection pipeline (Jocher et al., 2023). The backbone and feature fusion network are improved with a more efficient design that enhances gradient propagation and strengthens multi-scale feature representation, making it ef-fective for detecting objects with significant scale variation. YOLOv8 also introduces improved training strategies for dynamic sample assignment and more accurate bounding box regression, which collectively enhance localization per-formance. 
+
+2.2.2. YOLOv9 
+
+YOLOv9 addresses the information bottleneck problem in deep neural networks by introducing improved feature aggregation and gradient propagation mechanisms (Wang et al., 2024b). It adopts a more efficient network design that enhances multi-scale feature representation while maintain-ing computational efficiency, enabling the model to better preserve fine-grained spatial information. A training strategy based on an auxiliary reversible branch is employed to fa-cilitate stable gradient flow, improving optimization quality and localization accuracy without increasing inference-time computational cost. 
+
+2.2.3. YOLOv10 
+
+YOLOv10 introduces an NMS-free detection framework to streamline the inference pipeline and improve real-time   
+
+> Linyuan et al.: Preprint submitted to Elsevier Page 3 of 13 Real-Time Weed Detection in Soybean Fields
+
+performance (Wang et al., 2024a). It adopts an end-to-end training strategy that ensures stable convergence and con-sistent prediction quality. The network is further optimized with efficient architectural designs that reduce computa-tional overhead and preserve important spatial information for feature representation. These improvements lead to lower inference latency and make the model well-suited for real-time deployment on resource-constrained devices. 
+
+2.2.4. YOLOv11 
+
+YOLOv11 focuses on structural optimizations to achieve superior parameter efficiency and faster inference speeds (Jocher et al., 2024). By refining its backbone and feature fusion layers, the model improves gradient flow and reduces computational redundancy. A significant advancement in YOLOv11 is the official integration of a self-attention mechanism, which enhances the network’s ability to capture long-range spatial dependencies. This capability is partic-ularly beneficial for distinguishing small weed seedlings from complex backgrounds, such as soil and crop residues, making YOLOv11 well-suited for edge-based agricultural applications. 
+
+2.2.5. YOLOv12 
+
+Building upon these improvements, YOLOv12 intro-duces an attention-centric architecture designed to maximize feature representation while maintaining real-time perfor-mance (Tian et al., 2025). Unlike previous versions that used attention as a supplementary component, YOLOv12 centers its design around an efficient attention mechanism that cap-tures long-range spatial dependencies more holistically. This architectural shift enables the model to aggregate multi-scale features more effectively, leading to more stable training and improved localization accuracy. For UAV-based weed mapping, these enhancements ensure consistent detection performance across diverse field conditions and varying weed growth stages. 
+
+2.3. Transformer architecture models 
+
+While most YOLO models exhibit exceptional real-time capabilities, their reliance on NMS for post-processing presents a fundamental limitation in densely populated scenes. NMS often incorrectly suppresses adjacent bounding boxes, which is a critical drawback when detecting densely clustered weeds in UAV imagery. To address this, RT-DETR models offer a fully end-to-end alternative (Zhao et al., 2024). In RT-DETR, multi-scale features are first extracted using a backbone network and then processed by a Transformer-based encoder–decoder architecture. A bipar-tite matching strategy is employed to directly generate final predictions without the need for post-processing steps such as NMS. By eliminating the NMS stage, RT-DETR reduces the risk of removing overlapping targets and simplifies the inference pipeline. This design makes it particularly suitable for dense agricultural scenarios, where accurate detection of closely spaced objects is critical (Xue et al., 2025). 
+
+2.3.1. RT-DETRv1 
+
+RT-DETRv1 represents the first model in this series to demonstrate that Transformer-based object detection can be both accurate and practical under real-time constraints (Zhao et al., 2024). To address the high computational burden typ-ically associated with Transformer detectors, it introduces an efficient hybrid encoder that separates intra-scale feature learning from cross-scale feature interaction. This design reduces computational complexity while retaining impor-tant spatial details. Furthermore, an Intersection over Union (IoU)-aware query selection strategy is adopted to initialize the decoder with higher-quality object queries, allowing the model to focus on more relevant candidate regions at an early stage. These design choices lead to stronger localization performance, especially for small or less salient objects, while maintaining real-time inference efficiency. 
+
+2.3.2. RT-DETRv2 
+
+RT-DETRv2 builds on this framework with several re-finements to improve feature representation and architectural flexibility (Lv et al., 2024). Notably, it introduces deformable attention in the decoder, enabling adaptive sampling across spatial locations and scales. This allows the model to better capture fine-grained details, which is especially advanta-geous for UAV-based weed detection where targets vary in size, shape, and distribution. Additionally, enhanced train-ing strategies improve convergence stability and robustness without compromising real-time inference performance. Table 1 summarizes the representative real-time object detection models evaluated in this paper, including the YOLOv8-YOLOv12 and RT-DETRv1&v2 series, along with their corresponding core references and publicly avail-able open-source GitHub repositories. Note that each model family contains multiple variants (e.g., 𝑛 , 𝑠 , 𝑚 , 𝑙 , 𝑥 ), which represent different model scales in terms of network depth, width, and computational complexity, thereby offering trade-offs between accuracy and efficiency. 
+
+2.4. Model training & evaluation pipeline 
+
+Fig. 2 illustrates the overall pipeline for the proposed weed detection system. Standard UAV data acquisition re-quires high frontal and sidelap, which introduces substantial redundancy and repeated weed instances in the raw image set. To eliminate this redundancy and enable accurate spatial analysis, the collected UAV images were first processed in Pix4D to generate a georeferenced orthomosaic of the soy-bean field. Ground control points (GCPs) were incorporated during this process to ensure precise spatial alignment with real-world coordinates, thereby supporting consistent and re-peatable weed mapping (Betitame et al., 2025). The resulting orthomosaic, featuring a spatial resolution of 0.25 cm/pixel, was then partitioned into 640 × 640 pixel patches with a 10% overlap. This preprocessing strategy effectively resolves the excessive redundancy of the initial capture while preserving high-resolution spatial information critical for discriminat-ing weeds from crops.   
+
+> Linyuan et al.: Preprint submitted to Elsevier Page 4 of 13
+
+Real-Time Weed Detection in Soybean Fields 
+
+Table 1 
+
+Summary of recent real-time object detection models evaluated in this paper, including their key architectural features. 
+
+Index Models Architectural Features GitHub Repository 
+
+1 YOLOv8 (Jocher et al., 2023) Anchor-free, C2f module ultralytics/ultralytics 
+
+2 YOLOv9 (Wang et al., 2024b) PGI & GELAN blocks WongKinYiu/yolov9 
+
+3 YOLOv10 (Wang et al., 2024a) NMS-free dual assignments THU-MIG/yolov10 
+
+4 YOLOv11 (Jocher et al., 2024) C3k2 & C2PSA modules ultralytics/ultralytics 
+
+5 YOLOv12 (Tian et al., 2025) Attention-centric design sunsmarterjie/yolov12 
+
+6 RT-DETRv1 (Zhao et al., 2024) IoU-guided Query lyuwenyu/RT-DETR 
+
+7 RT-DETRv2 (Lv et al., 2024) Adaptive Query Refinement lyuwenyu/RT-DETR Extracted Patches           
+
+> YOLO Models
+> ❑YOLOv8
+> ❑YOLOv9
+> ❑YOLOv10
+> ❑YOLOv11
+> ❑YOLOv12
+> Transformer
+> ❑RT -DETR v1
+> ❑RT -DETR v2
+> Annotated Data
+> Train
+> Train( ×4)
+> Val Test
+> Val Test
+> Edge Devices
+> (c) AGX Orin
+> (a) Orin Nano (b) AGX Xavier
+
+Data Annotation 
+
+> Split
+> Augmentation
+> Model Evaluation
+> Edge Deployment
+> Analysis
+
+Figure 2: Overview of the experimental pipeline for evaluating object detection models on edge computing platforms. 
+
+The annotated dataset was randomly split into training (80%), validation (10%), and testing (10%) subsets. To im-prove model robustness and generalization, four data aug-mentation techniques, e.g., flipping, shearing, cropping, and mosaic augmentation, were applied exclusively to the train-ing set prior to model training and evaluation (Bochkovskiy et al., 2020). Following model training, the trained object de-tection networks were deployed on multiple NVIDIA-based edge computing platforms, including Jetson Orin Nano, Jetson AGX Xavier, and Jetson AGX Orin, as illustrated in Fig. 2. Each model was optimized for edge inference and evaluated under real-world deployment constraints. 
+
+2.5. Inference on edge devices 
+
+In autonomous agricultural scenarios, UAVs must bal-ance real-time processing with strict onboard power and computational constraints. Consequently, we prioritized small and medium-sized model variants to ensure both high detection efficiency and prolonged flight endurance on edge-deployed devices. Three representative NVIDIA Jetson platforms were selected for evaluation: Jetson Orin Nano, Jetson AGX Xavier, and Jetson AGX Orin. All platforms leverage NVIDIA TensorRT for inference ac-celeration, enabling optimization techniques such as layer fusion and precision quantization. These optimizations sig-nificantly improve computational throughput and real-time inference performance while operating within constrained power envelopes. The detailed hardware configurations of the evaluated platforms are summarized in Table 2. All YOLO and RT-DETR models were first trained and validated on a High-Performance Computing (HPC) 
+
+Linyuan et al.: Preprint submitted to Elsevier Page 5 of 13 Real-Time Weed Detection in Soybean Fields                               
+
+> Table 2
+> Hardware specifications of the development server and evaluated NVIDIA Jetson edge computing platforms.
+> Platform CPU GPU RAM Power Training Server 24-core AMD Ryzen Threadripper PRO 7965WX (64-bit) NVIDIA GeForce RTX 5090 128 GB 600–1500 W
+> Jetson Orin Nano 6-core Arm Cortex-A78AE (v8.2, 64-bit) 1024-core NVIDIA Ampere GPU with 32 Tensor Cores 8 GB 7–15 W
+> Jetson AGX Xavier 8-core NVIDIA Carmel Arm (v8.2, 64-bit) 512-core NVIDIA Volta GPU with Tensor Cores 32 GB 10–30 W
+> Jetson AGX Orin 12-core Arm Cortex-A78AE (v8.2, 64-bit) 2048-core NVIDIA Ampere GPU with 64 Tensor Cores 64 GB 15–60 W
+
+server to obtain their best-performing weights. The opti-mized model checkpoints were then deployed to the edge platforms for inference evaluation. To ensure compatibility with embedded hardware and reduce inference latency, the trained models were converted to the ONNX format and executed with FP16 precision on the Jetson devices. 
+
+2.5.1. Jetson Orin Nano 
+
+The Jetson Orin Nano provides a lightweight and cost-effective edge computing solution with a compact form factor and low power consumption, making it well suited for small UAVs and ground robotic platforms. However, its limited computational capacity restricts the deployment of larger and more computationally intensive models. Ex-periments on this platform focus on analyzing the trade-off between detection accuracy and inference efficiency under realistic resource constraints. 
+
+2.5.2. Jetson AGX Xavier 
+
+The Jetson AGX Xavier is included as a previous-generation flagship platform to facilitate comparative analy-sis across different edge computing architectures. Although it offers 32 GB of system memory, its Volta-based GPU architecture exhibits lower inference efficiency compared to newer Ampere-based platforms. As a result, the AGX Xavier serves as a baseline reference for assessing the performance and deployment feasibility of state-of-the-art detection models on legacy edge hardware. 
+
+2.5.3. Jetson AGX Orin 
+
+The Jetson AGX Orin represents the upper bound of current edge computing capabilities, featuring an NVIDIA Ampere architecture GPU and delivering up to 275 TOPS of AI performance. In this study, the AGX Orin serves as a high-performance benchmark platform to evaluate the maximum achievable inference accuracy and throughput of complex detection models. Its performance establishes a reference level for near-optimal real-time deployment in agricultural UAV applications. 
+
+2.6. Evaluation metrics 
+
+To quantitatively assess the performance of the selected YOLO and RT-DETR models, a standard set of evalua-tion metrics was employed to capture both detection accu-racy and localization quality. The evaluated metrics include Precision, Recall, F1-score, and mean Average Precision (mAP). 
+
+2.6.1. Precision and Recall 
+
+In object detection, performance evaluation is funda-mentally based on the IoU between predicted bounding boxes and ground-truth annotations. Given a predefined IoU threshold, detection outcomes are categorized as True Positives (TP), False Positives (FP), or False Negatives (FN), which form the basis for all subsequent metric calculations (Lin et al., 2014). Precision measures the proportion of cor-rectly detected positive instances among all predicted posi-tives, reflecting the detector’s ability to avoid false alarms. Recall quantifies the proportion of actual positive instances that are successfully detected, indicating the detector’s sen-sitivity. These metrics are defined as: Precision = 𝑇 𝑃 𝑇 𝑃 + 𝐹 𝑃 (1) Recall = 𝑇 𝑃 𝑇 𝑃 + 𝐹 𝑁 (2) 
+
+2.6.2. F1-score 
+
+Since Precision and Recall often exhibit a trade-off, the F1-score is used as their harmonic mean to provide a balanced measure of detection performance for each class 𝑖 .To assess the overall performance across all weed categories, the Macro-F1 score is computed as the arithmetic mean of the class-wise F1-scores: 
+
+𝐹 1𝑖 = 2 × Precision 𝑖 × Recall 𝑖 
+
+Precision 𝑖 + Recall 𝑖 
+
+(3) Macro-F1 = 1
+
+𝑁 
+
+> 𝑁
+
+∑
+
+> 𝑖 =1
+
+𝐹 1𝑖 (4)   
+
+> Linyuan et al.: Preprint submitted to Elsevier Page 6 of 13 Real-Time Weed Detection in Soybean Fields
+
+where 𝑁 denotes the total number of evaluated classes. In the following sections, all reported F1-scores correspond to the Macro-F1 score. 
+
+2.6.3. Mean Average Precision 
+
+Mean Average Precision (mAP) serves as the primary metric for evaluating object detection performance (Ever-ingham et al., 2010). It is calculated as the mean of the Average Precision (AP) values across all classes, where AP corresponds to the area under the Precision–Recall curve: 
+
+𝑚𝐴𝑃 = 1
+
+𝐶 
+
+> 𝐶
+
+∑
+
+> 𝑖 =1
+
+𝐴𝑃 𝑖 (5) In this study, two commonly used variants are reported: mAP 50 , computed at a single IoU threshold of 0.5, and mAP 50∶95 , which averages AP over IoU thresholds ranging from 0.5 to 0.95 with a step size of 0.05. The mAP 50∶95 
+
+metric provides a more rigorous evaluation of both detection and localization accuracy. 
+
+2.6.4. Model complexity and inference time 
+
+Model complexity is a critical factor for real-world deployment, particularly on resource-constrained edge de-vices. The number of model parameters reflects mem-ory requirements, while Giga Floating-Point Operations (GFLOPs) indicate the theoretical computational cost of a model. Larger models with higher GFLOPs generally impose greater computational loads, leading to increased power consumption, elevated chip temperatures, and longer inference latency. Although parameter count and GFLOPs provide useful indicators of model size and complexity, they do not fully capture practical runtime performance on embedded platforms (Ma et al., 2018). Therefore, end-to-end inference time is adopted as the primary efficiency metric in this study. This metric accounts for the complete processing pipeline, including input preprocessing, network inference, and post-processing, and thus provides a more realistic assessment of deployment feasibility for real-time agricultural applications. 
+
+## 3. Experiments and Results 
+
+3.1. Performance of overall models 
+
+Fig. 3 illustrates the convergence behavior of mAP 50 and mAP 50∶95 over 100 training epochs for the YOLO series (solid lines) and RT-DETR variants (dashed lines). All eval-uated models demonstrate stable and consistent convergence trends. Specifically, rapid performance improvements are observed during the early training stages, followed by a gradual saturation phase. In the final 10 epochs, the perfor-mance of all models stabilizes, with mAP 50 values generally ranging from approximately 75% to 85%. Table 3 presents a comprehensive comparison of all 37 evaluated object detection models. For clarity, the best-performing model within each series is highlighted in bold based on the mAP 50 metric. Overall, the RT-DETR family achieves a higher upper bound in detection accuracy com-pared to the YOLO counterparts. In particular, RT-DETR-RegNet delivers the best overall performance, achieving an mAP 50 of 86.93% and an mAP 50∶95 of 53.91%, along with a strong F1-score of 85.32%. In contrast, within the single-stage YOLO family, YOLOv9e achieves the highest performance, with an mAP 50 of 84.90% and an mAP 50∶95 of 51.15%. While YOLO models demonstrate competitive ac-curacy and generally lower computational complexity, RT-DETR models exhibit superior detection capability, particu-larly in achieving higher precision and recall simultaneously, as reflected by their stronger F1-scores. 
+
+3.2. Performance of individual weed categories 
+
+We further evaluate detection performance at the per-class level. Considering the constraints of low inference la-tency and energy efficiency for UAV-based deployment, two lightweight models, i.e., YOLOv12n and RT-DETRv1-R18, are selected for detailed analysis. The quantitative results are summarized in Table 4, while qualitative examples are shown in Fig. 4. Overall, detection performance is highly influenced by object scale, spatial density, and inter-class morphological similarity. As a dominant class, Goosegrass enables both models to achieve stable and reliable perfor-mance, with mAP 50 values exceeding 80% in both cases. In contrast, although Waterhemp is relatively abundant in the dataset, its detection accuracy remains limited. This can be attributed to distorted visual features under UAV imaging perspectives and motion-induced blurriness, both of which degrade image quality and hinder feature extraction. Morningglory represents the most challenging class, ex-hibiting the lowest mAP 50 across both models. This is pri-marily due to its extremely small object size, often occu-pying only a few tens of pixels per instance, resulting in insufficient spatial information for robust detection. Notably, RT-DETRv1 demonstrates a clear advantage on this class, outperforming YOLOv12n by approximately 9% in mAP 50 ,highlighting the benefit of its global attention mechanism in handling small and sparse targets. In contrast, Ragweed presents an interesting case. Despite being a minority class, it achieves the highest detection accuracy, reaching 95.05% mAP 50 with YOLOv12n. This strong performance is likely due to its distinctive visual characteristics, which make it easier to differentiate from both background and other weed species, even with limited training samples. Finally, as illustrated in Fig. 5, a weed infestation map is generated by projecting detected bounding box centers into geographic space. The resulting spatial distribution exhibits clear clustering patterns rather than random disper-sion. Specifically, Goosegrass (red) is predominantly con-centrated on the right side of the field, while Waterhemp (purple) is clustered on the left. By generating prescription maps from such spatial insights, precision spraying systems can execute targeted, patch-based herbicide applications, thereby significantly reducing overall chemical inputs and improving resource efficiency.    
+
+> Linyuan et al.: Preprint submitted to Elsevier Page 7 of 13 Real-Time Weed Detection in Soybean Fields mAP 50
+> mAP 50:95
+> Figure 3: Training accuracy curves of YOLO and RT-DETR models with data augmentation.
+
+3.3. Edge devices result analysis 
+
+Fig. 6 presents a comprehensive comparison of the YOLO and RT-DETR model families across three NVIDIA edge computing platforms: Orin Nano, AGX Xavier, and AGX Orin. The top row illustrates the trade-off between detection accuracy (mAP 50 ) and inference time, while the bottom row shows the relationship between theoretical computational complexity (GFLOPs) and actual inference latency. Overall, a clear performance hierarchy is observed across the three devices. The Jetson AGX Orin delivers the fastest inference, with most models operating within 10–20 ms. The AGX Xavier demonstrates moderate performance, with inference times ranging from approximately 15–40 ms. In contrast, the Orin Nano exhibits the slowest performance, with latency spanning roughly 25–80 ms. These results highlight the significant impact of hardware capability on real-time deployment feasibility. From an accuracy perspective, YOLOv12m and RT-DETRv2-R50-M represent the top-performing models within the YOLO and Transformer-based families, respectively, both achieving mAP 50 values close to 80% across all de-vices. However, despite comparable detection accuracy, YOLOv12m incurs substantially higher inference latency. In contrast, RT-DETRv2-R50-M demonstrates superior ef-ficiency, achieving a more favorable balance between accu-racy and speed. For lightweight models, YOLOv10n and RT-DETRv2-R18 achieve the lowest inference latency across all platforms. However, this speed advantage comes at the cost of reduced detection accuracy, with mAP 50 values of approximately 66% and 71%, respectively. Considering practical deployment scenarios that require both efficiency and reliability, models such as YOLOv11s and RT-DETRv2-R50-M provide a more balanced trade-off between latency and detection performance. Furthermore, analysis of the GFLOPs–latency relation-ship (bottom row) reveals that theoretical computational complexity does not directly translate to inference speed. Notably, YOLOv10 and RT-DETR models, which eliminate the need for NMS, achieve faster inference compared to tra-ditional NMS-based YOLO variants, even when exhibiting similar or higher GFLOPs. This highlights the importance of end-to-end architectural design in optimizing real-world deployment performance. 
+
+3.4. Discussion 
+
+3.4.1. Architectural impacts on small targets 
+
+The performance discrepancy between YOLO and RT-DETR architectures, particularly on minority and small-scale classes, highlights the fundamental differences in their feature extraction paradigms. This divergence is visually captured in Table 4, where RT-DETR models demonstrate a clear advantage in detecting Morningglory, which typ-ically occupies only a few tens of pixels. This superior performance on small targets can be attributed to the self-attention mechanism inherent in Transformer architectures, which effectively captures global contextual information and long-range dependencies. In contrast, conventional convo-lutional networks rely on localized receptive fields, which may limit their ability to model sparse or small-scale objects. These results suggest that while CNN-based models excel at extracting strong local textures, Transformer-based ap-proaches are more robust when spatial information is limited or fragmented. From an agronomic perspective, detection accuracies in the range observed here are likely sufficient to support early-season SSWM decisions, where timely identi-fication of emerging weed patches is often more critical than perfect classification accuracy.   
+
+> Linyuan et al.: Preprint submitted to Elsevier Page 8 of 13
+
+Real-Time Weed Detection in Soybean Fields 
+
+Table 3 
+
+Performance comparison of YOLO and RT-DETR object detection models. Index Models Precision Recall F1 mAP 50 mAP 50∶95 Params (M) GFLOPs 1YOLOv8 YOLOv8n 81.56 65.52 72.25 72.22 38.15 3.16 8.86 2 YOLOv8s 78.18 77.59 76.93 75.29 43.65 11.17 28.82 3 YOLOv8m 84.62 72.62 78.06 76.46 45.84 25.90 79.32 4 YOLOv8l 80.19 80.92 80.12 82.42 51.80 43.69 165.74 5 YOLOv8x 79.63 81.28 80.18 80.16 50.01 68.23 258.55 6YOLOv9 YOLOv9t 74.96 71.64 72.77 69.62 36.38 2.13 8.48 7 YOLOv9s 80.77 76.82 78.37 77.95 46.47 7.32 27.56 8 YOLOv9m 82.77 74.48 77.75 78.77 47.89 20.22 77.87 9 YOLOv9c 83.27 80.68 81.80 83.19 52.25 25.59 104.02 10 YOLOv9e 84.56 81.88 82.77 84.90 51.15 58.21 193.02 11 YOLOv10 YOLOv10n 75.72 73.76 74.33 75.67 41.49 2.78 8.74 12 YOLOv10s 80.80 68.92 73.55 75.91 41.68 8.13 25.11 13 YOLOv10m 78.22 79.62 77.95 79.54 47.47 16.58 64.48 14 YOLOv10l 80.40 77.49 78.16 81.42 47.78 25.89 127.87 15 YOLOv10x 83.24 78.76 80.01 82.10 50.17 31.81 171.85 16 YOLOv11 YOLOv11n 73.28 74.10 72.85 70.47 38.20 2.62 6.61 17 YOLOv11s 86.07 73.93 79.27 81.01 43.94 9.46 21.72 18 YOLOv11m 80.09 81.49 80.70 80.86 46.94 20.11 68.53 19 YOLOv11l 84.21 78.94 80.93 83.26 49.84 25.37 87.61 20 YOLOv11x 86.83 72.69 78.72 79.18 47.01 56.97 195.96 21 YOLOv12 YOLOv12n 72.14 78.98 74.71 75.08 39.03 2.60 6.65 22 YOLOv12s 79.09 83.40 81.00 82.47 47.86 9.29 21.69 23 YOLOv12m 86.60 76.71 80.61 82.66 48.95 20.20 68.08 24 YOLOv12l 79.45 76.24 77.33 80.23 45.22 26.45 89.75 25 YOLOv12x 78.51 81.55 79.67 83.21 48.33 59.22 200.33 26 RT-DETRv1 RT-DETRv1-R18 76.41 66.89 70.61 71.33 36.31 20.09 60.43 27 RT-DETRv1-R34 69.82 76.22 72.49 74.65 41.61 31.33 92.47 28 RT-DETRv1-DLA34 71.77 77.16 74.06 76.42 43.84 33.80 113.25 29 RT-DETRv1-R50-M 75.54 71.40 73.03 76.43 42.48 36.44 99.32 30 RT-DETRv1-RegNet 85.82 85.16 85.32 86.93 53.91 38.36 129.17 31 RT-DETRv1-R50 83.90 75.44 79.23 81.14 47.02 42.74 135.82 32 RT-DETRv1-R101 80.31 80.58 80.03 83.08 46.06 76.40 258.46 33 RT-DETRv2 RT-DETRv2-R18 83.19 76.65 79.08 80.82 46.36 20.09 60.43 34 RT-DETRv2-R34 80.34 84.14 81.99 85.19 48.60 31.33 92.47 35 RT-DETRv2-R50-M 75.73 77.75 76.06 79.06 44.93 36.44 99.32 36 RT-DETRv2-R50 74.16 75.51 73.17 74.68 39.42 42.74 135.82 37 RT-DETRv2-R101 79.11 79.19 78.96 80.32 45.21 76.40 258.46 
+
+Table 4 
+
+Detection accuracy comparison of two lightweight object detection models across different weed classes. Index Weed Class YOLOv12n RT-DETRv1-R18 Precision Recall F1 mAP 50 mAP 50∶95 Precision Recall F1 mAP 50 mAP 50∶95 
+
+1 Cocklebur 86.49 84.21 85.33 85.71 47.38 88.89 63.16 73.85 80.49 46.45 2 Goosegrass 77.83 76.17 76.99 81.82 39.79 71.60 76.17 73.81 81.61 35.74 3 MorningGlory 40.43 65.52 50.00 37.42 17.17 60.87 48.28 53.85 46.26 18.16 4 Ragweed 80.00 100.00 88.89 95.05 53.07 100.00 75.00 85.71 80.75 49.18 5 Waterhemp 75.97 69.01 72.32 75.42 37.76 60.71 71.83 65.81 67.55 32.03 
+
+3.4.2. Limitations and future directions 
+
+This study has several limitations that warrant further investigation. First, although the primary goal was not to exhaustively evaluate all YOLO-based detectors, some re-cently developed models, such as YOLOv13 (Lei et al., 
+
+Linyuan et al.: Preprint submitted to Elsevier Page 9 of 13 Real-Time Weed Detection in Soybean Fields  
+
+> Figure 4: Visual comparison of multi-class weed detection results using YOLOv12n and RT-DETRv1-R18.
+
+2025) and RT-DETRv3 (Wang et al., 2025), were not in-cluded. Second, different precision formats and inference en-gines (e.g., FP32, NCNN) were not systematically evaluated. Future work will extend this benchmark to include these newer models and deployment configurations, providing a more comprehensive evaluation across diverse hardware environments. 
+
+## 4. Conclusion 
+
+This study presented a comprehensive benchmarking of the YOLO (v8-v12) and Transformer-based RT-DETR (v1-v2) model families for multi-species weed detection in crop fields under UAV-based imaging conditions. A sys-tematic evaluation framework was established to compare detection accuracy, convergence behavior, and deployment efficiency across 37 models and multiple edge computing platforms. The results demonstrated that RT-DETR models achieved a higher upper bound in detection accuracy, while the YOLO series maintained a competitive advantage in balancing accuracy and computational efficiency. Through class-specific analysis, this study revealed that Transformer-based architectures were more effective in handling small and spatially limited targets, particularly under challeng-ing UAV-perspective conditions such as image degradation, occlusion, and scale variation. In addition, this work pro-vided an in-depth analysis of the trade-offs between the-oretical complexity and real-world inference performance on edge devices. The findings showed that end-to-end ar-chitectures without NMS offered practical advantages in latency, highlighting the importance of considering deploy-ment constraints beyond standard accuracy metrics. Based on these insights, YOLOv11s and RT-DETRv2-R50-M were identified as effective solutions for real-time applications, achieving a favorable balance between detection accuracy and inference speed. Overall, this study contributed a prac-tical and application-oriented benchmark that bridges al-gorithmic performance and deployment feasibility, offering   
+
+> Linyuan et al.: Preprint submitted to Elsevier Page 10 of 13
+
+Real-Time Weed Detection in Soybean Fields 
+
+Figure 5: Weed infestation map and weed species identification generated from detected weed coordinates. 
+
+actionable guidance for model selection in real-time, site-specific weed management systems. 
+
+## Authorship Contribution 
+
+Linyuan Wang : Conceptualization, Investigation, Soft-ware, Writing – Original Draft; Haibo Yao : Conceptual-ization, Data preprocessing, Writing - Review ; Te-Ming Tseng : Conceptualization, Data Curation - Review & Edit-ing; Kelvin Betitame : Resources, Writing - Review & Editing; Xin Sun : Resources, Writing - Review & Edit-ing; Yanbo Huang : Conceptualization, Data preprocessing, Writing - Review & Editing; Dong Chen : Conceptual-ization, Investigation, Supervision, Writing - Review & Editing. 
+
+## Acknowledgement 
+
+This publication is a contribution of the Mississippi Agricultural and Forestry Experiment Station (Starkville, MS). This research was funded by the Mississippi Soybean Promotion Board under the fund numbers (24-2025, 25-2026). Additionally, funding for this work was partly pro-vided by USDA ARS in-house project No. 6064-21600-001-000-D and Cooperative Agreement No. 59-6064-5-002. The authors declare that the research was conducted in the absence of any commercial or financial relationships that could be construed as a potential conflict of interest. Mention of trade names or commercial products in this publication is solely for the purpose of providing specific information and does not imply recommendation or endorsement by the U.S. Department of Agriculture, Mississippi State University, and North Dakota State University. 
+
+## References 
+
+B. Adhikari, J. Li, E. S. Michel, J. Dykes, T.-M. Tseng, M. L. Tagert, and D. Chen. A comprehensive evaluation of yolo-based deer detection performance on edge devices. Electronics , 15(5):1026, 2026. A. Ahmad, D. Saraswat, V. Aggarwal, A. Etienne, and B. Hancock. Perfor-mance of deep learning models for classifying and detecting common weeds in corn and soybean production systems. Computers and Elec-tronics in Agriculture , 184:106081, 2021. A. Allmendinger, A. O. Saltık, G. G. Peteinatos, A. Stein, and R. Gerhards. Assessing the capability of yolo-and transformer-based object detectors for real-time weed detection. Precision Agriculture , 26(3):52, 2025. V. N. Arsenoaia, D. C. Topa, R. N. Ratu, and I. Tenu. From sensing to inter-vention: A critical review of agricultural drones for precision agriculture, data-driven decision making, and sustainable intensification. Agronomy ,16(5):564, 2026. D. Balasingham, S. Samarathunga, G. G. Arachchige, A. Bandara, S. Wellalage, D. Pandithage, M. M. Hansika, and R. De Silva. Sparrow: Smart precision agriculture robot for ridding of weeds. In 2024 5th International Conference for Emerging Technology (INCET) , pages 1–6. IEEE, 2024. K. Betitame, C. Igathinathane, K. Howatt, J. Mettler, C. Koparan, and X. Sun. A practical guide to uav-based weed identification in soybean: Comparing rgb and multispectral sensor performance. Journal of Agriculture and Food Research , 20:101784, 2025. A. Bochkovskiy, C.-Y. Wang, and H.-Y. M. Liao. Yolov4: Optimal speed and accuracy of object detection. arXiv preprint arXiv:2004.10934 ,2020. S. Candiago, F. Remondino, M. De Giglio, M. Dubbini, and M. Gattelli. Evaluating multispectral images and vegetation indices for precision 
+
+Linyuan et al.: Preprint submitted to Elsevier Page 11 of 13 Real-Time Weed Detection in Soybean Fields (c) AGX Orin (b) AGX Xavier (a) Orin Nano 
+
+> v
+
+Figure 6: Inference Speed and Detection Accuracy Comparison of Object Detection Models on Edge Devices. 
+
+farming applications from uav images. Remote sensing , 7(4):4026– 4047, 2015. N. Carion, F. Massa, G. Synnaeve, N. Usunier, A. Kirillov, and S. Zagoruyko. End-to-end object detection with transformers. In 
+
+European conference on computer vision , pages 213–229. Springer, 2020. M. Everingham, L. Van Gool, C. K. Williams, J. Winn, and A. Zisserman. The pascal visual object classes (voc) challenge. International journal of computer vision , 88(2):303–338, 2010. O. L. García-Navarrete, J. H. Camacho-Tamayo, A. B. Bregon, J. Martín-García, and L. M. Navas-Gracia. Performance analysis of real-time detection transformer and you only look once models for weed detection in maize cultivation. Agronomy , 15(4):796, 2025. A. Gautam, H. Kaur, and P. Kashyap. Real-time weed detection using yolov8: A lightweight vision system for smart farming. In International Conference on Data Science and Applications , pages 307–317. Springer, 2025. H. Gauttam, V. Chauhan, K. Pattanaik, A. Trivedi, H. Ghosh, et al. Acomprehensive review of edge computing empowered smart agriculture: Trends, opportunities and future directions. Computers and Electronics in Agriculture , 241:111252, 2026. R. Gerhards, D. Andújar Sanchez, P. Hamouz, G. G. Peteinatos, S. Chris-tensen, and C. Fernandez-Quintanilla. Advances in site-specific weed management in agriculture—a review. Weed Research , 62(2):123–133, 2022. A. Gómez, H. Moreno, and D. Andújar. Intelligent inter-and intra-row early weed detection in commercial maize crops. Plants , 14(6):881, 2025. M. D. Islam, W. Liu, P. Izere, P. Singh, C. Yu, B. Riggan, K. Zhang, A. J. Jhala, S. Knezevic, Y. Ge, et al. Towards real-time weed detection and segmentation with lightweight cnn models on edge devices. Computers and Electronics in Agriculture , 237:110600, 2025. G. Jocher, J. Qiu, and A. Chaurasia. Ultralytics YOLO, Jan. 2023. URL 
+
+> https://github.com/ultralytics/ultralytics
+
+.G. Jocher, J. Qiu, and A. Chaurasia. Ultralytics YOLO, 2024. URL 
+
+> https://github.com/ultralytics/ultralytics
+
+.A. T. Khan, S. M. Jensen, and A. R. Khan. Advancing precision agriculture: A comparative analysis of yolov8 for multi-class weed detection in cotton cultivation. Artificial Intelligence in Agriculture , 15(2):182–191, 2025. M. Lei, S. Li, Y. Wu, H. Hu, Y. Zhou, X. Zheng, G. Ding, S. Du, Z. Wu, and Y. Gao. Yolov13: Real-time object detection with hypergraph-enhanced adaptive visual perception. arXiv preprint arXiv:2506.17733 , 2025. J. Li, D. Chen, X. Yin, and Z. Li. Performance evaluation of semi-supervised learning frameworks for multi-class weed detection. Fron-tiers in Plant Science , 15:1396568, 2024. T.-Y. Lin, M. Maire, S. Belongie, J. Hays, P. Perona, D. Ramanan, P. Dollár, and C. L. Zitnick. Microsoft coco: Common objects in context. In 
+
+European conference on computer vision , pages 740–755. Springer, 2014. P. Lottes, J. Behley, A. Milioto, and C. Stachniss. Fully convolutional networks with sequential information for robust crop and weed detection in precision farming. IEEE Robotics and Automation Letters , 3(4):2870– 2877, 2018. W. Lv, Y. Zhao, Q. Chang, K. Huang, G. Wang, and Y. Liu. Rt-detrv2: Im-proved baseline with bag-of-freebies for real-time detection transformer. 
+
+arXiv preprint arXiv:2407.17140 , 2024. N. Ma, X. Zhang, H.-T. Zheng, and J. Sun. Shufflenet v2: Practical guidelines for efficient cnn architecture design. In Proceedings of the European conference on computer vision (ECCV) , pages 116–131, 2018. E. Mavridou, E. Vrochidou, G. A. Papakostas, T. Pachidis, and V. G. Kaburlasos. Machine vision systems in precision agriculture for crop farming. Journal of Imaging , 5(12):89, 2019. B. Ni, L. Xiao, D. Lin, T.-L. Zhang, Q. Zhang, Y. Liu, Q. Chen, D. Zhu, H. Qian, M. C. Rillig, et al. Increasing pesticide diversity impairs soil microbial functions. Proceedings of the National Academy of Sciences ,122(2):e2419917122, 2025. N. Rai, Y. Zhang, M. Villamil, K. Howatt, M. Ostlie, and X. Sun. Agricul-tural weed identification in images and videos by integrating optimized deep learning architecture on an edge computing technology. Computers and Electronics in Agriculture , 216:108442, 2024. 
+
+Linyuan et al.: Preprint submitted to Elsevier Page 12 of 13 Real-Time Weed Detection in Soybean Fields 
+
+B. Ram, J. Joy, N. Marcotte, S. Urlacher, D. McDonald, J. K. Amundson, G. Silewski, A. Jhala, and X. Sun. An edge-ai enabled uav system for site-specific application targeting palmer amaranth in corn and soybean fields. Journal of Agriculture and Food Research , page 102577, 2025. A. O. Saltık, A. Allmendinger, and A. Stein. Comparative analysis of yolov9, yolov10 and rt-detr for real-time weed detection. In European Conference on Computer Vision , pages 177–193. Springer, 2024. Y. Shuai, J. Shi, Y. Li, S. Zhou, L. Zhang, and J. Mu. Yolo-sw: A real-time weed detection model for soybean fields using swin transformer and rt-detr. Agronomy , 15(7):1712, 2025. N. Soltani, J. A. Dille, I. C. Burke, W. J. Everman, M. J. VanGessel, V. M. Davis, and P. H. Sikkema. Perspectives on potential soybean yield losses from weeds in north america. Weed Technology , 31(1):148–154, 2017. A. Srinivas, T.-Y. Lin, N. Parmar, J. Shlens, P. Abbeel, and A. Vaswani. Bottleneck transformers for visual recognition. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition ,pages 16519–16529, 2021. E. Sulzbach, I. Scheeren, M. S. T. Veras, M. C. Tosin, W. A. E. Kroth, A. Merotto Jr, and C. Markus. Deep learning model optimization methods and performance evaluation of yolov8 for enhanced weed detection in soybeans. Computers and Electronics in Agriculture , 232: 110117, 2025. H. Sun, T. Liu, J. Wang, D. Zhai, and J. Yu. Evaluation of two deep learning-based approaches for detecting weeds growing in cabbage. Pest Management Science , 80(6):2817–2826, 2024. J. Terven, D.-M. Córdova-Esparza, and J.-A. Romero-González. A compre-hensive review of yolo architectures in computer vision: From yolov1 to yolov8 and yolo-nas. Machine learning and knowledge extraction , 5(4): 1680–1716, 2023. K. Thorp and L. Tian. A review on remote sensing of weeds in agriculture. 
+
+Precision Agriculture , 5(5):477–508, 2004. Y. Tian, Q. Ye, and D. Doermann. Yolov12: Attention-centric real-time object detectors. arXiv preprint arXiv:2502.12524 , 2025. Z. Ugljic, A. Mobli, M. C. Oliveira, C. A. Proctor, J. A. Dille, and R. Werle. Stakeholder assessment of weed management practices and perceptions of targeted spraying technologies in corn-soybean systems. Frontiers in Agronomy , 7:1601328, 2025. A. Upadhyay, G. Sunil, Y. Zhang, C. Koparan, and X. Sun. Development and evaluation of a machine vision and deep learning-based smart sprayer system for site-specific weed management in row crops: An edge computing approach. Journal of Agriculture and Food Research , 18: 101331, 2024. A. Vijayakumar and S. Vairavasundaram. Yolo-based object detection mod-els: A review and its applications. Multimedia Tools and Applications ,83(35):83535–83574, 2024. A. Wang, W. Zhang, and X. Wei. A review on weed detection using ground-based machine vision and image processing techniques. Computers and electronics in agriculture , 158:226–240, 2019. A. Wang, H. Chen, L. Liu, K. Chen, Z. Lin, J. Han, and G. Ding. Yolov10: Real-time end-to-end object detection. Advances in neural information processing systems , 37:107984–108011, 2024a. C.-Y. Wang, I.-H. Yeh, and H.-Y. Mark Liao. Yolov9: Learning what you want to learn using programmable gradient information. In European conference on computer vision , pages 1–21. Springer, 2024b. S. Wang, C. Xia, F. Lv, and Y. Shi. Rt-detrv3: Real-time end-to-end object detection with hierarchical dense positive supervision. In WACV , pages 1628–1636, 2025. P.-P. Win, H.-H. Park, and Y.-I. Kuk. Control efficacy of natural products on broadleaf and grass weeds using various application methods. Agron-omy , 13(9):2262, 2023. X. Xue, V. Thakur, H. Dhumras, R. H. Jhaveri, and T. R. Gadekallu. Real-time pest detection using resnet-50 and vision transformer: An iot-enabled mobile application for smart agriculture. IEEE Transactions on Consumer Electronics , 2025. Z. Yang, W.-Z. Liang, N. Lawrence, X. Qiao, B. Riggan, R. Harveson, C.-E. Chiang, J. Oboamah, and D. P. Andjawo. Weedcam: An edge-computing camera system for multi-species weed detection in sugar beet production fields. Computers and Electronics in Agriculture , 244:111498, 2026. W. Zhang, H. Huang, Y. Sun, and X. Wu. Agripest-yolo: A rapid light-trap agricultural pest detection method based on deep learning. Frontiers in Plant Science , 13:1079384, 2022. Y. Zhao, W. Lv, S. Xu, J. Wei, G. Wang, Q. Dang, Y. Liu, and J. Chen. Detrs beat yolos on real-time object detection. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition ,pages 16965–16974, 2024. Q. Zhou, Z. Wang, Y. Zhong, F. Zhong, and L. Wang. Efficient optimized yolov8 model with extended vision. Sensors , 24(20):6506, 2024. 
+
+Linyuan et al.: Preprint submitted to Elsevier Page 13 of 13

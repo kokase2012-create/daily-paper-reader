@@ -1,0 +1,1299 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-11T11:07:55.201897+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 3,
+    "deep_divecandidates": 25,
+    "deep_cap": 8,
+    "deep_selected": 18,
+    "quick_candidates": 45,
+    "quick_skim_target": 13,
+    "quick_selected": 13
+  },
+  "deep_dive": [
+    {
+      "id": "2604.13278v1",
+      "source": "arxiv",
+      "title": "DroneScan-YOLO: Redundancy-Aware Lightweight Detection for Tiny Objects in UAV Imagery",
+      "abstract": "Aerial object detection in UAV imagery presents unique challenges due to the high prevalence of tiny objects, adverse environmental conditions, and strict computational constraints. Standard YOLO-based detectors fail to address these jointly: their minimum detection stride of 8 pixels renders sub-32px objects nearly undetectable, their CIoU loss produces zero gradients for non-overlapping tiny boxes, and their architectures contain significant filter redundancy. We propose DroneScan-YOLO, a holistic system contribution that addresses these limitations through four coordinated design choices: (1) increased input resolution of 1280x1280 to maximize spatial detail for tiny objects, (2) RPA-Block, a dynamic filter pruning mechanism based on lazy cosine-similarity updates with a 10-epoch warm-up period, (3) MSFD, a lightweight P2 detection branch at stride 4 adding only 114,592 parameters (+1.1%), and (4) SAL-NWD, a hybrid loss combining Normalized Wasserstein Distance with size-adaptive CIoU weighting, integrated into YOLOv8's TaskAligned assignment pipeline. Evaluated on VisDrone2019-DET, DroneScan-YOLO achieves 55.3% mAP@50 and 35.6% mAP@50-95, outperforming the YOLOv8s baseline by +16.6 and +12.3 points respectively, improving recall from 0.374 to 0.518, and maintaining 96.7 FPS inference speed with only +4.1% parameters. Gains are most pronounced on tiny object classes: bicycle AP@50 improves from 0.114 to 0.328 (+187%), and awning-tricycle from 0.156 to 0.237 (+52%).",
+      "authors": [
+        "Yann V. Bellec"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG",
+        "eess.IV"
+      ],
+      "published": "2026-04-14T20:14:57+00:00",
+      "link": "https://arxiv.org/pdf/2604.13278v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "DroneScan-YOLO addresses tiny object detection in UAV imagery by increasing resolution and pruning redundancy.",
+      "llm_evidence_cn": "DroneScan-YOLO通过提高分辨率和剪枝冗余来解决无人机图像中的小目标检测问题。",
+      "llm_evidence": "DroneScan-YOLO通过提高分辨率和剪枝冗余来解决无人机图像中的小目标检测问题。",
+      "canonical_evidence": "DroneScan-YOLO通过提高分辨率和剪枝冗余来解决无人机图像中的小目标检测问题。",
+      "llm_tldr_en": "Proposes a lightweight YOLO-based system for tiny object detection in UAV imagery using high-resolution inputs.",
+      "llm_tldr_cn": "提出了一种基于YOLO的轻量化系统，通过高分辨率输入提升无人机航拍中小目标的检测性能。",
+      "llm_tldr": "提出了一种基于YOLO的轻量化系统，通过高分辨率输入提升无人机航拍中小目标的检测性能。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "YOLO在小目标检测中的方法与改进研究",
+      "matched_requirement_id": "req-20",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.14884v1",
+      "source": "arxiv",
+      "title": "FSDETR: Frequency-Spatial Feature Enhancement for Small Object Detection",
+      "abstract": "Small object detection remains a significant challenge due to feature degradation from downsampling, mutual occlusion in dense clusters, and complex background interference. To address these issues, this paper proposes FSDETR, a frequency-spatial feature enhancement framework built upon the RT-DETR baseline. By establishing a collaborative modeling mechanism, the method effectively leverages complementary structural information. Specifically, a Spatial Hierarchical Attention Block (SHAB) captures both local details and global dependencies to strengthen semantic representation. Furthermore, to mitigate occlusion in dense scenes, the Deformable Attention-based Intra-scale Feature Interaction (DA-AIFI) focuses on informative regions via dynamic sampling. Finally, the Frequency-Spatial Feature Pyramid Network (FSFPN) integrates frequency filtering with spatial edge extraction via the Cross-domain Frequency-Spatial Block (CFSB) to preserve fine-grained details. Experimental results show that with only 14.7M parameters, FSDETR achieves 13.9% APS on VisDrone 2019 and 48.95% AP50 tiny on TinyPerson, showing strong performance on small-object benchmarks. The code and models are available at https://github.com/YT3DVision/FSDETR.",
+      "authors": [
+        "Jianchao Huang",
+        "Fengming Zhang",
+        "Haibo Zhu",
+        "Tao Yan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-16T11:22:13+00:00",
+      "link": "https://arxiv.org/pdf/2604.14884v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Frequency-spatial feature enhancement for small object detection in dense scenes",
+      "llm_evidence_cn": "针对密集场景中小目标检测的空频特征增强",
+      "llm_evidence": "针对密集场景中小目标检测的空频特征增强",
+      "canonical_evidence": "针对密集场景中小目标检测的空频特征增强",
+      "llm_tldr_en": "Proposes FSDETR, enhancing RT-DETR with frequency-spatial modeling for dense small object detection.",
+      "llm_tldr_cn": "提出FSDETR，通过空频建模增强RT-DETR在密集小目标检测中的表现。",
+      "llm_tldr": "提出FSDETR，通过空频建模增强RT-DETR在密集小目标检测中的表现。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.15065v1",
+      "source": "arxiv",
+      "title": "Learning Where to Embed: Noise-Aware Positional Embedding for Query Retrieval in Small-Object Detection",
+      "abstract": "Transformer-based detectors have advanced small-object detection, but they often remain inefficient and vulnerable to background-induced query noise, which motivates deep decoders to refine low-quality queries. We present HELP (Heatmap-guided Embedding Learning Paradigm), a noise-aware positional-semantic fusion framework that studies where to embed positional information by selectively preserving positional encodings in foreground-salient regions while suppressing background clutter. Within HELP, we introduce Heatmap-guided Positional Embedding (HPE) as the core embedding mechanism and visualize it with a heatbar for interpretable diagnosis and fine-tuning. HPE is integrated into both the encoder and decoder: it guides noise-suppressed feature encoding by injecting heatmap-aware positional encoding, and it enables high-quality query retrieval by filtering background-dominant embeddings via a gradient-based mask filter before decoding. To address feature sparsity in complex small targets, we integrate Linear-Snake Convolution to enrich retrieval-relevant representations. The gradient-based heatmap supervision is used during training only, incurring no additional gradient computation at inference. As a result, our design reduces decoder layers from eight to three and achieves a 59.4% parameter reduction (66.3M vs. 163M) while maintaining consistent accuracy gains under a reduced compute budget across benchmarks. Code Repository: https://github.com/yidimopozhibai/Noise-Suppressed-Query-Retrieval",
+      "authors": [
+        "Yangchen Zeng",
+        "Zhenyu Yu",
+        "Dongming Jiang",
+        "Wenbo Zhang",
+        "Yifan Hong",
+        "Zhanhua Hu",
+        "Jiao Luo",
+        "Kangning Cui"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-16T14:28:36+00:00",
+      "link": "https://arxiv.org/pdf/2604.15065v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Noise-aware positional embedding for query retrieval in small-object detection",
+      "llm_evidence_cn": "针对小目标检测中查询检索的噪声感知位置嵌入",
+      "llm_evidence": "针对小目标检测中查询检索的噪声感知位置嵌入",
+      "canonical_evidence": "针对小目标检测中查询检索的噪声感知位置嵌入",
+      "llm_tldr_en": "Presents HELP, a paradigm that optimizes positional embeddings to suppress background noise in small object detection.",
+      "llm_tldr_cn": "提出HELP范式，通过优化位置嵌入抑制背景噪声以提升小目标检测。",
+      "llm_tldr": "提出HELP范式，通过优化位置嵌入抑制背景噪声以提升小目标检测。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "针对小尺寸目标的检测方法研究",
+      "matched_requirement_id": "req-15",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.19233v1",
+      "source": "arxiv",
+      "title": "Adaptive Slicing-Assisted Hyper Inference for Enhanced Small Object Detection in High-Resolution Imagery",
+      "abstract": "Deep learning-based object detectors have achieved remarkable success across numerous computer vision applications, yet they continue to struggle with small object detection in high-resolution aerial and satellite imagery, where dense object distributions, variable shooting angles, diminutive target sizes, and substantial inter-class variability pose formidable challenges. Existing slicing strategies that partition high-resolution images into manageable patches have demonstrated promising results for enlarging the effective receptive field of small targets; however, their reliance on fixed slice dimensions introduces significant redundant computation, inflating inference cost and undermining detection speed. In this paper, we propose \\textbf{Adaptive Slicing-Assisted Hyper Inference (ASAHI)}, a novel slicing framework that shifts the paradigm from prescribing a fixed slice size to adaptively determining the optimal number of slices according to image resolution, thereby substantially mitigating redundant computation while preserving beneficial overlap between adjacent patches. ASAHI integrates three synergistic components: (1)an adaptive resolution-aware slicing algorithm that dynamically generates 6 or 12 overlapping patches based on a learned threshold, (2)a slicing-assisted fine-tuning (SAF) strategy that constructs augmented training data comprising both full-resolution and sliced image patches, and (3)a Cluster-DIoU-NMS (CDN) post-processing module that combines the geometric merging efficiency of Cluster-NMS with the center-distance-aware suppression of DIoU-NMS to achieve robust duplicate elimination in crowded scenes. Extensive experiments on VisDrone2019 and xView, demonstrate that ASAHI achieves state-of-the-art performance with 56.8% on VisDrone2019-DET-val and 22.7% on xView-test, while reducing inference time by 20-25% compared to the baseline SAHI method.",
+      "authors": [
+        "Francesco Moretti",
+        "Yi Jin",
+        "Guiqin Mario"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-21T08:36:51+00:00",
+      "link": "https://arxiv.org/pdf/2604.19233v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "adaptive slicing-assisted inference for small object detection in high-resolution aerial imagery",
+      "llm_evidence_cn": "高分辨率航拍图像中小目标检测的自适应切片辅助推理",
+      "llm_evidence": "高分辨率航拍图像中小目标检测的自适应切片辅助推理",
+      "canonical_evidence": "高分辨率航拍图像中小目标检测的自适应切片辅助推理",
+      "llm_tldr_en": "Enhances small object detection in high-resolution aerial images using an adaptive slicing-assisted inference strategy.",
+      "llm_tldr_cn": "通过自适应切片辅助推理策略，增强了高分辨率航拍图像中的小目标检测性能。",
+      "llm_tldr": "通过自适应切片辅助推理策略，增强了高分辨率航拍图像中的小目标检测性能。",
+      "llm_tags": [
+        "query:smalldet:composite"
+      ],
+      "matched_query_tag": "query:smalldet:composite",
+      "matched_query_text": "Papers central to 与小目标检测相关的论文检索, especially work that connects or combines: tiny object detection; papers focused on small object detection methods and datasets; dense tiny object detection in drone scenes; high resolution feature maps for tiny object detection.",
+      "matched_requirement_id": "req-composite-smalldet",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.21435v1",
+      "source": "arxiv",
+      "title": "UHR-DETR: Efficient End-to-End Small Object Detection for Ultra-High-Resolution Remote Sensing Imagery",
+      "abstract": "Ultra-High-Resolution (UHR) imagery has become essential for modern remote sensing, offering unprecedented spatial coverage. However, detecting small objects in such vast scenes presents a critical dilemma: retaining the original resolution for small objects causes prohibitive memory bottlenecks. Conversely, conventional compromises like image downsampling or patch cropping either erase small objects or destroy context. To break this dilemma, we propose UHR-DETR, an efficient end-to-end transformer-based detector designed for UHR imagery. First, we introduce a Coverage-Maximizing Sparse Encoder that dynamically allocates finite computational resources to informative high-resolution regions, ensuring maximum object coverage with minimal spatial redundancy. Second, we design a Global-Local Decoupled Decoder. By integrating macroscopic scene awareness with microscopic object details, this module resolves semantic ambiguities and prevents scene fragmentation. Extensive experiments on the UHR imagery datasets (e.g., STAR and SODA-A) demonstrate the superiority of UHR-DETR under strict hardware constraints (e.g., a single 24GB RTX 3090). It achieves a 2.8\\% mAP improvement while delivering a 10$\\times$ inference speedup compared to standard sliding-window baselines on the STAR dataset. Our codes and models will be available at https://github.com/Li-JingFang/UHR-DETR.",
+      "authors": [
+        "Jingfang Li",
+        "Haoran Zhu",
+        "Wen Yang",
+        "Jinrui Zhang",
+        "Fang Xu",
+        "Haijian Zhang",
+        "Gui-Song Xia"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-23T08:51:24+00:00",
+      "link": "https://arxiv.org/pdf/2604.21435v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "efficient end-to-end small object detection for ultra-high-resolution imagery",
+      "llm_evidence_cn": "超高分辨率图像中的高效端到端小目标检测",
+      "llm_evidence": "超高分辨率图像中的高效端到端小目标检测",
+      "canonical_evidence": "超高分辨率图像中的高效端到端小目标检测",
+      "llm_tldr_en": "UHR-DETR uses a sparse encoder to detect small objects in high-resolution remote sensing images efficiently.",
+      "llm_tldr_cn": "UHR-DETR通过稀疏编码器高效检测高分辨率遥感图像中的小目标。",
+      "llm_tldr": "UHR-DETR通过稀疏编码器高效检测高分辨率遥感图像中的小目标。",
+      "llm_tags": [
+        "query:smalldet:composite"
+      ],
+      "matched_query_tag": "query:smalldet:composite",
+      "matched_query_text": "Papers central to 与小目标检测相关的论文检索, especially work that connects or combines: tiny object detection; papers focused on small object detection methods and datasets; dense tiny object detection in drone scenes; high resolution feature maps for tiny object detection.",
+      "matched_requirement_id": "req-composite-smalldet",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.22884v1",
+      "source": "arxiv",
+      "title": "Can Multimodal Large Language Models Truly Understand Small Objects?",
+      "abstract": "Multimodal Large Language Models (MLLMs) have shown promising potential in diverse understanding tasks, e.g., image and video analysis, math and physics olympiads. However, they remain blank and unexplored for Small Object Understanding (SOU) tasks. To fill this gap, we introduce SOUBench, the first and comprehensive benchmark for exploring the small objects understanding capability of existing MLLMs. Specifically, we first design an effective and automatic visual question-answer generation strategy, constructing a new SOU-VQA evaluation dataset, with 18,204 VQA pairs, six relevant sub-tasks, and three dominant scenarios (i.e., Driving, Aerial, and Underwater). Then, we conduct a comprehensive evaluation on 15 state-of-the-art MLLMs and reveal their weak capabilities in small object understanding. Furthermore, we develop SOU-Train, a multimodal training dataset with 11,226 VQA pairs, to improve the SOU capabilities of MLLMs. Through supervising fine-tuning of the latest MLLM, we demonstrate that SOU-Train can effectively enhance the latest MLLM's ability to understand small objects. Comprehensive experimental results demonstrate that, the proposed SOUBench, along with the SOU-VQA and SOU-Train datasets, provides a crucial empirical foundation to the community for further developing models with enhanced small object understanding capabilities. Datasets and Code: https://github.com/Hanfj-X/SOU.",
+      "authors": [
+        "Fujun Han",
+        "Junan Chen",
+        "Xintong Zhu",
+        "Jingqi Ye",
+        "Xuanjie Mao",
+        "Tao Chen",
+        "Peng Ye"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-24T08:13:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.22884v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "benchmark for exploring small objects understanding capability of MLLMs in aerial scenarios",
+      "llm_evidence_cn": "探索多模态大模型在航拍场景下小目标理解能力的基准",
+      "llm_evidence": "探索多模态大模型在航拍场景下小目标理解能力的基准",
+      "canonical_evidence": "探索多模态大模型在航拍场景下小目标理解能力的基准",
+      "llm_tldr_en": "Introduces SOUBench to evaluate multimodal large language models on small object understanding across various scenarios.",
+      "llm_tldr_cn": "引入SOUBench基准，评估多模态大模型在多种场景下的小目标理解能力。",
+      "llm_tldr": "引入SOUBench基准，评估多模态大模型在多种场景下的小目标理解能力。",
+      "llm_tags": [
+        "query:smalldet:composite"
+      ],
+      "matched_query_tag": "query:smalldet:composite",
+      "matched_query_text": "Papers central to 与小目标检测相关的论文检索, especially work that connects or combines: tiny object detection; papers focused on small object detection methods and datasets; dense tiny object detection in drone scenes; high resolution feature maps for tiny object detection.",
+      "matched_requirement_id": "req-composite-smalldet",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.18632v1",
+      "source": "arxiv",
+      "title": "StomaD2: An All-in-One System for Intelligent Stomatal Phenotype Analysis via Diffusion-Based Restoration Detection Network",
+      "abstract": "Stomata play a crucial role in regulating plant physiological processes and reflecting environmental responses. However, accurate and high-throughput stomatal phenotyping remains challenging, as conventional approaches rely on destructive sampling and manual annotation, restricting large-scale and field deployment. To overcome these limitations, a noninvasive restoration-detection integrated framework, termed StomaD2, is developed to achieve accurate and fast stomatal phenotyping under complex imaging conditions. The framework incorporates a diffusion-based restoration module to recover degraded images and a specialized rotated object detection network tailored to the small, dense, and cluttered characteristics of stomata. The proposed network enhances feature representation through three key innovations: a column-wise structure for global feature interaction, context-aware resampling and reweighting mechanism to improve multi-scale consistency, and a feature reassembly module to boost discrimination against complex backgrounds. In extensive comparisons, StomaD2 demonstrated state-of-the-art performance. On public Maize and Wheat datasets, it achieved accuracies of 0.994 and 0.992, respectively, significantly outperforming existing benchmarks. When benchmarked against ten other advanced models, including Oriented Former and YOLOv12, StomaD2 achieved a top-tier F1-score/mAP of 0.989. The framework is integrated into a user-friendly, field-operable system that supports the fast extraction of eight stomatal phenotypes, such as density and conductance. Validated on more than 130 plant species, StomaD2's results highlight its strong generalizability and potential for large-scale phenotyping, plant physiology analysis, and precision agriculture applications.",
+      "authors": [
+        "Quanling Zhao",
+        "Meng'en Qin",
+        "Yanfeng Sun",
+        "Yuan Miao",
+        "Xiaohui Yang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "stat.AP"
+      ],
+      "published": "2026-04-18T17:33:03+00:00",
+      "link": "https://arxiv.org/pdf/2604.18632v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone"
+      ],
+      "llm_score": 9.5,
+      "llm_evidence_en": "specialized rotated object detection network tailored to small, dense, and cluttered characteristics",
+      "llm_evidence_cn": "针对小、密集和杂乱特征定制的专用旋转目标检测网络",
+      "llm_evidence": "针对小、密集和杂乱特征定制的专用旋转目标检测网络",
+      "canonical_evidence": "针对小、密集和杂乱特征定制的专用旋转目标检测网络",
+      "llm_tldr_en": "StomaD2 uses a diffusion-based restoration and specialized detection network for small, dense stomatal phenotyping.",
+      "llm_tldr_cn": "StomaD2利用扩散修复和专用检测网络，实现对细小密集气孔的精确表型分析。",
+      "llm_tldr": "StomaD2利用扩散修复和专用检测网络，实现对细小密集气孔的精确表型分析。",
+      "llm_tags": [
+        "query:smalldet:composite"
+      ],
+      "matched_query_tag": "query:smalldet:composite",
+      "matched_query_text": "Papers central to 与小目标检测相关的论文检索, especially work that connects or combines: tiny object detection; papers focused on small object detection methods and datasets; dense tiny object detection in drone scenes; high resolution feature maps for tiny object detection.",
+      "matched_requirement_id": "req-composite-smalldet",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.20000v1",
+      "source": "arxiv",
+      "title": "RareSpot+: A Benchmark, Model, and Active Learning Framework for Small and Rare Wildlife in Aerial Imagery",
+      "abstract": "Automated wildlife monitoring from aerial imagery is vital for conservation but remains limited by two persistent challenges: the difficulty of detecting small, rare species and the high cost of large-scale expert annotation. Prairie dogs exemplify this problem -- they are ecologically important yet appear tiny, sparsely distributed, and visually indistinct from their surroundings, posing a severe challenge for conventional detection models. To overcome these limitations, we present RareSpot+, a detection framework that integrates multi-scale consistency learning, context-aware augmentation, and geospatially guided active learning to address these issues. A novel multi-scale consistency loss aligns intermediate feature maps across detection heads, enhancing localization of small (approx. 30 pixels wide) objects without architectural changes, while context-aware augmentation improves robustness by synthesizing hard, ecologically plausible examples. A geospatial active learning module exploits domain-specific spatial priors linking prairie dogs and burrows, together with test-time augmentation and a meta-uncertainty model, to reduce redundant labeling. On a 2 km^2 aerial dataset, RareSpot+ improves detection over the baseline mAP@50 by +35.2% (absolute +0.13). Cross-dataset tests on HerdNet, AED, and several other wildlife benchmarks demonstrate robust detector-level transferability. The active learning module further boosts prairie dog AP by 14.5% using an annotation budget of just 1.7% of the unlabeled tiles. Beyond detection, RareSpot+ enables spatial ecological analyses such as clustering and co-occurrence, linking vision-based detection with quantitative ecology.",
+      "authors": [
+        "Bowen Zhang",
+        "Jesse T. Boulerice",
+        "Charvi Mendiratta",
+        "Nikhil Kuniyil",
+        "Satish Kumar",
+        "Hila Shamon",
+        "B. S. Manjunath"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-21T21:18:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.20000v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:visdrone"
+      ],
+      "llm_score": 9.5,
+      "llm_evidence_en": "detecting small and rare species in aerial imagery with multi-scale consistency",
+      "llm_evidence_cn": "利用多尺度一致性检测航拍图像中的小型稀有物种",
+      "llm_evidence": "利用多尺度一致性检测航拍图像中的小型稀有物种",
+      "canonical_evidence": "利用多尺度一致性检测航拍图像中的小型稀有物种",
+      "llm_tldr_en": "A framework for detecting tiny, rare wildlife in aerial images using multi-scale consistency learning.",
+      "llm_tldr_cn": "一种利用多尺度一致性学习检测航拍图像中微小、稀有野生动物的检测框架。",
+      "llm_tldr": "一种利用多尺度一致性学习检测航拍图像中微小、稀有野生动物的检测框架。",
+      "llm_tags": [
+        "query:smalldet:composite"
+      ],
+      "matched_query_tag": "query:smalldet:composite",
+      "matched_query_text": "Papers central to 与小目标检测相关的论文检索, especially work that connects or combines: tiny object detection; papers focused on small object detection methods and datasets; dense tiny object detection in drone scenes; high resolution feature maps for tiny object detection.",
+      "matched_requirement_id": "req-composite-smalldet",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.07388v1",
+      "source": "arxiv",
+      "title": "A Marine Debris Detection Framework for Ocean Robots via Self-Attention Enhancement and Feature Interaction Optimization",
+      "abstract": "Marine debris detection for ocean robot is crucial for ecological protection, yet performance is often degraded by low-quality images with blur, complex backgrounds, and small targets. To address these challenges, we propose YOLO-MD, an enhanced YOLO-based detection framework. A Dual-Branch Convolutional Enhanced Self-Attention (DB-CASA) module is designed to strengthen spatial-channel interactions, improving feature representation in degraded images. Additionally, a lightweight shift-based operation is introduced to enhance fine-grained feature extraction for objects of varying scales while maintaining parameter efficiency. We further propose SFG-Loss to mitigate class imbalance and optimization instability via dynamic sample reweighting. Experiments on the UODM dataset demonstrate that YOLO-MD achieves 0.875 precision, 0.822 F1-score, and 0.849 mAP50, outperforming the latest state-of-the-art methods. The effectiveness of this method has also been verified through real-world robotic edge deployment experiments.",
+      "authors": [
+        "Yuyang Li",
+        "Jiashu Han",
+        "Yinyi Lai",
+        "Wenbin Kang",
+        "Zenghui Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-08T07:43:01+00:00",
+      "link": "https://arxiv.org/pdf/2605.07388v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 9.5,
+      "llm_evidence_en": "YOLO-MD enhanced YOLO-based detection framework for small targets in degraded images",
+      "llm_evidence_cn": "YOLO-MD：针对退化图像中小目标的增强型YOLO检测框架",
+      "llm_evidence": "YOLO-MD：针对退化图像中小目标的增强型YOLO检测框架",
+      "canonical_evidence": "YOLO-MD：针对退化图像中小目标的增强型YOLO检测框架",
+      "llm_tldr_en": "Proposes YOLO-MD with self-attention and feature interaction to improve small target detection in marine debris.",
+      "llm_tldr_cn": "提出YOLO-MD框架，通过自注意力增强和特征交互提升海洋垃圾中小目标的检测。",
+      "llm_tldr": "提出YOLO-MD框架，通过自注意力增强和特征交互提升海洋垃圾中小目标的检测。",
+      "llm_tags": [
+        "query:yolo-mini:composite"
+      ],
+      "matched_query_tag": "query:yolo-mini:composite",
+      "matched_query_text": "Papers central to 与YOLO相关的小目标检测论文, especially work that connects or combines: 与YOLO算法相关的目标检测研究; 针对小尺寸目标的检测方法研究; 用于图像中识别目标的深度学习检测模型; 提高小目标检测性能的特征金字塔结构研究; 适配多尺度目标的检测策略; 提高YOLO在小目标上的检测精度的技术; YOLO在小目标检测中的方法与改进研究; 提高YOLO对小尺寸目标识别的性能的最新研究趋势; 关于深度学习模型在小目标检测任务中的优化策略的论文.",
+      "matched_requirement_id": "req-composite-yolo-mini",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.13884v1",
+      "source": "arxiv",
+      "title": "A Variational Message Passing Framework for Multi-Sensor Multi-Object Tracking using Raw Radar Signals",
+      "abstract": "The growing proliferation of unmanned aerial vehicles (UAVs) poses major challenges for reliable airspace surveillance, as drones are typically small, have low radar cross-sections, and often move slowly in cluttered environments. These characteristics make the joint tasks of detecting, localizing, and tracking multiple objects difficult for conventional detect-then-track (DTT) approaches, which rely on pre-processed measurements and may discard informative low-signal-to-noise ratio (SNR) signal components. To overcome these limitations, we propose a variational message passing (VMP)-based direct multiobject tracking (MOT) method that operates directly on raw radar signals and explicitly accounts for an unknown and time-varying number of objects. The proposed method is formulated for MIMO multi-radar systems and performs data fusion by jointly processing the signals of all radar sensors using a probabilistic model. A superimposed signal model is employed to capture correlations in the raw sensor data caused by closely spaced objects, and a hierarchical Bernoulli-Gamma model is introduced to jointly model object existence, reflectivities, and the reliability of individual radar-object links. Using a mean-field approximation, we derive message updates, yielding a computationally efficient VMP algorithm that simultaneously performs object detection, track formation, state estimation, and nuisance parameter learning directly from the radar signal. Simulation results in synthetic scenarios with weak and closely-spaced objects show that the proposed direct-MOT method outperforms a conventional pipeline based on super-resolution estimation followed by belief propagation (BP)-based tracking, particularly in low-SNR and clutter-rich conditions, demonstrating the advantages of direct signal-level inference and coherent multi-radar fusion.",
+      "authors": [
+        "Anders Malthe Westerkam",
+        "Jakob Möderl",
+        "Erik Leitinger",
+        "Troels Pedersen"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-04-15T13:48:16+00:00",
+      "link": "https://arxiv.org/pdf/2604.13884v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "detecting and tracking small UAVs with low radar cross-sections",
+      "llm_evidence_cn": "探测和跟踪具有低雷达截面积的小型无人机",
+      "llm_evidence": "探测和跟踪具有低雷达截面积的小型无人机",
+      "canonical_evidence": "探测和跟踪具有低雷达截面积的小型无人机",
+      "llm_tldr_en": "Proposes a variational message passing method for tracking small, low-SNR drones using raw radar signals.",
+      "llm_tldr_cn": "提出了一种基于变分消息传递的方法，利用原始雷达信号跟踪小型低信噪比无人机。",
+      "llm_tldr": "提出了一种基于变分消息传递的方法，利用原始雷达信号跟踪小型低信噪比无人机。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.16630v1",
+      "source": "arxiv",
+      "title": "Tri-Modal Fusion Transformers for UAV-based Object Detection",
+      "abstract": "Reliable UAV object detection requires robustness to illumination changes, motion blur, and scene dynamics that suppress RGB cues. Thermal long-wave infrared (LWIR) sensing preserves contrast in low light, and event cameras retain microsecond-level temporal edges, but integrating all three modalities in a unified detector has not been systematically studied. We present a tri-modal framework that processes RGB, thermal, and event data with a dual-stream hierarchical vision transformer. At selected encoder depths, a Modality-Aware Gated Exchange (MAGE) applies inter-sensor channel and spatial gating, and a Bidirectional Token Exchange (BiTE) module performs bidirectional token-level attention with depthwise-pointwise refinement, producing resolution-preserving fused maps for a standard feature pyramid and two-stage detector.   We introduce a 10,489-frame UAV dataset with synchronized and pre-aligned RGB-thermal-event streams and 24,223 annotated vehicles across day and night flights. Through 61 controlled ablations, we evaluate fusion placement, mechanism (baseline MAGE+BiTE, CSSA, GAFF), modality subsets, and backbone capacity. Tri-modal fusion improves over all dual-modal baselines, with fusion depth having a significant effect and a lightweight CSSA variant recovering most of the benefit at minimal cost. This work provides the first systematic benchmark and modular backbone for tri-modal UAV-based object detection.",
+      "authors": [
+        "Craig Iaboni",
+        "Pramod Abichandani"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-17T18:35:06+00:00",
+      "link": "https://arxiv.org/pdf/2604.16630v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "UAV-based object detection using tri-modal fusion",
+      "llm_evidence_cn": "基于三模态融合的无人机目标检测",
+      "llm_evidence": "基于三模态融合的无人机目标检测",
+      "canonical_evidence": "基于三模态融合的无人机目标检测",
+      "llm_tldr_en": "Proposes a tri-modal fusion transformer for robust UAV object detection across varying illumination and dynamics.",
+      "llm_tldr_cn": "提出一种三模态融合Transformer，用于在不同光照和动态环境下实现鲁棒的无人机目标检测。",
+      "llm_tldr": "提出一种三模态融合Transformer，用于在不同光照和动态环境下实现鲁棒的无人机目标检测。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "methods improving drone image small object detection performance",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.16696v1",
+      "source": "arxiv",
+      "title": "LOD-Net: Locality-Aware 3D Object Detection Using Multi-Scale Transformer Network",
+      "abstract": "3D object detection in point cloud data remains a challenging task due to the sparsity and lack of global structure inherent in the input. In this work, we propose a novel Multi-Scale Attention (MSA) mechanism integrated into the 3DETR architecture to better capture both local geometry and global context. Our method introduces an upsampling operation that generates high-resolution feature maps, enabling the network to better detect smaller and semantically related objects. Experiments conducted on the ScanNetv2 dataset demonstrate that our 3DETR + MSA model improves detection performance, achieving a gain of almost 1% in mAP@25 and 4.78% in mAP@50 over the baseline. While applying MSA to the 3DETR-m variant shows limited improvement, our analysis reveals the importance of adapting the upsampling strategy for lightweight models. These results highlight the effectiveness of combining hierarchical feature extraction with attention mechanisms in enhancing 3D scene understanding.",
+      "authors": [
+        "Mustaqeem Khan",
+        "Aidana Nurakhmetova",
+        "Wail Gueaieb",
+        "Abdulmotaleb El Saddik"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "eess.IV"
+      ],
+      "published": "2026-04-17T20:52:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.16696v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "high-resolution feature maps for detecting smaller objects",
+      "llm_evidence_cn": "用于检测较小目标的高分辨率特征图",
+      "llm_evidence": "用于检测较小目标的高分辨率特征图",
+      "canonical_evidence": "用于检测较小目标的高分辨率特征图",
+      "llm_tldr_en": "Introduces MSA and upsampling to generate high-resolution feature maps for detecting smaller 3D objects.",
+      "llm_tldr_cn": "引入多尺度注意力和上采样生成高分辨率特征图，以增强对较小3D目标的检测。",
+      "llm_tldr": "引入多尺度注意力和上采样生成高分辨率特征图，以增强对较小3D目标的检测。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "high resolution feature maps for tiny object detection",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.18256v1",
+      "source": "arxiv",
+      "title": "Domain-Specialized Object Detection via Model-Level Mixtures of Experts",
+      "abstract": "Mixture-of-Experts (MoE) models provide a structured approach to combining specialized neural networks and offer greater interpretability than conventional ensembles. While MoEs have been successfully applied to image classification and semantic segmentation, their use in object detection remains limited due to challenges in merging dense and structured predictions. In this work, we investigate model-level mixtures of object detectors and analyze their suitability for improving performance and interpretability in object detection. We propose an MoE architecture that combines YOLO-based detectors trained on semantically disjoint data subsets, with a learned gating network that dynamically weights expert contributions. We study different strategies for fusing detection outputs and for training the gating mechanism, including balancing losses to prevent expert collapse. Experiments on the BDD100K dataset demonstrate that the proposed MoE consistently outperforms standard ensemble approaches and provides insights into expert specialization across domains, highlighting model-level MoEs as a viable alternative to traditional ensembling for object detection. Our code is available at https://github.com/KASTEL-MobilityLab/mixtures-of-experts/.",
+      "authors": [
+        "Svetlana Pavlitska",
+        "Malte Stüven",
+        "Beyza Keskin",
+        "J. Marius Zöllner"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-20T13:30:40+00:00",
+      "link": "https://arxiv.org/pdf/2604.18256v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "MoE architecture combining YOLO-based detectors",
+      "llm_evidence_cn": "结合YOLO检测器的混合专家模型架构",
+      "llm_evidence": "结合YOLO检测器的混合专家模型架构",
+      "canonical_evidence": "结合YOLO检测器的混合专家模型架构",
+      "llm_tldr_en": "Investigates model-level mixtures of YOLO-based experts to improve performance and interpretability in detection.",
+      "llm_tldr_cn": "研究了基于YOLO专家的模型级混合，以提高目标检测的性能和可解释性。",
+      "llm_tldr": "研究了基于YOLO专家的模型级混合，以提高目标检测的性能和可解释性。",
+      "llm_tags": [
+        "query:yolo-mini:composite"
+      ],
+      "matched_query_tag": "query:yolo-mini:composite",
+      "matched_query_text": "Papers central to 与YOLO相关的小目标检测论文, especially work that connects or combines: 与YOLO算法相关的目标检测研究; 针对小尺寸目标的检测方法研究; 用于图像中识别目标的深度学习检测模型; 提高小目标检测性能的特征金字塔结构研究; 适配多尺度目标的检测策略; 提高YOLO在小目标上的检测精度的技术; YOLO在小目标检测中的方法与改进研究; 提高YOLO对小尺寸目标识别的性能的最新研究趋势; 关于深度学习模型在小目标检测任务中的优化策略的论文.",
+      "matched_requirement_id": "req-composite-yolo-mini",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.20543v1",
+      "source": "arxiv",
+      "title": "RefAerial: A Benchmark and Approach for Referring Detection in Aerial Images",
+      "abstract": "Referring detection refers to locate the target referred by natural languages, which has recently attracted growing research interests. However, existing datasets are limited to ground images with large object centered in relative small scenes. This paper introduces a large-scale challenging dataset for referring detection in aerial images, termed as RefAerial. It distinguishes from conventional ground referring detection datasets by 4 characteristics: (1) low but diverse object-to-scene ratios, (2) numerous targets and distractors, (3)complex and fine-grained referring descriptions, (4) diverse and broad scenes in the aerial view. We also develop a human-in-the-loop referring expansion and annotation engine (REA-Engine) for efficient semi-automated referring pair annotation. Besides, we observe that existing ground referring detection approaches exhibiting serious performance degradation on our aerial dataset since the intrinsic scale variety issue within or across aerial images. Therefore, we further propose a novel scale-comprehensive and sensitive (SCS) framework for referring detection in aerial images. It consists of a mixture-of-granularity (MoG) attention and a two-stage comprehensive-to-sensitive (CtS) decoding strategy. Specifically, the mixture-of-granularity attention is developed for scale-comprehensive target understanding. In addition, the two-stage comprehensive-to-sensitive decoding strategy is designed for coarse-to-fine referring target decoding. Eventually, the proposed SCS framework achieves remarkable performance on our aerial referring detection dataset and even promising performance boost on conventional ground referring detection datasets.",
+      "authors": [
+        "Guyue Hu",
+        "Hao Song",
+        "Yuxing Tong",
+        "Duzhi Yuan",
+        "Dengdi Sun",
+        "Aihua Zheng",
+        "Chenglong Li",
+        "Jin Tang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-22T13:27:26+00:00",
+      "link": "https://arxiv.org/pdf/2604.20543v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "referring detection in aerial images with low object-to-scene ratios",
+      "llm_evidence_cn": "低目标场景比的航拍图像指代检测",
+      "llm_evidence": "低目标场景比的航拍图像指代检测",
+      "canonical_evidence": "低目标场景比的航拍图像指代检测",
+      "llm_tldr_en": "RefAerial provides a benchmark for locating targets in aerial images based on natural language descriptions.",
+      "llm_tldr_cn": "RefAerial为根据自然语言描述在航拍图像中定位目标提供了基准。",
+      "llm_tldr": "RefAerial为根据自然语言描述在航拍图像中定位目标提供了基准。",
+      "llm_tags": [
+        "query:visdrone:composite"
+      ],
+      "matched_query_tag": "query:visdrone:composite",
+      "matched_query_text": "Papers central to 面向VisDrone小目标检测的论文检索, especially work that connects or combines: 小目标检测技术与算法; 目标检测任务研究; 无人机视觉感知研究; 无人机航拍图像处理; 小目标检测的特征提取方法; 多尺度目标检测模型; latest research on small object detection using VisDrone dataset; methods improving drone image small object detection performance; deep learning architectures for VisDrone object detection.",
+      "matched_requirement_id": "req-composite-visdrone",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.20543v2",
+      "source": "arxiv",
+      "title": "RefAerial: A Benchmark and Approach for Referring Detection in Aerial Images",
+      "abstract": "Referring detection refers to locate the target referred by natural languages, which has recently attracted growing research interests. However, existing datasets are limited to ground images with large object centered in relative small scenes. This paper introduces a large-scale challenging dataset for referring detection in aerial images, termed as RefAerial. It distinguishes from conventional ground referring detection datasets by 4 characteristics: (1) low but diverse object-to-scene ratios, (2) numerous targets and distractors, (3)complex and fine-grained referring descriptions, (4) diverse and broad scenes in the aerial view. We also develop a human-in-the-loop referring expansion and annotation engine (REA-Engine) for efficient semi-automated referring pair annotation. Besides, we observe that existing ground referring detection approaches exhibiting serious performance degradation on our aerial dataset since the intrinsic scale variety issue within or across aerial images. Therefore, we further propose a novel scale-comprehensive and sensitive (SCS) framework for referring detection in aerial images. It consists of a mixture-of-granularity (MoG) attention and a two-stage comprehensive-to-sensitive (CtS) decoding strategy. Specifically, the mixture-of-granularity attention is developed for scale-comprehensive target understanding. In addition, the two-stage comprehensive-to-sensitive decoding strategy is designed for coarse-to-fine referring target decoding. Eventually, the proposed SCS framework achieves remarkable performance on our aerial referring detection dataset and even promising performance boost on conventional ground referring detection datasets.",
+      "authors": [
+        "Guyue Hu",
+        "Hao Song",
+        "Yuxing Tong",
+        "Duzhi Yuan",
+        "Dengdi Sun",
+        "Aihua Zheng",
+        "Chenglong Li",
+        "Jin Tang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-22T13:27:26+00:00",
+      "link": "https://arxiv.org/pdf/2604.20543v2",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Dataset for referring detection in aerial images with low object-to-scene ratios",
+      "llm_evidence_cn": "具有低目标场景比的航拍图像参考检测数据集",
+      "llm_evidence": "具有低目标场景比的航拍图像参考检测数据集",
+      "canonical_evidence": "具有低目标场景比的航拍图像参考检测数据集",
+      "llm_tldr_en": "Introduces RefAerial, a large-scale dataset for referring detection in aerial views with small object ratios.",
+      "llm_tldr_cn": "引入了RefAerial，这是一个针对航拍视角下小目标比例的参考检测大规模数据集。",
+      "llm_tldr": "引入了RefAerial，这是一个针对航拍视角下小目标比例的参考检测大规模数据集。",
+      "llm_tags": [
+        "query:visdrone:composite"
+      ],
+      "matched_query_tag": "query:visdrone:composite",
+      "matched_query_text": "Papers central to 面向VisDrone小目标检测的论文检索, especially work that connects or combines: 小目标检测技术与算法; 目标检测任务研究; 无人机视觉感知研究; 无人机航拍图像处理; 小目标检测的特征提取方法; 多尺度目标检测模型; latest research on small object detection using VisDrone dataset; methods improving drone image small object detection performance; deep learning architectures for VisDrone object detection.",
+      "matched_requirement_id": "req-composite-visdrone",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.23442v1",
+      "source": "arxiv",
+      "title": "Resource-Constrained UAV-Based Weed Detection for Site-Specific Management on Edge Devices",
+      "abstract": "Weeds compete with crops for light, water, and nutrients, reducing yield and crop quality. Efficient weed detection is essential for site-specific weed management (SSWM). Although deep learning models have been deployed on UAV-based edge systems, a systematic understanding of how different model architectures perform under real-world resource constraints is still lacking. To address this gap, this study proposes a deployment-oriented framework for real-time UAV-based weed detection on resource-constrained edge platforms. The framework integrates UAV data acquisition, model development, and on-device inference, with a focus on balancing detection accuracy and computational efficiency. A diverse set of state-of-the-art object detection models is evaluated, including convolution-based YOLO models (v8-v12) and transformer-based RT-DETR models (v1-v2). Experiments on three edge devices (Jetson Orin Nano, Jetson AGX Xavier, and Jetson AGX Orin) demonstrate clear trade-offs between accuracy and inference latency across models and hardware configurations. Results show that high-capacity models achieve up to 86.9% mAP50 but suffer from high latency, limiting real-time deployment. In contrast, lightweight models achieve 66%-71% mAP50 with significantly lower latency, enabling real-time performance. Among all models, RT-DETRv2-R50-M achieves competitive accuracy (79% mAP50) with improved efficiency, while YOLOv10n provides the fastest inference speed. YOLOv11s and RT-DETRv2-R50-M offer the best balance between accuracy and speed, making them strong candidates for real-time UAV deployment.",
+      "authors": [
+        "Linyuan Wang",
+        "Haibo Yao",
+        "Te-Ming Tseng",
+        "Kelvin Betitame",
+        "Xin Sun",
+        "Hanbo Huang",
+        "Dong Chen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-25T20:58:51+00:00",
+      "link": "https://arxiv.org/pdf/2604.23442v1",
+      "tags": [
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "UAV-based weed detection on resource-constrained edge platforms",
+      "llm_evidence_cn": "基于无人机的资源受限边缘平台杂草检测",
+      "llm_evidence": "基于无人机的资源受限边缘平台杂草检测",
+      "canonical_evidence": "基于无人机的资源受限边缘平台杂草检测",
+      "llm_tldr_en": "Proposes a framework for real-time UAV-based weed detection on edge devices balancing accuracy and efficiency.",
+      "llm_tldr_cn": "提出了一种在边缘设备上平衡精度与效率的实时无人机杂草检测框架。",
+      "llm_tldr": "提出了一种在边缘设备上平衡精度与效率的实时无人机杂草检测框架。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.06855v1",
+      "source": "arxiv",
+      "title": "Monocular passive event-based range-finding of airborne objects using the Scheimpflug principle",
+      "abstract": "Passive 3D sensing is increasingly critical for early detection and tracking of small aerial vehicles (UAVs), where traditional active ranging can be tactically undesirable. We present SCHeimpflug for Optical Ranging TechnologY (SCHORTY), a single-aperture passive and active ranging architecture that exploits the Scheimpflug principle to encode range along a tilted object space plane by tilting the sensor relative to the imaging optics. SCHORTY requires only a one-time geometric calibration to map pixel coordinates to range and is inherently sensor and waveband agnostic. We implement SCHORTY using both a visible frame-based camera and an event-based camera (EBC) with closely matched pixel sizes for comparable horizontal resolutions and range binning. Controlled flights of an octocopter and a fixed-wing UAV equipped with GPS provide ground truth distances out to 1.1 km. Experimental results show that SCHORTY achieves deterministic range assignment limited primarily by the projected pixel size, which grows squared distance, while avoiding computationally intensive inverse reconstructions common in coded aperture and PSF engineered systems. In the EBC configuration, EBC-SCHORTY inherently suppresses static background and emphasizes motion, improving UAV detectability in cluttered natural scenes and under turbulence and motion blur. Additionally, we observe an asymmetric defocus blur about the object plane that depends on UAV trajectory, suggesting an extra cue for localization and trajectory inference. These results demonstrate SCHORTY as a practical and Size, Weight, and Power (SWaP) efficient passive ranging solution for medium-range UAV observation and motivate future integration with 2.5D/3D PSF engineering and event-based deconvolution to enhance 3D sensing performance.",
+      "authors": [
+        "Nathan Meraz",
+        "Ronan Taneja",
+        "Rachel Chan",
+        "Alisha Whitehead",
+        "Gabriella Mayrend",
+        "Megan Birch",
+        "Joseph L. Greene"
+      ],
+      "primary_category": "physics.optics",
+      "categories": [
+        "physics.optics"
+      ],
+      "published": "2026-05-07T18:55:00+00:00",
+      "link": "https://arxiv.org/pdf/2605.06855v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "detection and tracking of small aerial vehicles (UAVs)",
+      "llm_evidence_cn": "小型飞行器（无人机）的检测与跟踪",
+      "llm_evidence": "小型飞行器（无人机）的检测与跟踪",
+      "canonical_evidence": "小型飞行器（无人机）的检测与跟踪",
+      "llm_tldr_en": "Presents a passive range-finding architecture for early detection and tracking of small UAVs.",
+      "llm_tldr_cn": "提出了一种用于小型无人机早期探测和跟踪的被动测距架构。",
+      "llm_tldr": "提出了一种用于小型无人机早期探测和跟踪的被动测距架构。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.06927v1",
+      "source": "arxiv",
+      "title": "XiYOLO: Energy-Aware Object Detection via Iterative Architecture Search and Scaling",
+      "abstract": "Object detection on heterogeneous edge devices must satisfy strict energy, latency, and memory constraints while still providing reliable perception for downstream autonomy. Existing energy-aware NAS methods often target limited deployment settings, while real energy remains difficult to optimize because it is highly device-dependent and costly to measure. We address these challenges with an energy-adaptive framework that combines an energy-aware XiResOFA search space, a two-stage energy estimator, and iterative search to identify a single energy-efficient base architecture. We then apply compound scaling to transform this base design into the XiYOLO family across deployment budgets, enabling interpretable accuracy-energy tradeoffs under sparse hardware measurements. Experiments on PascalVOC, COCO, and real-device deployment show that XiYOLO achieves a stronger energy-accuracy tradeoff than YOLO baselines. On PascalVOC, the medium XiYOLO model reaches 86.15 mAP50 while reducing energy relative to YOLOv12m by 20.6% on GPU and 35.9% on NPU. On COCO, XiYOLO reduces energy relative to YOLOv12 by up to 53.7% on GPU and 51.6% on NPU at the small scale. The proposed two-stage estimator also improves sample efficiency over a joint predictor under few-shot adaptation with only 2-20 target-device samples.",
+      "authors": [
+        "Tony Tran",
+        "Richie R. Suganda",
+        "Bin Hu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-05-07T20:38:06+00:00",
+      "link": "https://arxiv.org/pdf/2605.06927v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Proposes XiYOLO family for energy-aware object detection on edge devices",
+      "llm_evidence_cn": "提出XiYOLO系列算法，用于边缘设备上的能效感知目标检测",
+      "llm_evidence": "提出XiYOLO系列算法，用于边缘设备上的能效感知目标检测",
+      "canonical_evidence": "提出XiYOLO系列算法，用于边缘设备上的能效感知目标检测",
+      "llm_tldr_en": "Introduces XiYOLO, an energy-efficient object detection family optimized via architecture search and scaling.",
+      "llm_tldr_cn": "引入XiYOLO系列，通过架构搜索和缩放优化的能效型目标检测算法。",
+      "llm_tldr": "引入XiYOLO系列，通过架构搜索和缩放优化的能效型目标检测算法。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "与YOLO算法相关的目标检测研究",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.18866v1",
+      "source": "arxiv",
+      "title": "HMR-Net: Hierarchical Modular Routing for Cross-Domain Object Detection in Aerial Images",
+      "abstract": "Despite advances in object detection, aerial imagery remains a challenging domain, as models often fail to generalize across variations in spatial resolution, scene composition, and semantic label coverage. Differences in geographic context, sensor characteristics, and object distributions across datasets limit the capacity of conventional models to learn consistent and transferable representations. Shared methods trained on such data tend to impose a unified representation across fundamentally different domains, resulting in poor performance on region-specific content and less flexibility when dealing with novel object categories. To address this, we propose a novel modular learning framework that enables structured specialization in aerial detection. Our method introduces a hierarchical routing mechanism with two levels of modularity: a global expert assignment layer that uses latent geographic embeddings to route datasets to specialized processing modules, and a local scene decomposition mechanism that allocates image subregions to region-specific sub-modules. This allows our method to specialize across datasets and within complex scenes. Additionally, the framework contains a conditional expert module that uses external semantic information (e.g., category names or textual descriptions) to enable detection of novel object categories during inference, without the need for retraining or fine-tuning. By moving beyond monolithic representations, our method offers an adaptive framework for remote sensing object detection. Comprehensive evaluations on four datasets highlight improvements in multi-dataset generalization, regional specialization, and open-category detection.",
+      "authors": [
+        "Pourya Shamsolmoali",
+        "Masoumeh Zareapoor",
+        "Michael Felsberg",
+        "Nick Pears",
+        "Yue Lu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-20T21:41:23+00:00",
+      "link": "https://arxiv.org/pdf/2604.18866v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "cross-domain object detection in aerial images",
+      "llm_evidence_cn": "无人机航拍图像中的跨域目标检测",
+      "llm_evidence": "无人机航拍图像中的跨域目标检测",
+      "canonical_evidence": "无人机航拍图像中的跨域目标检测",
+      "llm_tldr_en": "Introduces HMR-Net for cross-domain object detection in aerial images to handle resolution and scene variations.",
+      "llm_tldr_cn": "引入HMR-Net用于无人机航拍图像跨域目标检测，解决分辨率和场景变化问题。",
+      "llm_tldr": "引入HMR-Net用于无人机航拍图像跨域目标检测，解决分辨率和场景变化问题。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "methods improving drone image small object detection performance",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2604.17024v1",
+      "source": "arxiv",
+      "title": "CAM3DNet: Comprehensively mining the multi-scale features for 3D Object Detection with Multi-View Cameras",
+      "abstract": "Query-based 3D object detection methods using multi-view images often struggle to efficiently leverage dynamic multi-scale information, e.g., the relationship between the object features and the geometric of the queries are not sufficiently learned, directly exploring the multi-scale spatiotemporal features will pay too many costs. To address these challenges, we propose CAM3DNet, a novel sparse query-based framework which combines three new modules, composite query (CQ), adaptive self-attention (ASA), and multi-scale hybrid sampling (MSHS). First, the core idea in the CQ module is a multi-scale projection strategy to transform 2D queries into 3D space. Second, the ASA module learns the interactions between the spatiotemporal multi-scale queries. Third, the MSHS module uses the deformable attention mechanism to sample multi-scale object information by considering multi-scales queries, pyramid feature maps, and 2D-camera prior knowledge. The entire model employs a backbone network and a feature pyramid network (FPN) as the encoder, then introduces a YOLOX and a DepthNet as a ROI\\_Head to produce CQ, and repeatedly utilizes ASA and MSHS as the decoder to gain detection features. Extensive experiments on the nuScenes, Waymo, and Argoverse benchmark datasets demonstrate the effectiveness of our CAM3DNet, and most existing camera-based 3D object detection methods are outperformed. Besides, we make comprehensive ablation studies to check the individual effect of CQ, ASA, and MSHS, as well as their cost of space and computation complexity.",
+      "authors": [
+        "Mingxi Pang",
+        "Dingheng Wang",
+        "Zekun Li",
+        "Zhenping Sun",
+        "Bo Wang",
+        "Zhihang Wang",
+        "Zhao-Xu Yang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-18T15:14:11+00:00",
+      "link": "https://arxiv.org/pdf/2604.17024v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "mining multi-scale features for 3D object detection",
+      "llm_evidence_cn": "挖掘用于3D目标检测的多尺度特征",
+      "llm_evidence": "挖掘用于3D目标检测的多尺度特征",
+      "canonical_evidence": "挖掘用于3D目标检测的多尺度特征",
+      "llm_tldr_en": "Introduces CAM3DNet for multi-scale feature mining in query-based 3D object detection.",
+      "llm_tldr_cn": "提出CAM3DNet，通过多尺度投影和混合采样优化查询式3D目标检测。",
+      "llm_tldr": "提出CAM3DNet，通过多尺度投影和混合采样优化查询式3D目标检测。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "多尺度目标检测模型",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.13586v1",
+      "source": "arxiv",
+      "title": "Efficient Multi-View 3D Object Detection by Dynamic Token Selection and Fine-Tuning",
+      "abstract": "Existing multi-view three-dimensional (3D) object detection approaches widely adopt large-scale pre-trained vision transformer (ViT)-based foundation models as backbones, being computationally complex. To address this problem, current state-of-the-art (SOTA) \\texttt{ToC3D} for efficient multi-view ViT-based 3D object detection employs ego-motion-based relevant token selection. However, there are two key limitations: (1) The fixed layer-individual token selection ratios limit computational efficiency during both training and inference. (2) Full end-to-end retraining of the ViT backbone is required for the multi-view 3D object detection method. In this work, we propose an image token compensator combined with a token selection for ViT backbones to accelerate multi-view 3D object detection. Unlike \\texttt{ToC3D}, our approach enables dynamic layer-wise token selection within the ViT backbone. Furthermore, we introduce a parameter-efficient fine-tuning strategy, which trains only the proposed modules, thereby reducing the number of fine-tuned parameters from more than $300$ million (M) to only $1.6$ M. Experiments on the large-scale NuScenes dataset across three multi-view 3D object detection approaches demonstrate that our proposed method decreases computational complexity (GFLOPs) by $48\\%$ ... $55\\%$, inference latency (on an \\texttt{NVIDIA-GV100} GPU) by $9\\%$ ... $25\\%$, while still improving mean average precision by $1.0\\%$ ... $2.8\\%$ absolute and NuScenes detection score by $0.4\\%$ ... $1.2\\%$ absolute compared to so-far SOTA \\texttt{ToC3D}.",
+      "authors": [
+        "Danish Nazir",
+        "Antoine Hanna-Asaad",
+        "Lucas Görnhardt",
+        "Jan Piewek",
+        "Thorsten Bagdonat",
+        "Tim Fingscheidt"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-15T07:44:01+00:00",
+      "link": "https://arxiv.org/pdf/2604.13586v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "multi-view 3D object detection with ViT backbones",
+      "llm_evidence_cn": "基于ViT骨干网络的多视图3D目标检测",
+      "llm_evidence": "基于ViT骨干网络的多视图3D目标检测",
+      "canonical_evidence": "基于ViT骨干网络的多视图3D目标检测",
+      "llm_tldr_en": "Proposes an efficient multi-view 3D object detection method using dynamic token selection.",
+      "llm_tldr_cn": "提出一种通过动态Token选择和微调实现的高效多视图3D目标检测方法。",
+      "llm_tldr": "提出一种通过动态Token选择和微调实现的高效多视图3D目标检测方法。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "多尺度目标检测模型",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.24455v1",
+      "source": "arxiv",
+      "title": "Compilation and Execution of an Embeddable YOLO-NAS on the VTA",
+      "abstract": "Deploying complex Convolutional Neural Networks (CNNs) on FPGA-based accelerators is a promising way forward for safety-critical domains such as aeronautics. In a previous work, we have explored the Versatile Tensor Accelerator (VTA) and showed its suitability for avionic applications. For that, we developed an initial stand-alone compiler designed with certification in mind. However, this compiler still suffers from some limitations that are overcome in this paper. The contributions consist in extending and fully automating the VTA compilation chain to allow complete CNN compilation and support larger CNNs (which parameters do not fit in the on-chip memory). The effectiveness is demonstrated by the successful compilation and simulated execution of a YOLO-NAS object detection model.",
+      "authors": [
+        "Anthony Faure-Gignoux",
+        "Kevin Delmas",
+        "Adrien Gauffriau",
+        "Claire Pagetti"
+      ],
+      "primary_category": "cs.AR",
+      "categories": [
+        "cs.AR"
+      ],
+      "published": "2026-04-27T13:26:30+00:00",
+      "link": "https://arxiv.org/pdf/2604.24455v1",
+      "tags": [
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "Compilation and execution of YOLO-NAS on FPGA-based accelerators for aeronautics",
+      "llm_evidence_cn": "在FPGA加速器上编译和执行用于航空领域的YOLO-NAS",
+      "llm_evidence": "在FPGA加速器上编译和执行用于航空领域的YOLO-NAS",
+      "canonical_evidence": "在FPGA加速器上编译和执行用于航空领域的YOLO-NAS",
+      "llm_tldr_en": "Automates the compilation of YOLO-NAS for FPGA accelerators, targeting safety-critical avionic applications.",
+      "llm_tldr_cn": "实现了YOLO-NAS在FPGA加速器上的自动化编译，适用于安全性要求高的航空电子应用。",
+      "llm_tldr": "实现了YOLO-NAS在FPGA加速器上的自动化编译，适用于安全性要求高的航空电子应用。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "与YOLO算法相关的目标检测研究",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2604.18088v1",
+      "source": "arxiv",
+      "title": "Autonomous Unmanned Aircraft Systems for Enhanced Search and Rescue of Drowning Swimmers: Image-Based Localization and Mission Simulation",
+      "abstract": "Drowning is an omnipresent risk associated with any activity on or in the water, and rescuing a drowning person is particularly challenging because of the time pressure, making a short response time important. Further complicating water rescue are unsupervised and extensive swimming areas, precise localization of the target, and the transport of rescue personnel. Technical innovations can provide a remedy: We propose an Unmanned Aircraft System (UAS), also known as a drone-in-a-box system, consisting of a fleet of Unmanned Aerial Vehicles (UAVs) allocated to purpose-built hangars near swimming areas. In an emergency, the UAS can be deployed in addition to Standard Rescue Operation (SRO) equipment to locate the distressed person early by performing a fully automated Search and Rescue (S&R) operation and dropping a flotation device. In this paper, we address automatically locating distressed swimmers using the image-based object detection architecture You Only Look Once (YOLO). We present a dataset created for this application and outline the training process. We evaluate the performance of YOLO versions 3, 5, and 8 and architecture sizes (nano, extra-large) using Mean Average Precision (mAP) metrics mAP@.5 and mAP@.5:.95. Furthermore, we present two Discrete-Event Simulation (DES) approaches to simulate response times of SRO and UAS-based water rescue. This enables estimation of time savings relative to SRO when selecting the UAS configuration (type, number, and location of UAVs and hangars). Computational experiments for a test area in the Lusatian Lake District, Germany, show that UAS assistance shortens response time. Even a small UAS with two hangars, each containing one UAV, reduces response time by a factor of five compared to SRO.",
+      "authors": [
+        "Sascha Emanuel Zell",
+        "Toni Schneidereit",
+        "Armin Fügenschuh",
+        "Michael Breuß"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "stat.AP"
+      ],
+      "published": "2026-04-20T11:05:21+00:00",
+      "link": "https://arxiv.org/pdf/2604.18088v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "Unmanned Aircraft System for image-based localization and rescue",
+      "llm_evidence_cn": "用于图像定位和救援的无人机系统",
+      "llm_evidence": "用于图像定位和救援的无人机系统",
+      "canonical_evidence": "用于图像定位和救援的无人机系统",
+      "llm_tldr_en": "Proposes a drone-in-a-box system for autonomous search and rescue of drowning swimmers using image localization.",
+      "llm_tldr_cn": "提出一种无人机系统，利用图像定位技术在水域救援中实现溺水者的自动搜索与定位。",
+      "llm_tldr": "提出一种无人机系统，利用图像定位技术在水域救援中实现溺水者的自动搜索与定位。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.16854v1",
+      "source": "arxiv",
+      "title": "CATP: Confidence-Aware Token Pruning for Camouflaged Object Detection",
+      "abstract": "Camouflaged Object Detection (COD) aims to segment targets that share extreme textural and structural similarities with their complex environments. Leveraging their capacity for long-range dependency modeling, Transformer-based detectors have become the mainstream approach and achieve state-of-the-art (SoTA) accuracy, yet their substantial computational overhead severely limits practical deployment. To address this, we propose a hierarchical Confidence-Aware Token Pruning framework (CATP) tailored for COD. Our approach hierarchically identifies and discards easily distinguishable tokens from both background and object interiors, focusing computations on critical boundary tokens. To compensate for information loss from pruning, we introduce a dual-path feature compensation mechanism that aggregates contextual knowledge from pruned tokens into enriched features. Extensive experiments on multiple COD benchmarks demonstrate that our method significantly reduces computational complexity while maintaining high accuracy, offering a promising research direction for the efficient deployment of COD models in real-world scenarios. The code will be released.",
+      "authors": [
+        "Yuhan Gao",
+        "Shuhao Kang",
+        "Xin He",
+        "Bing Li",
+        "Xu Cheng",
+        "Yun Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-18T06:03:18+00:00",
+      "link": "https://arxiv.org/pdf/2604.16854v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "Transformer-based detectors for camouflaged object detection",
+      "llm_evidence_cn": "用于伪装目标检测的Transformer检测器",
+      "llm_evidence": "用于伪装目标检测的Transformer检测器",
+      "canonical_evidence": "用于伪装目标检测的Transformer检测器",
+      "llm_tldr_en": "Proposes a token pruning framework for efficient camouflaged object detection using Transformers.",
+      "llm_tldr_cn": "提出了一种用于Transformer的高效伪装目标检测令牌剪枝框架。",
+      "llm_tldr": "提出了一种用于Transformer的高效伪装目标检测令牌剪枝框架。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "用于图像中识别目标的深度学习检测模型",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.27593v1",
+      "source": "arxiv",
+      "title": "An Extended Evaluation Split for DeepSpaceYoloDataset",
+      "abstract": "Recent technological advances in astronomy, particularly the growing popularity of smart telescopes for the general public, make it possible to develop highly effective detection solutions that are accessible to a wide audience, rather than being reserved for major scientific observatories. Published in 2023, DeepSpaceYoloDataset is a collection of annotated images created to train YOLO-based models for detecting Deep Sky Objects, particularly suited for Electronically Assisted Astronomy. In this paper, we present an update to DeepSpaceYoloDataset with the addition of a new split, test2026, designed to evaluate detection models with a greater diversity of images.",
+      "authors": [
+        "Olivier Parisot"
+      ],
+      "primary_category": "astro-ph.IM",
+      "categories": [
+        "astro-ph.IM",
+        "cs.CV"
+      ],
+      "published": "2026-04-30T08:43:35+00:00",
+      "link": "https://arxiv.org/pdf/2604.27593v1",
+      "tags": [
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:yolo mini"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "YOLO-based models for detecting objects in astronomical images",
+      "llm_evidence_cn": "基于YOLO模型的天文图像目标检测",
+      "llm_evidence": "基于YOLO模型的天文图像目标检测",
+      "canonical_evidence": "基于YOLO模型的天文图像目标检测",
+      "llm_tldr_en": "Presents an extended evaluation split for the DeepSpaceYoloDataset to better evaluate YOLO-based detection models.",
+      "llm_tldr_cn": "为DeepSpaceYoloDataset提供扩展评估集，以更好地评估基于YOLO的检测模型。",
+      "llm_tldr": "为DeepSpaceYoloDataset提供扩展评估集，以更好地评估基于YOLO的检测模型。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "与YOLO算法相关的目标检测研究",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2604.19411v1",
+      "source": "arxiv",
+      "title": "GOLD-BEV: GrOund and aeriaL Data for Dense Semantic BEV Mapping of Dynamic Scenes",
+      "abstract": "Understanding road scenes in a geometrically consistent, scene-centric representation is crucial for planning and mapping. We present GOLD-BEV, a framework that learns dense bird's-eye-view (BEV) semantic environment maps-including dynamic agents-from ego-centric sensors, using time-synchronized aerial imagery as supervision only during training. BEV-aligned aerial crops provide an intuitive target space, enabling dense semantic annotation with minimal manual effort and avoiding the ambiguity of ego-only BEV labeling. Crucially, strict aerial-ground synchronization allows overhead observations to supervise moving traffic participants and mitigates the temporal inconsistencies inherent to non-synchronized overhead sources. To obtain scalable dense targets, we generate BEV pseudo-labels using domain-adapted aerial teachers, and jointly train BEV segmentation with optional pseudo-aerial BEV reconstruction for interpretability. Finally, we extend beyond aerial coverage by learning to synthesize pseudo-aerial BEV images from ego sensors, which support lightweight human annotation and uncertainty-aware pseudo-labeling on unlabeled drives.",
+      "authors": [
+        "Joshua Niemeijer",
+        "Alaa Eddine Ben Zekri",
+        "Reza Bahmanyar",
+        "Philipp M. Schmälzle",
+        "Houda Chaabouni-Chouayakh",
+        "Franz Kurz"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-21T12:39:41+00:00",
+      "link": "https://arxiv.org/pdf/2604.19411v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "dense semantic mapping of dynamic agents from aerial imagery",
+      "llm_evidence_cn": "利用航拍图像对动态代理进行稠密语义映射",
+      "llm_evidence": "利用航拍图像对动态代理进行稠密语义映射",
+      "canonical_evidence": "利用航拍图像对动态代理进行稠密语义映射",
+      "llm_tldr_en": "GOLD-BEV uses aerial imagery to supervise dense semantic BEV mapping of dynamic road scenes.",
+      "llm_tldr_cn": "GOLD-BEV利用航拍图像监督动态道路场景的稠密语义BEV映射。",
+      "llm_tldr": "GOLD-BEV利用航拍图像监督动态道路场景的稠密语义BEV映射。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机航拍图像处理",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.25405v1",
+      "source": "arxiv",
+      "title": "Leveraging Previous-Traversal Point Cloud Map Priors for Camera-Based 3D Object Detection and Tracking",
+      "abstract": "Camera-based 3D object detection and tracking are central to autonomous driving, yet precise 3D object localization remains fundamentally constrained by depth ambiguity when no expensive, depth-rich online LiDAR is available at inference. In many deployments, however, vehicles repeatedly traverse the same environments, making static point cloud maps from prior traversals a practical source of geometric priors. We propose DualViewMapDet, a camera-only inference framework that retrieves such map priors online and leverages them to mitigate the absence of a LiDAR sensor during deployment. The key idea is a dual-space camera-map fusion strategy that avoids one-sided view conversion. Specifically, we (i) project the map into perspective view (PV) and encode multi-channel geometric cues to enrich image features and support BEV lifting, and (ii) encode the map directly in bird's-eye view (BEV) with a sparse voxel backbone and fuse it with lifted camera features in a shared metric space. Extensive evaluations on nuScenes and Argoverse 2 demonstrate consistent improvements over strong camera-only baselines, with particularly strong gains in object localization. Ablations further validate the contributions of PV/BEV fusion and prior-map coverage. We make the code and pre-trained models available at https://dualviewmapdet.cs.uni-freiburg.de .",
+      "authors": [
+        "Markus Käppeler",
+        "Özgün Çiçek",
+        "Yakov Miron",
+        "Abhinav Valada"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-04-28T09:16:44+00:00",
+      "link": "https://arxiv.org/pdf/2604.25405v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "Camera-based 3D object detection and tracking for autonomous driving",
+      "llm_evidence_cn": "用于自动驾驶的基于摄像头的3D目标检测与跟踪",
+      "llm_evidence": "用于自动驾驶的基于摄像头的3D目标检测与跟踪",
+      "canonical_evidence": "用于自动驾驶的基于摄像头的3D目标检测与跟踪",
+      "llm_tldr_en": "Introduces DualViewMapDet to improve camera-only 3D object detection by leveraging prior point cloud maps.",
+      "llm_tldr_cn": "引入DualViewMapDet，通过利用先验点云地图来改进仅基于摄像头的3D目标检测。",
+      "llm_tldr": "引入DualViewMapDet，通过利用先验点云地图来改进仅基于摄像头的3D目标检测。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "biorxiv-10-64898-2026-04-11-717915-v1",
+      "source": "biorxiv",
+      "title": "HiReS: A Method for Automated Morphometric Trait Extraction from High-Resolution Plankton Images",
+      "abstract": "Trait-based analyses in plankton ecology require measurements from large numbers of individuals, yet morphometric data are typically collected manually from small subsets. Although deep learning methods enable automated detection and segmentation, extracting quantitative trait data from full-resolution images remains challenging due to memory limitations. We present HiReS (High-Resolution Segmentation), an open-source workflow for automated morphometric trait extraction from large plankton images. HiReS partitions images into overlapping chunks, performs YOLO-based instance segmentation, reconstructs polygon annotations in full-image space, removes truncated and duplicate detections, and computes geometric descriptors. We evaluated the workflow using manually annotated and automated segmentations of Daphnia pulex, Daphnia galeata, and Simocephalus vetulus. Automated measurements reproduced the structure of manual trait distributions and showed strong agreement at both sample and individual levels. A consistent positive bias was observed, reflecting a multiplicative scaling offset rather than distortion of relative trait structure. Subsampling analyses further showed that model-derived medians can outperform manual estimates at low sampling depths. HiReS provides a reproducible and computationally efficient framework for extracting morphometric traits from full-resolution plankton images.",
+      "authors": [
+        "Mavrianos, S.",
+        "Teurlincx, S.",
+        "Declerck, S. A.",
+        "Otte, K. A."
+      ],
+      "primary_category": "bioinformatics",
+      "categories": [
+        "bioinformatics"
+      ],
+      "published": "2026-04-12T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.64898/2026.04.11.717915v1.full.pdf",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "YOLO-based instance segmentation for small plankton in high-resolution images",
+      "llm_evidence_cn": "基于YOLO的高分辨率图像中微小浮游生物实例分割",
+      "llm_evidence": "基于YOLO的高分辨率图像中微小浮游生物实例分割",
+      "canonical_evidence": "基于YOLO的高分辨率图像中微小浮游生物实例分割",
+      "llm_tldr_en": "A workflow using YOLO for automated detection and trait extraction of small organisms in high-res images.",
+      "llm_tldr_cn": "一种利用YOLO对高分辨率图像中的微小生物进行自动检测和特征提取的工作流。",
+      "llm_tldr": "一种利用YOLO对高分辨率图像中的微小生物进行自动检测和特征提取的工作流。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "YOLO在小目标检测中的方法与改进研究",
+      "matched_requirement_id": "req-20",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2604.21349v1",
+      "source": "arxiv",
+      "title": "Trust-SSL: Additive-Residual Selective Invariance for Robust Aerial Self-Supervised Learning",
+      "abstract": "Self-supervised learning (SSL) is a standard approach for representation learning in aerial imagery. Existing methods enforce invariance between augmented views, which works well when augmentations preserve semantic content. However, aerial images are frequently degraded by haze, motion blur, rain, and occlusion that remove critical evidence. Enforcing alignment between a clean and a severely degraded view can introduce spurious structure into the latent space. This study proposes a training strategy and architectural modification to enhance SSL robustness to such corruptions. It introduces a per-sample, per-factor trust weight into the alignment objective, combined with the base contrastive loss as an additive residual. A stop-gradient is applied to the trust weight instead of a multiplicative gate. While a multiplicative gate is a natural choice, experiments show it impairs the backbone, whereas our additive-residual approach improves it. Using a 200-epoch protocol on a 210,000-image corpus, the method achieves the highest mean linear-probe accuracy among six backbones on EuroSAT, AID, and NWPU-RESISC45 (90.20% compared to 88.46% for SimCLR and 89.82% for VICReg). It yields the largest improvements under severe information-erasing corruptions on EuroSAT (+19.9 points on haze at s=5 over SimCLR). The method also demonstrates consistent gains of +1 to +3 points in Mahalanobis AUROC on a zero-shot cross-domain stress test using BDD100K weather splits. Two ablations (scalar uncertainty and cosine gate) indicate the additive-residual formulation is the primary source of these improvements. An evidential variant using Dempster-Shafer fusion introduces interpretable signals of conflict and ignorance. These findings offer a concrete design principle for uncertainty-aware SSL. Code is publicly available at https://github.com/WadiiBoulila/trust-ssl.",
+      "authors": [
+        "Wadii Boulila",
+        "Adel Ammar",
+        "Bilel Benjdira",
+        "Maha Driss"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG",
+        "cs.NE"
+      ],
+      "published": "2026-04-23T07:07:59+00:00",
+      "link": "https://arxiv.org/pdf/2604.21349v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "robust representation learning in aerial imagery",
+      "llm_evidence_cn": "无人机航拍图像的鲁棒表示学习",
+      "llm_evidence": "无人机航拍图像的鲁棒表示学习",
+      "canonical_evidence": "无人机航拍图像的鲁棒表示学习",
+      "llm_tldr_en": "Proposes Trust-SSL to enhance self-supervised learning robustness against degradations in aerial imagery.",
+      "llm_tldr_cn": "提出Trust-SSL以增强无人机航拍图像在退化环境下的自监督学习鲁棒性。",
+      "llm_tldr": "提出Trust-SSL以增强无人机航拍图像在退化环境下的自监督学习鲁棒性。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.02169v1",
+      "source": "arxiv",
+      "title": "Heterogeneous Model Fusion for Privacy-Aware Multi-Camera Surveillance via Synthetic Domain Adaptation",
+      "abstract": "We propose HeroCrystal, a novel privacy-preserving framework for multi-camera domain-adaptive object detection, addressing challenges such as data privacy, class imbalance, and heterogeneous architectures. Our framework consists of three key stages. In the Generated Stage, we introduce a one-shot, target-aware diffusion-based generation module that learns visual style from a single target-domain image while leveraging prompt-based control to synthesize specific object instances. Unlike conventional style transfer-based methods that require large target datasets and ignore semantic-level discrepancies, our approach enables privacy-preserving augmentation to reduce ethical concerns, and introduces controllable rare object generation to mitigate long-tailed category degradation. In the Federated Stage, we employ probabilistic Faster R-CNN on the client side to improve localization accuracy, and a dynamic model contrastive strategy to suppress domain-specific bias. The server side performs model fusion across heterogeneous architectures without accessing raw data. Finally, in the Distilled Stage, we propose an inconsistent categories integration algorithm to resolve label inconsistency and architecture heterogeneity across clients. Extensive experiments on multiple cross-domain detection benchmarks demonstrate that our method outperforms existing multi-source domain adaptation and federated learning baselines under multi-class, privacy-preserving settings. Our method improves mAP by +2.1% over prior privacy-preserving approaches and achieves a new state-of-the-art mAP of 33.4%, highlighting the effectiveness of HeroCrystal in enabling practical multi-camera AI surveillance systems.",
+      "authors": [
+        "Peggy Joy Lu",
+        "Wei-Yu Chen",
+        "Yao-Tsung Huang",
+        "Vincent Shin-Mu Tseng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.DC",
+        "cs.LG"
+      ],
+      "published": "2026-05-04T02:58:21+00:00",
+      "link": "https://arxiv.org/pdf/2605.02169v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "Domain-adaptive object detection framework for multi-camera surveillance",
+      "llm_evidence_cn": "用于多摄像头监控的领域自适应目标检测框架",
+      "llm_evidence": "用于多摄像头监控的领域自适应目标检测框架",
+      "canonical_evidence": "用于多摄像头监控的领域自适应目标检测框架",
+      "llm_tldr_en": "A privacy-preserving framework for multi-camera domain-adaptive object detection using model fusion.",
+      "llm_tldr_cn": "一种利用模型融合进行多摄像头领域自适应目标检测的隐私保护框架。",
+      "llm_tldr": "一种利用模型融合进行多摄像头领域自适应目标检测的隐私保护框架。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "用于图像中识别目标的深度学习检测模型",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.13939v1",
+      "source": "arxiv",
+      "title": "A Multi-Stage Optimization Pipeline for Bethesda Cell Detection in Pap Smear Cytology",
+      "abstract": "Computer vision techniques have advanced significantly in recent years, finding diverse and impactful applications within the medical field. In this paper, we introduce a new framework for the detection of Bethesda cells in Pap smear images, developed for Track B of the Riva Cytology Challenge held in association with the International Symposium on Biomedical Imaging (ISBI). This work focuses on enhancing computer vision models for cell detection, with performance evaluated using the mAP50-95 metric. We propose a solution based on an ensemble of YOLO and U-Net architectures, followed by a refinement stage utilizing overlap removal techniques and a binary classifier. Our framework achieved second place with a mAP50-95 score of 0.5909 in the competition. The implementation and source code are available at the following repository: github.com/martinamster/riva-trackb",
+      "authors": [
+        "Martin Amster",
+        "Camila María Polotto"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-15T14:50:59+00:00",
+      "link": "https://arxiv.org/pdf/2604.13939v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:yolo mini",
+        "query:yolo mini"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Ensemble of YOLO and U-Net for cell detection in cytology images",
+      "llm_evidence_cn": "用于细胞学图像中细胞检测的YOLO和U-Net集成模型",
+      "llm_evidence": "用于细胞学图像中细胞检测的YOLO和U-Net集成模型",
+      "canonical_evidence": "用于细胞学图像中细胞检测的YOLO和U-Net集成模型",
+      "llm_tldr_en": "Presents a multi-stage pipeline using YOLO and U-Net ensembles for precise cell detection in Pap smear images.",
+      "llm_tldr_cn": "提出了一种利用YOLO和U-Net集成进行巴氏涂片图像中精确细胞检测的多阶段流水线。",
+      "llm_tldr": "提出了一种利用YOLO和U-Net集成进行巴氏涂片图像中精确细胞检测的多阶段流水线。",
+      "llm_tags": [
+        "query:yolo-mini:composite"
+      ],
+      "matched_query_tag": "query:yolo-mini:composite",
+      "matched_query_text": "Papers central to 与YOLO相关的小目标检测论文, especially work that connects or combines: 与YOLO算法相关的目标检测研究; 针对小尺寸目标的检测方法研究; 用于图像中识别目标的深度学习检测模型; 提高小目标检测性能的特征金字塔结构研究; 适配多尺度目标的检测策略; 提高YOLO在小目标上的检测精度的技术; YOLO在小目标检测中的方法与改进研究; 提高YOLO对小尺寸目标识别的性能的最新研究趋势; 关于深度学习模型在小目标检测任务中的优化策略的论文.",
+      "matched_requirement_id": "req-composite-yolo-mini",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    }
+  ]
+}

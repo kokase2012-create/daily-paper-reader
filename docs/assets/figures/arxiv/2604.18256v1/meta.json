@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.18256v1/fig-001.webp",
+      "caption": "Fig. 1: Predictions of different models on an exemplary image from the BDD100K dataset.",
+      "page": 1,
+      "index": 1,
+      "width": 524,
+      "height": 351
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18256v1/fig-002.webp",
+      "caption": "Fig. 5: Distribution of expert weights, predicted by a simple gate in a YOLOv7x-based MoE with samplewise entropy balancing loss and no domain-aware training.",
+      "page": 6,
+      "index": 2,
+      "width": 519,
+      "height": 461
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18256v1/fig-003.webp",
+      "caption": "Fig. 6: Disagreement analysis helps trace MoE decisions back to expert decisions. BBoxes with full expert agreement are green, BBoxes of expert disagreement on label are yellow, and BBoxes of objects not detected by either expert are red. The results are for the YOLOv7x-based MoE with sample-wise entropy-balancing loss and no domain-aware training.",
+      "page": 7,
+      "index": 3,
+      "width": 396,
+      "height": 1013
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18256v1/fig-004.webp",
+      "caption": "Fig. 4: Exemplary images with different values of the timeofday metadata parameter in the BDD100K dataset",
+      "page": 4,
+      "index": 4,
+      "width": 524,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18256v1/fig-005.webp",
+      "caption": "Fig. 3: Distribution of BDD100K data according to the metadata parameter timeofday.",
+      "page": 4,
+      "index": 5,
+      "width": 460,
+      "height": 274
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18256v1/fig-006.webp",
+      "caption": "TABLE I: Model comparison over data subsets.",
+      "page": 5,
+      "index": 6,
+      "width": 516,
+      "height": 731
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18256v1/fig-007.webp",
+      "caption": "TABLE IV: MoE ablation studies for YOLOv7x.",
+      "page": 5,
+      "index": 7,
+      "width": 516,
+      "height": 523
+    }
+  ]
+}

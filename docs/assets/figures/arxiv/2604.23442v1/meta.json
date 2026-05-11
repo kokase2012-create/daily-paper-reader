@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-001.webp",
+      "caption": "Table 2",
+      "page": 6,
+      "index": 1,
+      "width": 1029,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-002.webp",
+      "caption": "Figure 5: Weed infestation map and weed species identification generated from detected weed coordinates.",
+      "page": 11,
+      "index": 2,
+      "width": 927,
+      "height": 607
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-003.webp",
+      "caption": "Figure 4: Visual comparison of multi-class weed detection results using YOLOv12n and RT-DETRv1-R18.",
+      "page": 10,
+      "index": 3,
+      "width": 1018,
+      "height": 882
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-004.webp",
+      "caption": "Figure 1: Class distribution of weed species in the dataset.",
+      "page": 3,
+      "index": 4,
+      "width": 467,
+      "height": 340
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-005.webp",
+      "caption": "Figure 3: Training accuracy curves of YOLO and RT-DETR models with data augmentation.",
+      "page": 8,
+      "index": 5,
+      "width": 972,
+      "height": 441
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-006.webp",
+      "caption": "Figure 6: Inference Speed and Detection Accuracy Comparison of Object Detection Models on Edge Devices.",
+      "page": 12,
+      "index": 6,
+      "width": 944,
+      "height": 556
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-007.webp",
+      "caption": "Table 4",
+      "page": 9,
+      "index": 7,
+      "width": 1039,
+      "height": 223
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-008.webp",
+      "caption": "Table 3",
+      "page": 9,
+      "index": 8,
+      "width": 979,
+      "height": 957
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-009.webp",
+      "caption": "Table 1",
+      "page": 5,
+      "index": 9,
+      "width": 970,
+      "height": 297
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23442v1/fig-010.webp",
+      "caption": "Figure 2: Overview of the experimental pipeline for evaluating object detection models on edge computing platforms.",
+      "page": 5,
+      "index": 10,
+      "width": 962,
+      "height": 574
+    }
+  ]
+}

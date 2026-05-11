@@ -1,0 +1,1253 @@
+Title: Efficient Multi-View 3D Object Detection by Dynamic Token Selection and Fine-Tuning
+
+URL Source: https://arxiv.org/pdf/2604.13586v1
+
+Published Time: Thu, 16 Apr 2026 00:38:53 GMT
+
+Number of Pages: 12
+
+Markdown Content:
+> JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 1
+
+# Efficient Multi-View 3D Object Detection by Dynamic Token Selection and Fine-Tuning 
+
+Danish Nazir 1,2, Antoine Hanna-Asaad 1, Lucas G¨ ornhardt 2, Jan Piewek 1, Thorsten Bagdonat 1, Tim Fingscheidt 2
+
+Abstract —Existing multi-view three-dimensional (3D) object detection approaches widely adopt large-scale pre-trained vision transformer (ViT)-based foundation models as backbones, being computationally complex. To address this problem, current state-of-the-art (SOTA) ToC3D for efficient multi-view ViT-based 3D object detection employs ego-motion-based relevant token selec-tion. However, there are two key limitations: (1) The fixed layer-individual token selection ratios limit computational efficiency during both training and inference. (2) Full end-to-end retraining of the ViT backbone is required for the multi-view 3D object detection method. In this work, we propose an image token compensator combined with a token selection for ViT backbones to accelerate multi-view 3D object detection. Unlike ToC3D , our approach enables dynamic layer-wise token selection within the ViT backbone. Furthermore, we introduce a parameter-efficient fine-tuning strategy, which trains only the proposed modules, thereby reducing the number of fine-tuned parameters from more than 300 million (M) to only 1.6 M. Experiments on the large-scale NuScenes dataset across three multi-view 3D object detection approaches demonstrate that our proposed method decreases computational complexity (GFLOPs) by 48% ... 55% ,inference latency (on an NVIDIA-GV100 GPU) by 9% ... 25% ,while still improving mean average precision by 1.0% ... 2.8% 
+
+absolute and NuScenes detection score by 0.4% ... 1.2% absolute compared to so-far SOTA ToC3D .
+
+Index Terms —Efficient Multi-View 3D Object Detection 
+
+I. I NTRODUCTION 
+
+Three-dimensional (3D) object detection from multiple cali-brated camera views (multi-view) is a fundamental component of the environment perception stack in autonomous driving [1]–[4]. Recent multi-view 3D object detection methods can be broadly categorized into two branches: (1) dense birds-eye-view (BEV)-based methods [5]–[11], and (2) sparse-query-based methods [1], [2], [12]–[17]. The BEV-based methods transform the multi-view image features into a dense BEV grid representation and utilize it for the 3D object detec-tion. However, dense BEV grid construction can substantially increase the computational complexity and GPU memory footprint of such methods. To address this, sparse-query-based methods introduce a set of sparse and learnable 3D object queries that directly attend to the multi-view image features, thereby eliminating the need for explicit BEV grid represen-tation. Consequently, the computational complexity and GPU memory footprint are largely reduced, while achieving better performance compared to the dense BEV-based methods [1]. 
+
+> 1Danish Nazir, Antoine Hanna-Asaad, Jan Piewek, and Thorsten Bagdonat are with Group Innovation, Volkswagen AG, 38440, Wolfsburg, Germany (email: firstname.lastname@volkswagen.de)
+> 2Danish Nazir, Lucas Goernhardt, and Tim Fingscheidt are with the Insti-tute for Communications Technology, Technische Universit¨ at Braunschweig, 38106 Braunschweig, Germany (email: firstname.lastname@tu-bs.de)
+
+Since sparse-query-based methods directly attend to the multi-view image features, the quality of multi-view image features are important for their performance [3]. As a result, large-scale pre-trained vision transformer (ViT)-based foun-dation models [18], [19], which demonstrate strong repre-sentation learning capabilities across many vision tasks, have been widely adopted as image encoders particularly in recent sparse-query-based methods [1], [16], [20]. By employing these image encoders [18], [19], sparse-query-based methods such as Sparse4Dv2 [20], StreamPETR [1], and RayDN 
+
+[16] achieve state-of-the-art (SOTA) results on the public 3D object detection benchmarks such as NuScenes [21] [3]. However, the high computational complexity of these ViT-based image encoders becomes the primary bottleneck in terms of inference speed, accounting for the majority of the total in-ference time in the sparse-query-based methods [3]. To address this bottleneck, the current SOTA method for efficient multi-view ViT-based 3D object detection, ToC3D [3] proposes an ego-motion-based image feature token selection module to accelerate ViT-based image encoders. The ego-motion-based image feature token selection module employs learnable motion queries, which are utilized to perform task-relevant token selection. Although it can be seamlessly integrated within any multi-view 3D object detection method, it employs fixed layer-individual token selection ratios in the ViT-based image encoder at both training and inference time, resulting in a suboptimal efficiency vs. performance trade-off. Here, efficiency is characterized by giga floating point operations (GFLOPs) and inference latency (ms), while performance is evaluated using standard 3D object detection metrics such as mean average precision (mAP) and NuScenes detection score (NDS) [21]. Motivated by this limitation, in this work, we focus on dynamic token selection to further push the efficiency vs. performance trade-off. Beyond the fixed layer-individual number of selected to-kens, ToC3D [3] also requires a full fine-tuning of the pre-trained multi-view 3D object detection model after integrating its ego-motion-based image feature token selection module within the ViT-based image encoder. Such a full fine-tuning is undesirable, as the original pre-trained weights of multi-view 3D object detection model are overwritten. Furthermore, full fine-tuning results in a large number of fine-tuned parameters, which significantly increases the training overhead, thereby reducing the training efficiency [22], [23]. In this article, we make three contributions. First, we pro-pose a dynamic layer-wise token selection approach combined with an image token compensator adapted for the multi-view 3D object detection methods, which improves inference efficiency by reducing the computational complexity of the  
+
+> arXiv:2604.13586v1 [cs.CV] 15 Apr 2026 JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 2
+
+employed ViT-based image encoders, without sacrificing on the 3D object detection performance. Second, we propose a novel parameter-efficient fine-tuning strategy, where we only train the proposed dynamic token selection modules, while freezing all other components of the multi-view 3D object detection method, thereby reducing the number of fine-tuned parameters from more than 300 million (M) to only 1.6M. Third, we show that our proposed approach decreases the GFLOPs down to 45% , inference latency down to 75% ,while still slightly improving both mAP and NDS compared to ToC3D across three multi-view 3D object detection ap-proaches on the large-scale NuScenes dataset [21]. The rest of the article is structured as follows: Section II outlines all related works. Section III provides a high-level overview of the basic multi-view 3D object detection pipeline, followed by the detailed description of our proposed methods. Section IV describes the experimental setup, and evaluation metrics, including mAP, NDS, GFLOPs, and latency. Section V shows the experimental results. We conclude in Section VI. II. R ELATED WORKS 
+
+This section provides an overview of multi-view 3D object detection, followed by a discussion on token selection methods for vision transformer-based image encoders, and parameter-efficient fine-tuning for multi-view 3D object detection. 
+
+A. Multi-View 3D Object Detection 
+
+Multi-view 3D object detection is a fundamental task in autonomous driving, which employs multi-view images from calibrated cameras to detect and localize objects in the sur-rounding environment of the ego-vehicle. Recent methods [5]–[10] compute a unified dense birds-eye-view (BEV) grid representation from the multi-view image features, which is utilized for 3D object detection. LSS [5] constructs BEV rep-resentations by predicting per-pixel depth distributions of the image features, while BEVDet [8] introduces specialized data augmentation strategies and a scaled non-maximum suppres-sion mechanism to improve LSS [5] performance. BEVDepth 
+
+[9] and BEVStereo [24] employ additional depth supervi-sion in LSS to enhance its performance. SOLOFusion [10] introduces short and long-term temporal fusion strategies in 
+
+BEVStereo [24] and achieves state-of-the-art (SOTA) per-formance. Despite the strong performance of dense BEV-based methods, they have higher computational complexity and GPU memory footprint due to the requirement of dense BEV grid construction. To address this problem, sparse-query–based multi-view 3D object detection methods [1], [2], [12]–[17] have recently emerged, which employ a sparse set of learnable 3D object queries that directly interact with the multi-view image features to reduce both computational complexity and GPU memory footprint, while achieving better performance than dense BEV-based methods. StreamPETR [1] proposes a memory queue for storing sparse 3D object queries, enabling real-time feature propagation over time. Sparse4Dv2 [20] extends DETR3D [12] in the temporal domain by aggregat-ing information across multiple timesteps through sparse 3D object queries. RayDN [16] proposes a small set of learnable ray-casted queries to denoise 3D object queries. 
+
+Sparse-query-based methods [1], [2], [12]–[17] employ a sparse set of learnable 3D object queries in the 3D object decoder, which directly attend to the multi-view image features without constructing an explicit dense BEV grid represen-tation. Consequently, the quality of the multi-view image features are important for the overall detection performance [3]. This motivates the use of the large-scale pre-trained vision transformer (ViT)-based foundation models [18], [19] for multi-view image feature extraction. When combined with such image encoders, StreamPETR [1], RayDN [16], and Sparse4Dv2 [20] achieve SOTA performance on the NuScenes benchmark [21] [3]. However, ViT-based image encoders have high computational complexity [25], dominat-ing the total runtime [3]. Therefore, in this work, we aim at efficiency improvement of the ViT-based image encoders by accelerating the multi-view 3D object detection methods, while maintaining competitive detection performance. 
+
+B. Token Selection Methods for Vision Transformer-Based Image Encoders for Multi-View 3D Object Detection 
+
+Vision transformers (ViTs) have demonstrated remarkable success across a wide range of computer vision tasks owing to their self attention mechanism, which enables them to model long-range dependencies and capture global relation-ships within the images. However, the self attention mecha-nism scales quadratically with the number of image feature tokens leading to high computational complexity. To alleviate this, current SOTA multi-view 3D object detection methods [1], [14], [16], [20] constrain the self attention mechanism to local windows by adopting shifted window-based self attention [26] within the ViT-based image encoder. Nonetheless, the image encoder still operates on the full image feature token set, which contains image tokens that are irrelevant for the multi-view 3D object detection [3]. In 2D computer vision tasks such as image classification [27], semantic segmentation [28], [29], and other related tasks, several image feature token selection methods [23], [30]–[33] have been proposed to reduce the computational burden of ViTs by discarding or merging less informative tokens while preserving downstream task performance. For the multi-view 3D object detection task, tgGBC [4] and ToC3D [3] have introduced image feature token strategies to accelerate the multi-view 3D object detection methods. tgGBC [4] proposes a key-pruning-based image feature token selection strategy to accelerate 3D object decoders. However, it achieves lim-ited gains in reducing the total computational complexity, since modern 3D object decoders incur significantly lower computational complexity than ViT-based image encoders [3]. To reduce the computational complexity of the ViT-based image encoders, ToC3D [3] proposes an ego-motion-based token selection module to select the relevant image feature tokens within the image encoders. Although it reduces total computational complexity, it introduces additional overhead by employing learnable motion queries for the image feature token selection. Also, it employs fixed layer-individual token selection ratios, which results in limited efficiency gains. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 3
+
+In this work, following ToC3D [3], we aim at reducing the computational complexity of the image encoders through image feature token selection, but we eliminate the use of motion queries. Inspired by [23], we propose a dynamic image feature token selection approach along with an image token compensator adapted for multi-view 3D object detection task. 
+
+C. Parameter-Efficient Fine-Tuning for Multi-View 3D Object Detection 
+
+Parameter-efficient fine-tuning (PEFT) techniques [22], [23], [34] for 2D computer vision tasks aim at reducing train-ing computational cost by fine-tuning only a small subset of large ViT-based pre-trained model parameters with lightweight modules or low-rank updates, while keeping the rest of the network frozen. The fine-tuned parameters typically con-tain multilayer perceptron-based or lightweight convolutional neural network-based decoders, together with the proposed modules by [22], [23], [34]. However, such PEFT approaches are not directly applicable to multi-view 3D object detection, as modern multi-view 3D object detection methods [1], [6], [14], [16], [20] employ complex decoders with multi-head self attention and cross attention mechanisms, making fine-tuning computationally expensive and less parameter-efficient. For the multi-view 3D object detection task, recent work 
+
+ToC3D [3] introduces a full fine-tuning strategy, where it fine-tunes the large pre-trained ViT-based image encoder, feature pyramid network, and the 3D object decoder of a multi-view 3D object detection method. However, such a full fine-tuning strategy is not parameter-efficient, as it significantly in-creases the training time computational complexity [23], [34]. Therefore, in this work, we propose a novel PEFT strategy for multi-view 3D object detection methods by freezing the weights of the large pre-trained ViT-based image encoder, feature pyramid network, and the 3D object decoder, while training only the proposed image feature token selection and compensator modules. Our approach significantly reduces the number of fine-tuned parameters, thereby lowering the GPU memory footprint during fine-tuning, while preserving the original trained weights of the respective multi-view 3D object detection method. III. M ETHODS 
+
+In this section, we first provide an overview of a basic multi-view 3D object detection pipeline, followed by baseline token selection for the ViT-based image encoder. Afterwards, we introduce our novel dynamic layer-wise token selection method, followed by our proposed parameter-efficient fine-tuning for the multi-view 3D object detection methods. 
+
+A. Basic Multi-View 3D Object Detection Pipeline 
+
+In Fig. 1, we illustrate a high-level overview of the basic multi-view 3D object detection pipeline used across multi-view 3D object detection methods, including StreamPETR 
+
+[1], Sparse4Dv2 [20], and RayDN [16] for both training and inference time. It consists of several components, including a view-individual image encoder E, a view-individual feature   
+
+> Multi-view Images Multi-view Images
+> 3D Object Detection Method
+> E
+> E
+> FPN
+> FPN DPost-Processing
+
+x1,t 
+
+xv,t 
+
+z1,t 
+
+zv,t 
+
+r1,t 
+
+rv,t 
+
+yt ut                      
+
+> Fig. 1. High-level overview of the basic multi-view (v=1,2, . . . )
+> 3D object detection pipeline used across multi-view 3D object detection methods, including StreamPETR [1], Sparse4Dv2 [20], and RayDN [16] for training and inference. Here, Eand Dare the image encoder and task decoder, respectively. FPN represents a feature pyramid network. Details of the image encoder Eare depicted in Fig. 2.
+
+pyramid network FPN , a joint 3D object decoder D, and a post-processing module. The image encoder E with param-eters θE produces bottleneck features zv,t = E(xv,t ; θE) ∈
+
+RF × Hk × Wk with camera view index v ∈ V, camera view index set V = {1, . . . , V }, number of camera views V , time index t ∈ T from index set T = {1, . . . , T }, total number of frames T , kernels F , height H, width W , and image downsampling factor k ∈ N. They are passed through a feature pyramid network FPN with parameters θFPN to compute multi-level pyramid features rv ,t = FPN  zv ,t ; θFPN , where 
+
+rv,t = ( r(p) 
+
+> v,t
+
+)p∈P , with r(p) 
+
+> v,t
+
+∈ RF ×Hp×Wp , pyramid index 
+
+p ∈ P from index set P = {1, . . . , P }, and the number of pyramid feature levels P . Here, xv,t = ( xv,t,i ) ∈ IC×H×W
+
+is a normalized multi-view image of C = 3 color channels, with pixel xv,t,i ∈ IC , pixel index i ∈ I from index set 
+
+I = {1, . . . , H · W }, and I = [0 , 1] . Weights for both E
+
+and FPN are shared among all V camera views. The 3D object decoder D with parameters θD receives the multi-level pyramid features rt = ( rv,t )v∈V and generates 3D bounding box classes ycls  
+
+> t
+
+∈ IO×S and bounding box predictions 
+
+ybbox  
+
+> t
+
+∈ RO×B with the number of object queries O, bounding box elements B, class index s ∈ S from index set S =
+
+{1, 2, . . . , S }, and number of classes S, both jointly denoted as yt =  ycls  
+
+> t
+
+, ybbox 
+
+> t
+
+ = D(rt ; θD). In the post-processing step, confidence-based filtering [35] is applied on ycls  
+
+> t
+
+and 
+
+ybbox  
+
+> t
+
+, resulting in ut =  ucls  
+
+> t
+
+, ubbox 
+
+> t
+
+. Note that in this article, following the current state-of-the-art method ToC3D 
+
+[3] for efficient multi-view ViT-based 3D object detection, we employ ViT-based image encoders E and aim to reduce their computational complexity, which can be employed with any multi-view 3D object detection method. 
+
+B. Baseline Token Selection for ViT-Based Image Encoders 
+
+This subsection lays foundations by describing the layer architecture of the ViT-based image encoder E in the current state-of-the-art (SOTA) method ToC3D [3]. Fig. 2(a) shows the network architecture of the baseline layer as used by the current SOTA method ToC3D [3] for efficient multi-view ViT-based 3D object detection. It employs a set of 64 learnable motion queries Qmot ∈ R64 ×256 with internal dimension 256 to capture the motion information of the objects using the ego-motion. The motion queries Qmot 
+
+interact with the input image feature tokens f (ℓ) 
+
+> v,t
+
+∈ Rd×N
+
+for image feature token selection, with layer index ℓ ∈ L ,layer index set L = {1, . . . , L }, number of layers L, internal dimension d ∈ N, and number of image feature tokens JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 4 
+
+> d×N
+
+f (ℓ)
+
+> v,t
+
+Layer (ℓ)
+
+Qmot  
+
+> \64 ×256
+> Token Scorer
+> \
+
+Module              
+
+> Window Partition
+> Window Partition
+> Token Ranking + Index Operation
+> Layer Norm
+> \
+> WMHSA
+> \
+> Layer Norm
+> Output Projection
+> Token Merging
+> Window Unpartition
+> \
+> \
+> 1×N
+> d×E×N′
+> d×E×K′
+> 1×E×N′
+> 1×E×K′
+> d×E×K′
+> d×E×N′
+> d×E×K′
+> d×E×K′
+> d×E×K′
+> d×E×K′
+> d×N
+
+Sv,t 
+
+O∗
+
+> v,t
+
+Av,t 
+
+Ov,t 
+
+Mv,t 
+
+Hv,t 
+
+H′
+
+> v,t
+
+cMv,t 
+
+Pv,t 
+
+P′
+
+> v,t
+
+Cv,t 
+
+f (ℓ+1)    
+
+> v,t
+> (a) Baseline layer ℓ[3] architecture.
+> Output Projection
+> d×G
+
+FC ,W(1)  
+
+> do×G
+
+FC ,W(2)   
+
+> do×G
+> GeLU
+> do×G
+
+Dv,t  
+
+> Layer Norm
+> do×G
+
+FC ,W(3) 
+
+> d×G
+
+hv,t 
+
+Pv,t      
+
+> (b) Output projection block .
+> Fig. 2. (a) Layer architecture of the image encoder
+
+E utilized in Fig. 1 for the baseline [3]. (b) Details the output projection block [18]. Blocks marked with \ are updated during fine-tuning, blocks with remain frozen. 
+
+N = Hk · Wk ∈ N. For ℓ = 1 , the input image feature tokens represent the patch embedding layer’s output [25]. The token scorer [3] receives learnable motion queries Qmot and f (ℓ)
+
+> v,t
+
+to compute saliency scores Sv,t ∈ I1×N with I = [0 , 1] of each image feature token. Both, Sv,t and f (ℓ) 
+
+> v,t
+
+, are passed to a transformer module (module, cf. Fig. 2(a)) [26], where they are separately partitioned into windows through a re-shape operation, yielding Av,t = ( Av,t,m ) ∈ I1×E×N ′
+
+and 
+
+Ov,t = ( Ov,t,m ) ∈ Rd×E×N ′
+
+, respectively, with window size 
+
+f ∈ N, image feature tokens per window N ′ = f 2 ∈ N,number of windows E = Hp 
+
+> f
+
+· Wp 
+
+> f
+
+∈ N, zero-padded per-view image feature tokens height Hp = hp + Hk ∈ N, and width 
+
+Wp = wp + Wk ∈ N. Here, hp, w p ∈ N represent the padding along the height and width dimensions, employed to compute equal-sized partitions of f (ℓ) 
+
+> v,t
+
+. Further, Ov,t,m ∈ Rd denotes the window-partitioned image feature token, with respective index 
+
+m ∈ M from index set M = {1, · · · , E · N ′}. The window-partitioned saliency scores Av,t are ranked corresponding to their saliency scores [3], [30] to obtain the ranked window-partitioned saliency scores A′ 
+
+> v,t
+
+= (A′
+
+> v,t,c
+
+) ∈ I1×E×N ′
+
+,where c ∈ C denotes the respective index from index set 
+
+C = {1, · · · , E · N ′}. The highest ranked image feature tokens 
+
+O∗ 
+
+> v,t
+
+are selected from Ov,t through an index operation [30] defined as F : Rd×E×N ′
+
+× I1×E×N ′
+
+→ Rd×E×K′
+
+and 
+
+O∗ 
+
+> v,t
+
+= F(Ov,t |A′
+
+> v,t
+
+) = {Ov,t,π (c)| c ≤ K} ∈ Rd×E×K′
+
+.      
+
+> TABLE I
+> COMPUTATIONAL COMPLEXITY BREAKDOWN OF A NAIVE TRANSFORMER MODULE IN THE EVA-02-L [18] ENCODER WITHOUT ANY IMAGE FEATURE TOKEN SELECTION ,MEASURED WITH AN INPUT RESOLUTION OF
+
+320 ×800 ON Dval NS .  
+
+> Block FLOPs (G)
+
+#params (M)  
+
+> WMHSA
+
+6.9 4.2 
+
+> Output Projection
+
+16 .8 8.4 
+
+> Total
+
+23 .7 12 .6
+
+Here, π : C → M represents a permutation induced by the token ranking, which maps each ranked index c ∈ C to its corresponding index m ∈ M such that A′ 
+
+> v,t,c
+
+= Av,t,m =π(c).Further, K = E · K′ ∈ N denotes the number of selected image feature tokens across all windows, and K′ ∈ N is the number of selected image feature tokens per window such that 
+
+K′ < N ′. Note that in the baseline layer [3], K is not input-dependent and determined by a predefined layer-specific token selection ratio that is kept constant during both training and inference. The selected image feature tokens O∗ 
+
+> v,t
+
+are nor-malized using a layer norm to obtain Mv,t ∈ Rd×E×K′
+
+, and then processed by a window-based multi-head self attention (WMHSA) block with I = K′ for the baseline to produce a refined representation Hv,t ∈ Rd×E×I , which is used to gen-erate the residual output as H′ 
+
+> v,t
+
+= O∗ 
+
+> v,t
+
++ Hv,t ∈ Rd×E×K′
+
+.Note that the WMHSA block now operates on K image feature tokens, which reduces its computational complexity. However, the WMHSA block accounts for only a small fraction of the total computational complexity of the image encoder layer, resulting in limited overall efficiency gains. The WMHSA block details are described in Appendix A. The residual output 
+
+H′ 
+
+> v,t
+
+is further passed through a layer norm, producing cMv,t ,which is passed to the output projection block with the inputs 
+
+hv,t = cMv,t and G = K, described in the following. 
+
+Output Projection Block: Fig. 2(b) depicts the output pro-jection block. The input hv,t ∈ Rd×G is projected as 
+
+Dv,t = GeLU  W(1) hv,t 
+
+ ⊙  W(2) hv,t 
+
+, (1) to compute the projected image feature tokens Dv,t ∈ Rdo×G,with learnable FC layers weights W(1) , W(2) ∈ Rdo×d, hid-den dimension do ∈ N, element-wise multiplication ⊙, and the 
+
+GeLU activation function. The projected image feature tokens 
+
+Dv,t are passed through a layer norm, followed by an output FC projection layer with weights W(3) ∈ Rd×do to compute the output projection block output Pv,t ∈ Rd×G, which is added to H′ 
+
+> v,t
+
+producing the residual output P′ 
+
+> v,t
+
+∈ Rd×G.Note that in the baseline layer, the output projection block operates on the number of selected image feature tokens across all windows K, and due to zero-padding, K becomes larger than the number of image feature tokens N [18]. Further, the computational complexity of the output projection block scales linearly with the number of input image feature tokens [23], [34]. Therefore, the computational complexity of the output projection block is significantly increased .
+
+Token Merging: Back to Fig. 2(a), in token merging, P′
+
+> v,t
+
+is merged with Ov,t to produce the merged image feature JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 5
+
+f (ℓ) 
+
+> v,t
+> Layer (ℓ)
+> Layer Norm
+> Window Partition
+> WMHSA
+> Window Unpartition
+> Token Selection
+> \
+> Token Router
+> Module
+> TC
+> \
+
+Mv,t     
+
+> d×N
+> d×N
+> d×E×N′
+> d×E×N′
+> d×N
+> d×N
+> 1×N
+> d×N
+> d×N
+
+f (ℓ+1) 
+
+> v,t
+
+Hv,t 
+
+cMv,t 
+
+P′
+
+> v,t
+
+Cv,t Sv,t    
+
+> (a) Proposed layer ℓarchitecture.
+> Layer Norm
+
+Fv,t 
+
+FC ,Wdown 
+
+> ReLU
+
+FC ,Wup    
+
+> Token Compensator (TC )
+> d×N
+> d×N
+> dh×N
+> dh×N
+> d×N
+> d×N
+
+cMv,t 
+
+Cv,t      
+
+> (b) Proposed token compensator
+> (TC ) block.
+> Fig. 3. (a) Proposed layer architecture of the image encoder
+
+E utilized in Fig. 1. (b) Proposed token compensator (TC ) block. Blocks marked with   
+
+> \are updated during fine-tuning, blocks with remain frozen.
+
+tokens Cv,t ∈ Rd×E×N ′
+
+. Through token merging, the spatial positions of P′ 
+
+> v,t
+
+are restored to their corresponding spatial locations in Ov,t . The merged image feature tokens Cv,t 
+
+are reshaped and the zero-padding is removed to obtain the baseline layer [3] output f (ℓ+1)  
+
+> v,t
+
+.
+
+C. Proposed Dynamic Layer-wise Token Selection 
+
+Now, we motivate the design of our proposed layer for ViT-based image encoders and then describe it in detail. 
+
+Motivation : The current SOTA method ToC3D [3] for ef-ficient multi-view ViT-based 3D object detection employs learnable motion queries Qmot to select the subset of im-portant image feature tokens K in f (ℓ) 
+
+> v,t
+
+. Although it reduces the computational complexity of the image encoder E layer, it suffers from two key limitations: (1) The number of se-lected tokens K is not input-dependent and remains fixed for each layer during both training and inference, limiting its adaptability to diverse scenes. (2) The output projection block (cf. Fig. 2(b)) operates on K image feature tokens, where 
+
+K > N , resulting in limited efficiency gains, when employed with the multi-view 3D object detection methods. As shown in Table I, the WMHSA block in a naive EVA-02-L [18] transformer module, which does not perform any image feature token selection, exhibits significantly lower computational complexity than the output projection block. It accounts for only 29% of the FLOPs ( 6.9 G ) and 33% of the parameters (4.2 M ), compared to the 71% of FLOPs ( 16 .8 G ) and 67% of parameters ( 8.4 M ) of the output projection block. Therefore, inspired by [23], we propose a layer architecture with dynamic image token selection adapted for the multi-view 3D object detection task. Our proposed layer is fully input-dependent and enables dynamic image feature token selection in each 
+
+> Token Router
+> Layer Norm
+> Output Projection
+> Gumbel Noise
+> Sigmoid
+> Tiling
+> Fine-tuning Stage
+> d×N1×N
+> 1×N
+> 1×N
+> d×N
+> d×N
+> d×N
+> d×N
+
+cMv,t 
+
+Sv,t 
+
+Lv,t 
+
+Pv,t 
+
+Zv,t 
+
+Z′
+
+> v,t
+> d×N
+
+P′ 
+
+> v,t
+> Sigmoid
+> Binary Mask
+> Index Operation
+> Layer Norm
+> Output Projection
+> Reverse Index Operation
+> Inference Stage
+> d×K
+> d×K
+> d×K
+> d×N
+> 1×N
+> 1×N
+> d×N1×N
+> d×N
+
+cMv,t Sv,t 
+
+Zv,t 
+
+Bv,t 
+
+Av,t 
+
+Lv,t 
+
+Pv,t 
+
+Rv,t 
+
+P′   
+
+> v,t
+> Fig. 4. Our token router block used in Fig. 3(a), adopted from [23], [34]. The output projection block (details in Fig. 2(b)) remains frozen during the fine-tuning stage.
+
+layer of E for the output projection block, allowing it to operate on a smaller set of image feature tokens and thereby achieving substantial efficiency gains without any noticeable loss of performance. Further, our design also simplifies the baseline layer [3] described in Section III-B by omitting the use of Qmot for the image feature token selection .
+
+Proposed Layer Architecture : Fig. 3(a) illustrates our pro-posed layer architecture. The image feature tokens f (ℓ) 
+
+> v,t
+
+∈
+
+Rd×N are directly passed to the transformer module (module), which applies layer norm and partitions it to windows by applying zero-padding and a reshape operation to compute 
+
+Mv,t ∈ Rd×E×N ′
+
+. The window-partitioned image feature tokens Mv,t are passed to the WMHSA block with I = N ′
+
+to generate its refined representation Hv,t ∈ Rd×E×N ′
+
+. The details of the WMHSA block are described in Appendix A. Further, the refined representation Hv,t is reshaped and the zero-padding is removed before it is added to f (ℓ) 
+
+> v,t
+
+to produce 
+
+cMv,t ∈ Rd×N , followed by a image feature token selection block consisting of a single FC-based layer to compute the saliency scores Sv,t ∈ I1×N [34] of each image feature token. The saliency scores Sv,t together with cMv,t are passed to the token router block. 
+
+Proposed Token Router : Fig. 4 details the token router block [23], [34]. It contains distinct pathways for fine-tuning and inference stages. During the fine-tuning stage , a layer normal-ization is applied to cMv,t to obtain Lv,t , which is sent to the output projection block that projects Lv,t to Pv,t ∈ Rd×N
+
+with hv,t = Lv,t as its input and number of per-view image feature tokens G = N . In parallel, the saliency scores Sv,t are passed through a Gumbel noise approximation to enable the backpropagation [23], [34], followed by a sigmoid activation function to normalize Sv,t as Zv,t = σ(Sv,t ) ∈ I1×N with 
+
+I = [0 , 1] . The normalized saliency scores Zv,t ∈ I1×N
+
+are subject to tiling along the internal feature dimension d
+
+according to Z′ 
+
+> v,t
+
+= 1 ⊗ Zv,t ∈ Id×N , whereby the Kronecker product ⊗ produces d copies of Zv,t on top of each other. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 6
+
+This is used to generate the output of the token router block as P′ 
+
+> v,t
+
+= Z′ 
+
+> v,t
+
+⊙ Pv,t + cMv,t ∈ Rd×N . Here, ⊙ denotes element-wise multiplication. During the inference stage (Fig. 4), the Gumbel noise approximation is removed and the saliency scores Sv,t are directly passed through the sigmoid function to generate the normalized saliency scores Zv,t = σ(Sv,t ) ∈ I1×N . The normalized saliency scores Zv,t = ( Zv,t,j ) are thresholded to generate a binary mask Bv,t = ( Bv,t,j ) ∈ B 1×N with 
+
+Bv,t,j = Zv,t,j > θ , B = {0, 1}, normalized saliency score 
+
+Zv,t,j ∈ I, with index j ∈ J from index set J = {1, . . . , N }.The binary mask Bv,t is used to select the important image feature tokens Av,t from cMv,t = ( cMv,t,j ) through an index operation [34] defined as F : Rd×N × B 1×N → Rd×K
+
+and Av,t = F(cMv,t |Bv,t ) ∈ Rd×K , with F(cMv,t |Bv,t ) = 
+
+{cMv,t,j |Bv,t,j = 1 }, and number of image feature tokens K.The selected image feature tokens Av,t are passed through a layer norm to obtain Lv,t ∈ Rd×K , which is passed through an output projection block with the input hv,t = Lv,t ,and number of selected image feature tokens G = K. It produces the projected output Pv,t = ( Pv,t,k ) ∈ Rd×K with projected image feature token Pv,t,k ∈ Rd, index k ∈ K ,from index set K = {1, . . . , K }. Using Bv,t and K, the indices of selected image feature tokens in J are computed as J ∗ = {j | Bv,t,j = 1 } ⊆ J with selected image feature token index j∗ ∈ J ∗, and their total number |J ∗| = K. The detailed network architecture of the output projection block matches the baseline and is shown in Figure 2(b). 
+
+Reverse Index Operation : The projected image feature tokens 
+
+Pv,t are passed through a reverse index operation [34] defined as V : Rd×K → Rd×N and Rv,t = V(Pv,t ) = ( Rv,t,j ) ∈
+
+Rd×N with 
+
+Rv,t,j =
+
+
+
+Pv,t,π (j), if j ∈ J ∗,
+
+0 = {0}d, otherwise ,, (2) to restore the spatial structure of cMv,t . Here, the permutation 
+
+π : J ∗ → K denotes the mapping between each selected orig-inal image feature token index in J ∗ with its corresponding index in K, enabling the selected tokens to be restored to their original spatial locations. In contrast to the baseline layer described in Section III-B, where the output projection block operates on K image feature tokens with K > N , our proposed layer applies it only to the selected image feature tokens K. Consequently, the computational complexity of our output projection block is significantly reduced, resulting in substantial overall efficiency gains, without any noticeable loss of performance. Note that K
+
+is fully input-dependent and dynamic for each layer in E, as it is determined by a learnable binary mask Bv,t generated from 
+
+Zv,t . Further, in parallel to the image feature token selection layer and output projection block, we propose to employ a token compensator block, which is described in the following. 
+
+Proposed Token Compensator ( TC ): Fig. 3(b) details the proposed token compensator TC block. The goal of the TC 
+
+block is to compensate for any loss of contextual information during the image feature token selection process and refine the selected image feature tokens for the multi-view 3D object detection task by learning to reconstruct cMt. Unlike prior work [23] that adopts a convolutional neural network-based block for token compensation suitable for 2D computer vision tasks, we propose a simple two-layered FC block that restores the contextual information after image feature token selection and achieves even higher performance for the multi-view 3D object detection task. The token compensator TC 
+
+with parameters θTC applies layer norm to cMv,t to produce 
+
+Fv,t ∈ Rd×N , which is projected through two separate FC projection layers 
+
+F′ 
+
+> v,t
+
+= Wup · ReLU  Wdown Fv,t 
+
+ (3) to compute F′ 
+
+> v,t
+
+∈ Rd×N , with learnable FC layers weights 
+
+Wdown ∈ Rdh×d and Wup ∈ Rd×dh , hidden dimension dh,and a ReLU activation function. The projected output F′ 
+
+> v,t
+
+is added to cMv,t to generate the TC output Cv,t ∈ Rd×N .The aggregated information Cv,t is added to P′ 
+
+> v,t
+
+to compute the proposed layer output f (ℓ+1)  
+
+> v,t
+
+. Following prior works [23], [34], we employ an average image feature token activation rate r ∈ [0 , 1] to constrain the number of activated image feature tokens within the proposed layer. 
+
+D. Proposed Parameter-Efficient Fine-Tuning (PEFT) 
+
+The current SOTA method ToC3D [3] for efficient multi-view ViT-based 3D object detection employs learnable motion queries Qmot for image feature token selection, which requires full fine-tuning of the pretrained multi-view 3D object detec-tion model. This approach has two key limitations. (1) The pretrained weights of the multi-view 3D object detection mod-els are overwritten. (2) Full fine-tuning of the multi-view 3D object detection significantly increases the training overhead due to the large number of trainable parameters. Therefore, to address these limitations, we propose a novel parameter-efficient fine-tuning (PEFT) strategy for multi-view 3D object detection methods, which fine-tunes only the proposed image feature token selection and token compensation blocks (TC) in each layer of encoder E, Fig. 3(a) in comparison to Fig. 2(a), while keeping the rest of the model weights frozen. 
+
+Furthermore, our proposed PEFT strategy truly enables a plug-and-play design, as removing these blocks exactly restores the original pretrained multi-view 3D object detection model. IV. E XPERIMENTAL SETUP 
+
+In this section, we introduce the dataset. Afterwards, we provide a detailed overview of our training and evaluation settings, followed by the introduction of the standard 3D object detection and efficiency metrics. 
+
+A. Dataset 
+
+Following our primary baselines, ToC3D [3], and tgGBC 
+
+[4], we conduct all our experiments on the well-established and widely adopted NuScenes dataset for multi-view 3D object detection in autonomous driving. The official NuScenes train-ing split ( Dtrain NS ) contains 700 scenes with 168 , 100 images, while the official validation split ( Dval NS ) consists of 150 scenes JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 7
+
+with 36 , 000 images. Each scene is captured using six high-resolution calibrated cameras at 2Hz frame rate, providing a full 360 ◦ field of view around the ego vehicle. All scenes are densely annotated with 3D bounding boxes for 10 common object classes and additional attributes, supporting tasks such as multi-view 3D object detection, tracking, and motion pre-diction. Since the official NuScenes benchmark server for the test set is no longer functional, we follow recent publication 
+
+tgGBC [4] and report all results on Dval NS .
+
+B. Experimental Design and Training 
+
+We employ SAM-B [19] and EVA-02-L [18] as our ViT-based image encoders E to evaluate our proposed method vs. important prior works [3], [4]. SAM-B represents alightweight encoder, while EVA-02-L corresponds to a larger and heavyweight encoder. Note that recent multi-view 3D object detection approaches [1], [7], [11], [16], [17], [20] predominantly adopt EVA-02-L [18] as image encoder, which has become the most widely used ViT-based image encoder . Both, ToC3D [3] and our approach, only modify E
+
+in the multi-view 3D object detection methods by integrating either the baseline layer (Section III-B) or the proposed layer (Section III-C), respectively. In contrast, tgGBC [4] modifies the 3D object decoder D, while keeping E and the feature pyramid network FPN unchanged. Following ToC3D [3], we adopt StreamPETR [1] as our primary method for multi-view 3D object detection, but we also propose to validate the generalizeability and effectiveness of our proposed layer on two other methods, namely Sparse4Dv2 [20] and RayDN 
+
+[16]. For ToC3D [3], we employ the token selection ratios of 
+
+0.7, 0.5, 0.5 in E for both training and evaluation, as it pro-vides the strongest performance among the reported variants. Similarly, we integrate tgGBC [4] into the StreamPETR [1] method and perform retraining, as this configuration achieves the highest performance. Further, in all our experiments, we set the number of camera views to V = 6 , the number of bounding box elements to B = 9 , the hidden dimension do = ⌊2.66 · d⌋
+
+[18] in the output projection block (cf. Fig. 2(b)), and the binary mask threshold θ = 0 .5 [34]. The detailed training and evaluation settings for StreamPETR , Sparse4Dv2 , and 
+
+RayDN on the NuScenes [21] dataset are described in the following. 
+
+StreamPETR : On StreamPETR [1], we perform the experi-ments with both SAM-B and EVA-02-L image encoders. For 
+
+SAM-B [19], we utilize an image resolution of 320 × 800 and evaluate our method vs. the tgGBC [4] baseline. Similarly, for EVA-02-L [18], we employ the image resolutions of 
+
+320 ×800 and 800 ×1600 , and evaluate our proposed approach vs. ToC3D [3], and tgGBC [4] baselines. We follow the same settings suggested by the two baselines [3], [4]. 
+
+Sparse4Dv2 and RayDN : For Sparse4Dv2 [1], we evalu-ate our proposed approach on the image resolution of 320 ×800 
+
+with an EVA-02-L [18] image encoder as suggested by the 
+
+ToC3D baseline. We apply the same configuration also to the 
+
+RayDN [16] to maintain consistency across both methods. To ensure a fair comparison, all baseline results are re-produced using the respective open-source implementations provided by the authors, including trainings according to our employed methods [1], [16], [20]. All trainings are conducted on an NVIDIA-H100 GPU, while the evaluations are per-formed on a lightweight NVIDIA-GV100 GPU to simulate real-world deployment scenarios. 
+
+C. Metrics 
+
+To evaluate 3D object detection performance, we employ the following standard detection and efficiency metrics. 
+
+Mean Average Precision: The predicted 3D bounding boxes are evaluation using the mean average precision [21] 
+
+mAP = 1
+
+S · U
+
+X
+
+> s∈S
+
+X
+
+> u∈U
+
+AP u,s , (4) where u ∈ U = {1, · · · , U } is the 3D bounding box threshold index, U is the 3D bounding box threshold index set, U being the total number of such thresholds, and AP u,s is the average precision [21] for 3D bounding box threshold u and class s ∈S = {1, . . . , S }.
+
+NuScenes Detection Score: The NuScenes detection score (NDS) is the primary evaluation metric of the NuScenes benchmark. It combines mAP with W = 5 true positive (TP) error metrics [21], including average translation error (ATE), average scale error (ASE), average orientation error (AOE), av-erage velocity error (AVE), and average attribute error (AAE) to jointly evaluate the localization, scale, orientation, velocity, and attribute accuracy of the predicted 3D object bounding boxes. For each TP error metric, the mean is computed over all classes as 
+
+mTP w = 1
+
+S
+
+X
+
+> s∈S
+
+T P w,s , (5) with TP error metric index w ∈ W = {1, . . . , W }, and TP error metric T P w,s for class s. Using (4) and (5), the NDS is defined as 
+
+NDS = 12 mAP + 110 
+
+X
+
+> w∈W
+
+(1 − min(1 , mTP w)) . (6) 
+
+GFLOPs: For multi-view 3D object detection methods, giga floating point operations (GFLOPs) measure the total number of floating point arithmetic operations required to perform a single forward pass, given xt = ( xv,t )v∈V . It serves as a standard metric for reporting model computational complexity [23], [28], [34]. 
+
+Average Rank: To provide a comparison across all standard evaluation and efficiency metrics, we additionally report av-erage (avg.) rank [36], [37]. The average rank is computed by ranking all methods in a table segment for each metric independently (higher is better for mAP/NDS, lower is better for TP error metrics, model size, GFLOPs, and latency), and row-wise averaging the ranks across all metrics. Lower average rank indicates better overall performance. 
+
+Latency: For multi-view 3D object detection methods, latency is a critical metric because it determines how quickly the method can react to the dynamic changes in the environment. Following the current SOTA method ToC3D [3] for efficient multi-view ViT-based 3D object detection, we define the latency of the multi-view 3D object detection as JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 8
+
+TABLE II 
+
+ABLATION STUDY TO SELECT THE INTERNAL HIDDEN DIMENSION dh 
+
+> OF THE PROPOSED TOKEN COMPENSATOR UTILIZED IN
+
+FIG . 2( B) ON Dval NS  
+
+> WITH AN
+
+EVA-02-L [18] ENCODER . T HE ENCODER EMPLOYS r = 0 .5 
+
+> AND IS INTEGRATED INTO
+
+ST R E A M PETR [1]. T HE ENCODER -ONLY (τ E ) 
+
+> AND COMPLETE PIPELINE LATENCIES
+
+(τ ) ARE REPORTED . B EST RESULTS BOLD , SECOND -BEST UNDERLINED .
+
+dh mAP ↑
+
+(%) 
+
+NDS ↑
+
+(%) GFLOPs ↓ Latency (ms) ↓
+
+τ E τ
+
+16 50 .1 58 .9 5, 754 444 485 
+
+32 50 .9 59 .6 5, 759 454 492 64 50 .8 59 .5 5, 860 496 537       
+
+> 4,000 5,000 6,000 7,000 8,000 9,000
+> 49 .5
+> 50 .0
+> 50 .5
+> 51 .0
+> GFLOPs
+> mAP on  Dval NS  (%)
+> r = 0 .1
+> r = 0 .3r = 0 .5
+
+Method 
+
+StreamPETR [1] 
+
++ Ours 
+
++ ToC3D [3]       
+
+> (a) mAP ( %) vs. GFLOPs
+> 4,000 5,000 6,000 7,000 8,000 9,000
+> 58 .5
+> 59 .0
+> 59 .5
+> 60 .0
+> GFLOPs
+> NDS on  Dval NS  (%)  r = 0 .1r = 0 .3
+> r = 0 .5
+
+Method 
+
+StreamPETR [1] 
+
++ Ours 
+
++ ToC3D [3]       
+
+> (b) NDS ( %) vs. GFLOPs
+> 400 450 500 550 600 650
+> 49 .5
+> 50 .0
+> 50 .5
+> 51 .0
+> Latency (ms)
+> mAP on  Dval NS  (%)
+> r = 0 .1
+> r = 0 .3r = 0 .5
+
+Method 
+
+StreamPETR [1] 
+
++ Ours 
+
++ ToC3D [3]       
+
+> (c) mAP ( %) vs. latency (ms)
+> 400 450 500 550 600 650
+> 58 .5
+> 59 .0
+> 59 .5
+> 60 .0
+> Latency (ms)
+> NDS on  Dval NS  (%)  r = 0 .1r = 0 .3
+> r = 0 .5
+
+Method 
+
+StreamPETR [1] 
+
++ Ours 
+
++ ToC3D [3] 
+
+> (d) NDS ( %) vs. latency (ms)
+
+Fig. 5. Comparison of mAP and NDS in dependence on GFLOPs and latency (ms), measured with an input resolution of 320 × 800 for Dval NS for our proposed approach vs. ToC3D [3], both integrated into StreamPETR 
+
+[1]. Symbol r represents the average image feature token activation rate in the image encoder layer. 
+
+τ = τ E + τ FPN + τ D (7) where τ E, τ FPN , τ D, and τ denote the wall-clock times required to compute bottleneck features zt = ( zt,v )v∈V from 
+
+xt = (xt,v )v∈V , multi-level pyramid features rt from zt,final 3D bounding box predictions ut from rt, and final 3D bounding box predictions ut from xt, respectively. Latency is measured on an NVIDIA-GV100 GPU. Note that the frames per second (fps) can be simply computed by fps = 1 
+
+> τ
+
+.V. E XPERIMENTAL RESULTS AND DISCUSSION 
+
+A. Ablation Study 
+
+In Table II, we present an ablation study to select the internal hidden dimension dh of the proposed token compensator TC 
+
+(Fig. 3(b)) at an input resolution of 320 × 800 on Dval NS with an EVA-02-L [18] encoder integrated into StreamPETR 
+
+[1]. We ablate over dh ∈ { 16 , 32 , 64 } with a fixed image             
+
+> 246810 12 14 16 18 20 22 24
+> 500
+> 1,000
+> 1,500
+> 2,000
+> Layer index ℓ
+> #activated tokens ( K, K)
+
+Method 
+
+ToC3D [3] Ours ( r = 0 .5)Ours ( r = 0 .3)Ours ( r = 0 .1)
+
+Fig. 6. Comparison of #activated tokens at the output projection block 
+
+(Fig. 2(b)) in each image encoder layer, measured with an input resolution of    
+
+> 320 ×800
+
+on 300 randomly sampled instances from Dval NS for our proposed approach vs. ToC3D [3], both integrated into StreamPETR [1]. 
+
+token activation rate r = 0 .5, applied in each transformer block of encoder EVA-02-L . As shown in Table II, the configuration with dh = 32 produces the best performance on mAP and NDS, with GFLOPs and latency being close-by to the dh = 16 case. Accordingly, for our proposed TC 
+
+we select dh = 32 . Interestingly, note that the selected value 
+
+dh = 32 is applied consistently across SAM-B encoder and multiple multi-view 3D object detection methods, including 
+
+RayDN and Sparse4Dv2 .
+
+B. Comparison to State-of-the-Art 
+
+In Fig. 5, we illustrate the comparison of mAP and NDS in dependence on GFLOPs and latencies, measured with an input resolution of 320 × 800 on Dval NS for our proposed method vs. ToC3D [3], both employing the EVA-02-L [18] image encoder. Both, our proposed method and ToC3D , are integrated into the StreamPETR [1] method. Our method is reported for three distinct average image feature token activation rates r. The first overall observation is that the mAP and NDS performance of all investigated methods is very similar when plotted over GFLOPs (upper two plots) or over latency (lower two plots). This means that higher com-putational complexity linearly translates into higher latency for the examined methods—which is not necessarily the case for any network topology. When comparing our approaches to the StreamPETR baseline [1], the baseline is slightly better in NDS, and slightly worse w.r.t. mAP (for r ∈ { 0.3, 0.5}), however, paying a high price in both GFLOPs and latency. 
+
+Compared to the so-far SOTA ToC3D [3], our approach is significantly better in both metrics mAP and NDS, while being significantly less complex and faster for all choices of r.
+
+In Fig. 6, we compare the number of activated tokens (ToC3D : K vs. ours: K) at the output projection block of each layer of the EVA-02-L [18] image encoder, measured with an input resolution of 320 ×800 on 300 randomly sampled instances from Dval NS . Both, our proposed method and ToC3D 
+
+[3], are integrated into the StreamPETR [1] method. For all JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 9
+
+TABLE III 
+
+COMPARISON OF M AP, NDS, AND VARIOUS 3D OBJECT DETECTION ERROR METRICS IN DEPENDENCE ON GFLOP S AND LATENCY (MS ), MEASURED WITH TWO INPUT RESOLUTIONS ON Dval NS FOR VARIOUS METHODS . I N EACH TABLE SEGMENT , BEST RESULTS BOLD , SECOND -BEST UNDERLINED .
+
+> Enc.
+
+Methods Image Resolution mAP ↑
+
+(%) 
+
+NDS ↑
+
+(%) mATE ↓ mASE ↓ mAOE ↓ mAVE ↓ mAAE ↓ Model Size ↓
+
+(M) 
+
+GFLOPs ↓ Latency ↓ Avg. rank ↓
+
+τ E τ
+
+> RN-50
+
+BEVDet [8] 320 ×800 31 .5 39 .2 0.703 0.269 0.580 0.864 0.243 48 .1 1,191 17 53 2.09 
+
+BEVDepth [9] 320 ×800 34 .6 40 .2 0.639 0.267 0.556 0.984 0.258 53 .6 1,349 37 79 2.09 
+
+SOLOFusion [10] 320 ×800 42 .6 53 .6 0.582 0.272 0.460 0.261 0.197 65 .3 1,451 40 567 1.81 
+
+> SAM-B  [19]
+
+StreamPETR [1] 320 ×800 46 .3 55 .5 0.615 0.266 0.417 0.267 0.204 99 .7 3,546 166 205 2.63 + tgGBC [4] 320 ×800 43 .4 54 .2 0.638 0.275 0.388 0.244 0.215 99 .7 3,530 159 188 2.81 + Ours ( r = 0 .5) 320 ×800 46 .1 55 .3 0.626 0.265 0.410 0.268 0.203 100 .2 2,679 141 179 2.27 
+
++ Ours ( r = 0 .3) 320 ×800 46 .0 55 .1 0.633 0.265 0.422 0.268 0.203 100 .2 2,449 129 173 2.45 + Ours ( r = 0 .1) 320 ×800 44 .1 53 .9 0.654 0.266 0.424 0.271 0.200 100 .2 2,295 123 160 2.81 
+
+> EVA-02-L  [18]
+
+StreamPETR [1] 320 ×800 50 .7 60 .1 0.560 0.257 0.259 0.255 0.196 316 .6 9,342 603 650 2.90 + tgGBC [4] 320 ×800 47 .6 57 .8 0.613 0.260 0.275 0.237 0.210 316 .6 9,325 583 607 3.72 + ToC3D [3] 320 ×800 49 .5 58 .7 0.589 0.260 0.309 0.253 0.196 324 .4 8,908 526 571 3.72 + Ours ( r = 0 .5) 320 ×800 50 .9 59 .6 0.585 0.258 0.304 0.237 0.196 318 .2 5,759 454 492 2.27 + Ours ( r = 0 .3) 320 ×800 50 .9 59 .6 0.585 0.258 0.306 0.235 0.195 318 .2 4,684 417 455 2.00 
+
++ Ours ( r = 0 .1) 320 ×800 50 .5 59 .4 0.593 0.257 0.298 0.241 0.195 318 .2 4,030 391 430 2.00 
+
+StreamPETR [1] 800 ×1600 55 .5 63 .0 0.539 0.255 0.258 0.231 0.199 316 .6 45 ,044 2,571 2,724 3.36 + tgGBC [4] 800 ×1600 54 .2 62 .1 0.560 0.256 0.255 0.223 0.204 316 .6 44 ,964 2,491 2,550 3.54 + ToC3D [3] 800 ×1600 55 .2 63 .0 0.534 0.257 0.241 0.231 0.200 324 .4 37 ,060 2,020 2,171 2.90 + Ours ( r = 0 .5) 800 ×1600 55 .5 63 .0 0.539 0.255 0.256 0.230 0.196 318 .2 26 ,798 1,954 2,098 2.27 + Ours ( r = 0 .3) 800 ×1600 55 .5 63 .0 0.541 0.254 0.258 0.231 0.197 318 .2 21 ,131 1,737 1,880 2.27 + Ours ( r = 0 .1) 800 ×1600 54 .1 62 .1 0.556 0.254 0.254 0.234 0.194 318 .2 18 ,512 1,652 1,789 2.09 
+
+methods, we observe a general trend of a decreasing number of activated tokens towards later layers of the encoder. Note that the number of activated tokens is closely related to the computational complexity of that particular layer. Comparing 
+
+ToC3D token activations to ours, we observe that in early layers we activate about half of ToC3D’s tokens ( K ≈ K/ 2), while in late encoder layers, we activate only about 20% of 
+
+ToC3D’s tokens ( K ≈ K/ 5), thereby explaining the much lower computational complexity and latency of our method in Fig. 5. The choice of hyperparameter r easily allows to control the number of activated tokens of our method in fine-tuning. Now we would like to investigate the value of using our pro-posed token compensator, shown in Fig. 3(b). Table IV reports a comparison of mAP and NDS in dependence on GFLOPs and latency measured with an input resolution of 320 ×800 on 
+
+Dval NS for the proposed token compensator TC (Fig. 3(b)) vs. the one from DAR-TR-PEFT [23]. Both, our approach and 
+
+DAR-TR-PEFT , utilize a SAM-B [19] image encoder and are integrated into StreamPETR [1]. In Table IV, we observe that the baseline token compensator from DAR-TR-PEFT 
+
+is slightly less complex and faster to compute than ours. However, for all average image feature token selection rates 
+
+r, our TC is consistently better than DAR-TR-PEFT [23] w.r.t. both mAP and NDS. This is particularly significant for r = 0 .3, where we clearly excel the baseline in mAP (46 .0% vs. 43 .6% ) and in NDS ( 55 .1% vs. 53 .6% ). Comparing across methods and r values, we observe the exact same performance metrics (mAP = 46 .0% , NDS = 55 .1% ) for our 
+
+TC (at r = 0 .3) and the baseline (at r = 0 .5), while our token compensator is less complex and faster to execute. Overall, the results demonstrate that the proposed TC consistently improves detection performance (mAP and NDS) at a close-by 
+
+TABLE IV 
+
+COMPARISON OF M AP, NDS IN DEPENDENCE ON GFLOP S AND LATENCY (MS ), ON Dval NS FOR OUR PROPOSED TOKEN COMPENSATOR (TC ,FIG . 3( B)) VS . THE TOKEN COMPENSATOR BY DAR-TR-PEFT [23]. BOTH , OUR APPROACH AND DAR-TR-PEFT [23] ARE INTEGRATED INTO 
+
+ST R E A M PETR [1] EMPLOYING THE SAM-B [19] ENCODER . B EST RESULTS BOLD . L ATENCY IN MS .
+
+Token Compensator r mAP ↑
+
+(%) 
+
+NDS ↑
+
+(%) GFLOPs ↓ Latency ↓
+
+τ E τ
+
+DAR-TR-PEFT [23] 0.1 43 .0 53 .4 2,291 121 158 
+
+Ours 44 .1 53 .9 2,295 123 160 
+
+DAR-TR-PEFT [23] 0.3 43 .6 53 .6 2,447 128 168 
+
+Ours 46 .0 55 .1 2,449 129 173 
+
+DAR-TR-PEFT [23] 0.5 46 .0 55 .1 2,677 140 180 
+
+Ours 46 .1 55 .3 2,680 141 179 
+
+computational cost for fixed r, and enables a better efficiency vs. detection performance trade-off by achieving the same performance at reduced computational cost across different values of r.
+
+In Table III, we show a detailed comparison of mAP, NDS, and the 3D object detection error metrics in depen-dence on model size, GFLOPs, and latencies, measured with input resolutions of 320 × 800 and 800 × 1600 on Dval NS for our proposed method vs. ToC3D [3] and tgGBC [4]. We evaluate both our approach and tgGBC using image encoders with low and high computational complexity, namely SAM-B 
+
+[19] and EVA-02-L [18], respectively. Further, ToC3D is evaluated with an EVA-02-L encoder. Our proposed method and the baselines tgGBC and ToC3D are integrated into 
+
+StreamPETR [1]. We report and rank results separately in table segments depending on image resolution and encoders. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 10 
+
+TABLE V 
+
+GENERALIZATION STUDY OF OUR PROPOSED METHOD VS . TOC3D ON TWO FURTHER 3D OBJECT DETECTION METHODS , RA Y DN [16] AND 
+
+SP A R S E 4D V2 [20]. E VALUATION METRICS M AP, NDS, AND VARIOUS 3D OBJECT DETECTION ERRORS IN DEPENDENCE ON GFLOP S AND LATENCIES 
+
+(MS ) ARE MEASURED WITH AN INPUT RESOLUTION OF 320 ×800 ON Dval NS . I N EACH TABLE SEGMENT , BEST RESULTS BOLD , SECOND -BEST UNDERLINED .
+
+Methods mAP ↑
+
+(%) 
+
+NDS ↑
+
+(%) mATE ↓ mASE ↓ mAOE ↓ mAVE ↓ mAAE ↓ Model Size ↓
+
+(M) 
+
+GFLOPs ↓ Latency ↓ Avg. rank ↓  
+
+> τEτ
+
+RayDN [16] 53 .6 62 .3 0.540 0.257 0.250 0.201 0.204 331 .9 9,787 615 639 3.09 + ToC3D [3] 50 .9 60 .9 0.523 0.251 0.254 0.238 0.190 339 .6 9,359 490 510 3.18 + Ours ( r = 0 .5) 54 .0 62 .3 0.519 0.252 0.275 0.231 0.193 333 .5 6,396 495 518 2.27  
+
+> +
+
+Ours ( r = 0 .3) 53 .8 62 .1 0.523 0.252 0.274 0.233 0.192 333 .5 5,484 480 503 2.45 + Ours ( r = 0 .1) 53 .7 62 .1 0.522 0.252 0.275 0.234 0.193 333 .5 4,909 442 464 2.27 
+
+Sparse4Dv2 [20] 53 .8 61 .3 0.529 0.259 0.292 0.287 0.193 316 .5 9, 004 246 279 2.54 + ToC3D [3] 50 .7 60 .1 0.559 0.257 0.259 0.255 0.196 324 .1 8, 682 221 257 3.36 + Ours ( r = 0 .5) 53 .5 61 .0 0.533 0.259 0.294 0.292 0.190 318 .1 5, 751 220 252 2.63 + Ours ( r = 0 .3) 53 .0 60 .8 0.541 0.259 0.288 0.286 0.193 318 .1 4, 674 207 239 2.27  
+
+> +
+
+Ours ( r = 0 .1) 52 .5 60 .5 0.546 0.259 0.294 0.289 0.194 318 .1 3, 879 198 230 2.54 
+
+For a fair comparison, we also include as first table segment some important dense BEV methods such as BEVDet [8], 
+
+BEVDepth [9], and SOLOFusion [10]. All dense BEV methods employ the ResNet-50 (RN-50) [38] image en-coder [8]–[10]. Note that the ToC3D results utilize the baseline layer, cf. Fig. 2(a), while ours employ the proposed layer with hidden dimension dh = 32 in TC , cf. Fig. 3(b). Noting that the different segments of Tab. III represent different regimes of model size, complexity, and latency, it does not come as a surprise that RN-50 -based methods are outperformed by SAM-B -based ones, while EVA-02-L -based approaches are best for a given image resolution. Accordingly, let’s focus on the SAM-B and EVA-02-L encoder regimes, which allow us to apply our efficient dynamic token selection approaches. In the SAM-B image encoder regime, the StreamPETR 
+
+baseline delivers convincing mAP and NDS, with overall good other metrics as well. The tgGBC baseline lacks behind in these two important metrics, and also shows a worse average rank. Our methods (for r ∈ { 0.5, 0.3}) have strongest average ranks in this regime while being significantly less complex and faster to compute than any of the two baselines. In the EVA-02-L image encoder regime, again still for a 
+
+320 ×800 image resolution, StreamPETR shows good overall performance, along with an average rank of 2.90 . Interestingly, the two further baselines tgGBC and ToC3D fall behind with a shared average rank of 3.72 . In this regime, our method achieves best average ranks for all choices of r, whereby 
+
+r = 0 .1 is both best in average rank, and by far the least complex and fastest method. Specifically, compared to ToC3D ,our approach with r = 0 .1 improves the mAP metric by 1.0% 
+
+absolute ( 49 .5% vs. 50 .5% ) and NDS by 0.7% absolute ( 58 .7% 
+
+vs. 59 .4% ), while reducing the GFLOPs by 55% (8, 908 vs. 
+
+4, 030 ) and the total latency by 25% (571 ms vs. 430 ms) .This is achieved although model sizes in this regime are very similar among the methods. Comparing the second table segment to this third one, we observe that our method is able to be increasingly token-selective ( r ↓) the larger the encoder gets—by that creating an attractive high-performance efficient multi-view 3D object detection. 
+
+TABLE VI 
+
+COMPARISON OF TRAINABLE AND TOTAL MODEL PARAMETERS OF OUR PROPOSED APPROACH VS . TOC3D ON Dval NS [21] WITH AN EVA-02-L 
+
+[18] ENCODER ON THREE MULTI -VIEW 3D OBJECT DETECTION METHODS .SYMBOL + INDICATES INTEGRATION INTO THE RESPECTIVE MULTI -VIEW 
+
+3D OBJECT DETECTION METHOD . B EST RESULTS BOLD .
+
+Method Fine-tuned (M) Total (M) 
+
+StreamPETR [1] – 316 .6+ ToC3D [3] 324 .4 +7 .8+ Ours 1.6 +1.6
+
+RayDN [16] – 331 .9+ ToC3D [3] 339 .6 +7 .7+ Ours 1.6 +1.6
+
+Sparse4Dv2 [20] – 316 .5+ ToC3D [3] 324 .1 +7 .6+ Ours 1.6 +1.6
+
+For the higher image resolution of 800 × 1600 , among the baselines, ToC3D now leads the field with an average rank of 
+
+2.90 . We observe that our method for all values of r is even better. Again, as with the lower image resolution, our most efficient approach ( r = 0 .1) leads the field with a competitive average rank of 2.09 —again being best in computational complexity and latency. 
+
+In Table VI, we present a comparison of trainable and total model parameters of our proposed approach (Sections III-C and III-D) vs. ToC3D on Dval NS using an EVA-02-L 
+
+encoder [18]. Here, fine-tuned (trainable) parameters refer to the amount of model parameters that are updated during the (PEFT) fine-tuning process. Both methods are integrated into the StreamPETR [1], RayDN [16], and Sparse4Dv2 
+
+[20] methods. Note that ToC3D [3] follows a full fine-tuning strategy of the image encoder E, feature pyramid network 
+
+FPN , and the 3D object decoder D of the respective 3D object detection method. As shown in Table VI, integrating 
+
+ToC3D into any of the three methods requires to fine-tune more than 300 M parameters, while we propose a parameter-efficient fine-tuning of only 1.6 M. Note that a large number of fine-tuned parameters significantly increases the training overhead, thereby reducing training efficiency [22], [23]. Fur-JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 11 
+
+ther, the introduction of the learnable motion queries Qmot 
+
+and the token scorer (cf. Fig. 2(a)) for image feature token selection in ToC3D increases the total number of parameters of the respective 3D object detection methods by about 7.6
+
+M. In our proposed layer (cf. Fig. 3(a)), we employ a single token selection block and a light-weight token compensator for image feature token selection, with only 1.6 M additional parameters. 
+
+In Table V, we present a generalization study of our proposed method vs. ToC3D [3] employed within the two further multi-view 3D object detection methods RayDN [16] and Sparse4Dv2 [20]. All evaluation metrics, GFLOPs, and latency are measured with an input resolution of 320 × 800 on 
+
+Dval NS . Further, both methods employ an EVA-02-L encoder [18]. Note that our proposed layer’s hidden dimension is 
+
+dh = 32 in TC , cf. Fig. 3(b). Comparing Table III for the EVA-02-L encoder at input resolution 320 × 800 vs. Table V, we observe at very similar model sizes that again ToC3D is poorest w.r.t. the average rank. The RayDN baseline method follows next, while in the lower table segment, the baseline Sparse4Dv2 even achieves a good average rank of 2.54 . While our methods show average ranks between 2.27 ... 2.63 , again, as with StreamPETR in Table III, also in the context of RayDN and Sparse4Dv2 in Table V, our approach with r = 0 .1 turns out to be the overall most attractive configuration: It reaches the top avg. rank of 2.27 within RayDN . Compared to ToC3D , our approach with r = 0 .1 increases the mAP by 2.8% absolute ( 50 .9% vs. 
+
+53 .7% ) and NDS by 1.2% absolute ( 60 .9% vs. 62 .1% ), while reducing the GFLOPs by 48% (9, 359 vs. 4, 909 ) and total latency by 9% (510 ms vs. 464 ms) .Also, within Sparse4Dv2 (lower table segment), our approach ( r = 0.1) attains an avg. rank of 2.54 , on par with the Sparse4Dv2 baseline, while clearly outperforming 
+
+ToC3D (3.36 ). Compared to ToC3D , our approach increases the mAP by 1.8% absolute ( 50 .7% vs. 52 .5% ) and NDS by 
+
+0.4% absolute ( 60 .1% vs. 60 .5% ), while reducing the GFLOPs by 55% (8, 682 vs. 3, 879 ) and total latency by 10% (257 
+
+ms vs. 230 ms) . Overall, these results demonstrate that our approach simultaneously improves both detection performance and efficiency across two additional multi-view 3D object detection methods. VI. C ONCLUSIONS 
+
+In this work, we address a limitation of so-far state-of-the-art methods based on ToC3D for efficient multi-view 3D object detection, which is the fixed layer-individual token selection ratio. We introduce a dynamic layer-wise token selec-tion strategy within large-scale pre-trained vision transformer backbones to accelerate existing 3D object detection methods. Further, instead of performing a computationally demanding full fine-tuning as in ToC3D , we propose a parameter-efficient fine-tuning (PEFT) strategy that trains only the proposed modules for dynamic token selection, while keeping the rest of the model weights frozen, thereby reducing the number of fine-tuned parameters from more than 300 M to only 1.6M. Across three multi-view 3D object detection approaches, we                             
+
+> A×
+> FC ,W(Q v)
+> aFC ,W(K v)
+> a
+> Reshape
+> A×
+> FC ,W(V v)
+> a
+> () T
+> E×I×d
+> E×I×da
+> E×da×I
+> E×I×d
+> E×I×da
+> E×I×d
+> E×I×da
+> A×
+> Matrix Multiplication
+> E×I×I
+> Softmax
+> Attention Weights
+> A×
+> Mv,t d×E×I
+> KvVvQv
+> Matrix Multiplication
+> Concatenation
+> E×I×d
+> Reshape
+> d×E×IWMHSA
+> 1√da
+> d×E×I
+> Gv
+> G′
+> v
+> Hv,t
+> Fig. 7. Window-based multi-head self attention (WMHSA) [26] from Figs. 2, and 3. The internal dimension darefers to the per-head internal dimension.
+
+demonstrate that our proposed approach decreases the compu-tational complexity (GFLOPs) by 48% ... 55% , and inference latency (on an NVIDIA-GV100 GPU) by 9% ... 25% , while still improving the mAP by 1.0% ... 2.8% absolute and NDS by 0.4% ... 1.2% absolute compared to the so-far state of the art ToC3D on the NuScenes dataset. APPENDIX AWINDOW -BASED MULTI -HEAD SELF ATTENTION 
+
+(WMHSA) Fig. 7 depicts the detailed architecture of the WMHSA block, employed by SAM-B [19], and EVA-02-L [18] image encoders. The input Mv,t is reshaped to produce the query 
+
+Qv ∈ RE×I×d, key Kv ∈ RE×I×d, and value Vv ∈ RE×I×d,which are passed through the scaled dot-product self attention 
+
+Gv,a (Qv , Kv , Vv ) = SM( Qv W(Q v )    
+
+> a·(KvW(K v)
+> a)T
+> √da
+
+) · Vv W(V v ) 
+
+> a
+
+,
+
+(8) to compute the window-based attention output Gv,a ∈
+
+RE×I×da independently across all E windows, softmax op-eration SM , learnable fully connected (FC) layers weights 
+
+W(Q v ) 
+
+> a
+
+, W(K v ) 
+
+> a
+
+, W(V v ) 
+
+> a
+
+∈ Rd×da , and () T being the transpose, applied only over the last two dimensions ( I ×da) of each win-dow. Here, a ∈ A refers to the head index, and A = {1, . . . , A }
+
+refers to the head index set, with A ∈ N being the number of heads. The result of the scaled dot-product self attention is concatenated to Gv = ( Gv,a ) ∈ RE×I×d and reshaped to produce G′ 
+
+> v
+
+∈ Rd×E×I , which is added to Mv,t to generate the refined representation Hv,t = ( Hv,t,e ) = G′ 
+
+> v
+
++ Mv,t ∈
+
+Rd×E×I , with Hv,t,e ∈ Rd×I , and respective window index 
+
+e ∈ E from index set E = {1, . . . , E }. Note that we dropped frame index t for all WMSHA-internal entities for better readability. For the baseline layer, the refined representation 
+
+Hv,t is employed to compute residual output H′
+
+> v,t
+
+. For the proposed layer, it is passed to the window unpartition block. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 12 
+
+REFERENCES [1] S. Wang, Y. Liu, T. Wang, Y. Li, and X. Zhang, “Exploring Object-Centric Temporal Modeling for Efficient Multi-View 3D Object De-tection,” in Proc. of ICCV , Montreal, QC, Canada, October 2023, pp. 3621–3631. [2] Y. Liu, T. Wang, X. Zhang, and J. Sun, “PETR: Position Embedding Transformation for Multi-View 3D Object Detection,” in Proc. of ECCV .Milan, Italy: Springer, October 2022, pp. 531–548. [3] D. Zhang, D. Liang, Z. Tan, X. Ye, C. Zhang, J. Wang, and X. Bai, “Make Your ViT-Based Multi-View 3D Detectors Faster via Token Compression,” in Proc. of ECCV , Milan, Italy, October 2024, pp. 56–72. [4] L. Xu, X. Bai, X. Jia, J. Fang, and S. Pang, “Accelerate 3D Object Detection Models via Zero-Shot Attention Key Pruning,” arXiv preprint arXiv:2503.08101 , 2025. [5] J. Philion and S. Fidler, “Lift, Splat, Shoot: Encoding Images from Arbitrary Camera Rigs by Implicitly Unprojecting to 3D,” in Proc. of ECCV . virtual: Springer, October 2020, pp. 194–210. [6] Z. Li, W. Wang, H. Li, E. Xie, C. Sima, T. Lu, Q. Yu, and J. Dai, “BEVFormer: Learning Bird’s-Eye-View Representation from Lidar-Camera Via Spatiotemporal Transformers,” IEEE T-PAMI , 2024. [7] C. Yang, Y. Chen, H. Tian, C. Tao, X. Zhu, Z. Zhang, G. Huang, H. Li, Y. Qiao, L. Lu et al. , “BEVFormer V2: Adapting Modern Image Back-bones to Bird’s-Eye-View Recognition Via Perspective Supervision,” in 
+
+Proc. of CVPR , Vancouver, BC, Canada, June 2023, pp. 17 830–17 839. [8] J. Huang, G. Huang, Z. Zhu, Y. Ye, and D. Du, “BEVDet: High-Performance Multi-Camera 3D Object Detection in Bird-Eye-View,” 
+
+arXiv preprint arXiv:2112.11790 , 2021. [9] Y. Li, Z. Ge, G. Yu, J. Yang, Z. Wang, Y. Shi, J. Sun, and Z. Li, “BEVDepth: Acquisition of Reliable Depth for Multi-View 3D Object Detection,” in Proc. of AAAI , vol. 37, no. 2, Washington, DC, USA, October 2023, pp. 1477–1485. [10] J. Park, C. Xu, S. Yang, K. Keutzer, K. Kitani, M. Tomizuka, and W. Zhan, “Time Will Tell: New Outlooks and a Baseline for Temporal Multi-View 3D Object Detection,” arXiv preprint arXiv:2210.02443 ,2022. [11] Z. Li, S. Lan, J. M. Alvarez, and Z. Wu, “BEVNext: Reviving Dense BEV Frameworks for 3D Object Detection,” in Proc. of CVPR , Seattle, WA, USA, June 2024, pp. 20 113–20 123. [12] Y. Wang, V. C. Guizilini, T. Zhang, Y. Wang, H. Zhao, and J. Solomon, “Detr3D: 3D Object Detection from Multi-View Images via 3D-to-2D Queries,” in Proc. of CORL . Auckland,NZ: PMLR, December 2022, pp. 180–191. [13] S. Chen, Y. Ma, Y. Qiao, and Y. Wang, “M-BEV: Masked BEV Perception for Robust Autonomous Driving,” in Proc. of AAAI , vol. 38, no. 2, Vancouver, BC, Canada, February 2024, pp. 1183–1191. [14] X. Lin, T. Lin, Z. Pei, L. Huang, and Z. Su, “Sparse4D: Multi-View 3D Object Detection With Sparse Spatial-Temporal Fusion,” arXiv preprint arXiv:2211.10581 , 2022. [15] H. Liu, Y. Teng, T. Lu, H. Wang, and L. Wang, “SparseBEV: High-Performance Sparse 3D Object Detection from Multi-Camera Videos,” in Proc. of ICCV , Paris,France, October 2023, pp. 18 580–18 590. [16] F. Liu, T. Huang, Q. Zhang, H. Yao, C. Zhang, F. Wan, Q. Ye, and Y. Zhou, “Ray Denoising: Depth-Aware Hard Negative Sampling for Multi-View 3D Object Detection,” in Proc. of ECCV . Milan, Italy: Springer, October 2024, pp. 200–217. [17] J. Hou, T. Wang, X. Ye, Z. Liu, S. Gong, X. Tan, E. Ding, J. Wang, and X. Bai, “OPEN: Object-Wise Position Embedding for Multi-View 3D Object Detection,” in Proc. of ECCV . Milan, Italy: Springer, October 2024, pp. 146–162. [18] Y. Fang, Q. Sun, X. Wang, T. Huang, X. Wang, and Y. Cao, “EVA-02: A Visual Representation for Neon Genesis,” Elsevier IVC , vol. 149, p. 105171, 2024. [19] A. Kirillov, E. Mintun, N. Ravi, H. Mao, C. Rolland, L. Gustafson, T. Xiao, S. Whitehead, A. C. Berg, W.-Y. Lo et al. , “Segment Anything,” in Proc. of ICCV , Paris, France, October 2023, pp. 4015–4026. [20] X. Lin, T. Lin, Z. Pei, L. Huang, and Z. Su, “Sparse4DV2: Recurrent Temporal Fusion With Sparse Model,” arXiv preprint arXiv:2305.14018 ,2023. [21] H. Caesar, V. Bankiti, A. H. Lang, S. Vora, V. E. Liong, Q. Xu, A. Kr-ishnan, Y. Pan, G. Baldan, and O. Beijbom, “Nuscenes: A Multimodal Dataset for Autonomous Driving,” in Proc. of CVPR , Seattle, WA, USA, June 2020, pp. 11 621–11 631. [22] E. J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang, W. Chen et al. , “LoRA: Low-Rank Adaptation of Large Language Models,” Proc. of ICLR , vol. 1, no. 2, p. 3, April 2022. [23] C. Lei, A. Li, H. Yao, C. Zhu, and L. Zhang, “Rethinking Token Reduction With Parameter-Efficient Fine-Tuning in ViT for Pixel-Level Tasks,” in Proc. of CVPR , Nashville, TN, USA, June 2025, pp. 14 954– 14 964. [24] Y. Li, H. Bao, Z. Ge, J. Yang, J. Sun, and Z. Li, “BEVStereo: Enhancing Depth Estimation in Multi-View 3D Object Detection With Temporal Stereo,” in Proc. of AAAI , vol. 37, no. 2, Washington, DC, USA, October 2023, pp. 1486–1494. [25] A. Dosovitskiy, L. Beyer, A. Kolesnikov, D. Weissenborn, X. Zhai, T. Unterthiner, M. Dehghani, M. Minderer, G. Heigold, S. Gelly et al. ,“An Image is Worth 16x16 Words: Transformers for Image Recognition At Scale,” arXiv preprint arXiv:2010.11929 , 2020. [26] Z. Liu, Y. Lin, Y. Cao, H. Hu, Y. Wei, Z. Zhang, S. Lin, and B. Guo, “Swin Transformer: Hierarchical Vision Transformer Using Shifted Windows,” in Proc. of ICCV , Montreal, QC, Canada, October 2021, pp. 10 012–10 022. [27] J. Deng, W. Dong, R. Socher, L.-J. Li, K. Li, and L. Fei-Fei, “ImageNet: A Large-scale Hierarchical Image Database,” in Proc. of CVPR , Miami, FL, USA, June 2009, pp. 248–255. [28] D. Nazir, T. Bartels, J. Piewek, T. Bagdonat, and T. Fingscheidt, “Distributed Semantic Segmentation With Efficient Joint Source and Task Decoding,” in Proc. of ECCV , Milan, Italy, October 2024, pp. 195–212. [29] T. Fingscheidt, H. Gottschalk, and S. Houben, Eds., 
+
+Deep Neural Networks and Data for Automated Driving: Robustness, Uncertainty Quantification, and Insights Towards Safety . Cham: Springer Nature, 2022. [Online]. Available: https://library.oapen.org/handle/20.500.12657/57375 [30] Y. Rao, W. Zhao, B. Liu, J. Lu, J. Zhou, and C.-J. Hsieh, “DynamicViT: Efficient Vision Transformers With Dynamic Token Sparsification,” 
+
+Proc. of NeurIPS , vol. 34, pp. 13 937–13 949, December 2021. [31] Y. Xu, Z. Zhang, M. Zhang, K. Sheng, K. Li, W. Dong, L. Zhang, C. Xu, and X. Sun, “EVO-ViT: Slow-Fast Token Evolution for Dynamic Vision Transformer,” in Proc. of AAAI , vol. 36, no. 3, Washington, DC, USA, February 2022, pp. 2964–2972. [32] D. Bolya, C.-Y. Fu, X. Dai, P. Zhang, C. Feichtenhofer, and J. Hoffman, “Token Merging: Your ViT But Faster,” arXiv preprint arXiv:2210.09461 , 2022. [33] J. Choi, S. Lee, J. Chu, M. Choi, and H. J. Kim, “Vid-TLDR: Training Free Token Merging for Light-Weight Video Transformer,” in Proc. of CVPR , Seattle, WA, USA, June 2024, pp. 18 771–18 781. [34] W. Zhao, J. Tang, Y. Han, Y. Song, K. Wang, G. Huang, F. Wang, and Y. You, “Dynamic Tuning Towards Parameter and Inference Efficiency for ViT Adaptation,” Proc. of NeurIPS , vol. 37, pp. 114 765–114 796, December 2024. [35] Y. Wang, V. C. Guizilini, T. Zhang, Y. Wang, H. Zhao, and J. Solomon, “DETR3D: 3D Object Detection from Multi-View Images via 3D-To-2D Queries,” in Proc. of CoRL . Auckland, Newzealand: PMLR, December 2022, pp. 180–191. [36] W. Zhang, R. Scheibler, K. Saijo, S. Cornell, C. Li, Z. Ni, J. Pirkl-bauer, M. Sach, S. Watanabe, T. Fingscheidt, and Y. Qian, “URGENT Challenge: Universality, Robustness, and Generalizability For Speech Enhancement,” in Proc. of Interspeech , Kos, Greece, September 2024, pp. 4868–4872. [37] K. Saijo, W. Zhang, S. Cornell, R. Scheibler, C. Li, Z. Ni, A. Kumar, M. Sach, Y. Fu, W. Wang, T. Fingscheidt, and S. Watanabe, “Inter-speech 2025 URGENT Speech Enhancement Challenge,” in Proc. of Interspeech , Rotterdam, Netherlands, August 2025, pp. 858–862. [38] K. He, X. Zhang, S. Ren, and J. Sun, “Deep Residual Learning for Image Recognition,” in Proc. of CVPR , Las Vegas, NV, USA, July 2016, pp. 770–778.

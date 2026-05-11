@@ -1,0 +1,134 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-001.webp",
+      "caption": "Figure 4: An overview of the different poses and movements in our dataset (from top row to bottom row); swimming, floating, standing, under water / diving, face-down floating.",
+      "page": 11,
+      "index": 1,
+      "width": 889,
+      "height": 1111
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-002.webp",
+      "caption": "Table 6: UAS-based water rescue simulation results including the average detection time (in seconds), detection rate (in percent) and computing times such as the time to solve the location-allocation MILP, the average time to solve the Search & Rescue MILP and the computing time of the MCS with 100, 000 runs on a MacBook Pro (Intel Core i9 running 1 thread at 2.4 GHz clock speed and 64 GB RAM).",
+      "page": 25,
+      "index": 2,
+      "width": 858,
+      "height": 221
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-003.webp",
+      "caption": "Figure 14: Histograms for the simulation of 100,000 S&R operations using UAS configurations with different numbers of hangars p and respective success rates of χ(p=1) = 57.3%, χ(p=2) = 99.39%, χ(p=3) = 99.64%, and χ(p=6) = 99.54%.",
+      "page": 26,
+      "index": 3,
+      "width": 821,
+      "height": 706
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-004.webp",
+      "caption": "Figure 10: Sequence of detection results with YOLOv8n, illustrating the transition of a swimmer’s classification from ”prob. ok” to ”prob. NOT ok”, highlighting the model’s ability to capture dynamic behavioral changes.",
+      "page": 21,
+      "index": 4,
+      "width": 889,
+      "height": 342
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-005.webp",
+      "caption": "Table 4: Total processing TPI in milliseconds (ms) and frame rate in FPS for different YOLO models and their smallest (nano) architecture sizes.",
+      "page": 18,
+      "index": 5,
+      "width": 702,
+      "height": 213
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-006.webp",
+      "caption": "Table 3: Mean Average Precision (mAP) metrics for different YOLO models and architecture sizes, automatically returned by the framework after the final training epoch (train mAP) and afterwards computed during the evaluation process (eval mAP).",
+      "page": 18,
+      "index": 6,
+      "width": 681,
+      "height": 181
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-007.webp",
+      "caption": "Figure 12: Illustration of an exemplary water rescue SRO in the Lusatian Lake District, Germany including the fastest path of the nearest ambulance (purple line), fire truck (orange line) and life boat (blue line) as well as predefined hot spot areas (red areas).",
+      "page": 23,
+      "index": 7,
+      "width": 889,
+      "height": 512
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-008.webp",
+      "caption": "Figure 2: Schematic representation of the YOLOv1 architecture, showing the processing pipeline from input image (green) to detection output (pink/yellow) [49].",
+      "page": 8,
+      "index": 8,
+      "width": 889,
+      "height": 388
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-009.webp",
+      "caption": "Table 5: Total processing TPI in milliseconds (ms) and frame rate in FPS for different YOLO models and their largest (extra-large) architecture sizes.",
+      "page": 19,
+      "index": 9,
+      "width": 750,
+      "height": 211
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-010.webp",
+      "caption": "Table 1: Comparison of possible cases for the prediction and the ground truth, based on the IoU.",
+      "page": 17,
+      "index": 10,
+      "width": 808,
+      "height": 365
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-011.webp",
+      "caption": "Table 2: Central Processing Unit (CPU) and Graphics Processing Unit (GPU) specifications for the utilized devices “PC” and “Laptop” in the evaluation process.",
+      "page": 17,
+      "index": 11,
+      "width": 681,
+      "height": 187
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-012.webp",
+      "caption": "Figure 5: Synthetic image creation procedure: original swimmer image from Kaggle dataset (left), background-removed swimmer (middle), swimmer randomly placed on a lake background (right) [49].",
+      "page": 12,
+      "index": 12,
+      "width": 889,
+      "height": 259
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-013.webp",
+      "caption": "Figure 13: Histogram of the estimated target approach time for a SRO of a distressed swimmer, based on a MCS with NMCS = 10, 000 iterations.",
+      "page": 24,
+      "index": 13,
+      "width": 712,
+      "height": 319
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-014.webp",
+      "caption": "Figure 3: An overview of the UAV-captured dataset, in which heterogeneous groups of test subjects perform different standard swimming and distress behaviors.",
+      "page": 9,
+      "index": 14,
+      "width": 889,
+      "height": 450
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-015.webp",
+      "caption": "Figure 8: Detection results for all trained YOLO models and architectures. The top row shows nano variants (YOLOv3n, -v5n, -v8n), while the bottom row presents extra-large variants (YOLOv3x, -v5x, -v8x).",
+      "page": 20,
+      "index": 15,
+      "width": 889,
+      "height": 450
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18088v1/fig-016.webp",
+      "caption": "Figure 9: Detection results with YOLOv8x in a scene containing multiple swimmers, some in close proximity, being successfully distinguished and classified by the model.",
+      "page": 20,
+      "index": 16,
+      "width": 889,
+      "height": 505
+    }
+  ]
+}

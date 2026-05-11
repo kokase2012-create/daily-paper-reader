@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-001.webp",
+      "caption": "Fig. 7. Window-based multi-head self attention (WMHSA) [26] from Figs. 2, and 3. The internal dimension da refers to the per-head internal dimension.",
+      "page": 11,
+      "index": 1,
+      "width": 394,
+      "height": 473
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-002.webp",
+      "caption": "TABLE V GENERALIZATION STUDY OF OUR PROPOSED METHOD VS. TOC3D ON TWO FURTHER 3D OBJECT DETECTION METHODS, RAYDN [16] AND SPARSE4DV2 [20]. EVALUATION METRICS MAP, NDS, AND VARIOUS 3D OBJECT DETECTION ERRORS IN DEPENDENCE ON GFLOPS AND LATENCIES (MS) ARE MEASURED WITH AN INPUT RESOLUTION OF 320×800 ON Dval NS . IN EACH TABLE SEGMENT, BEST RESULTS BOLD, SECOND-BEST UNDERLINED.",
+      "page": 10,
+      "index": 2,
+      "width": 992,
+      "height": 286
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-003.webp",
+      "caption": "Fig. 6. Comparison of #activated tokens at the output projection block (Fig. 2(b)) in each image encoder layer, measured with an input resolution of 320 × 800 on 300 randomly sampled instances from Dval NS for our proposed approach vs. ToC3D [3], both integrated into StreamPETR [1].",
+      "page": 8,
+      "index": 3,
+      "width": 517,
+      "height": 363
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-004.webp",
+      "caption": "Fig. 5. Comparison of mAP and NDS in dependence on GFLOPs and latency (ms), measured with an input resolution of 320× 800 for Dval NS for our proposed approach vs. ToC3D [3], both integrated into StreamPETR [1]. Symbol r represents the average image feature token activation rate in the image encoder layer.",
+      "page": 8,
+      "index": 4,
+      "width": 547,
+      "height": 494
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-005.webp",
+      "caption": "Fig. 2. (a) Layer architecture of the image encoder E utilized in Fig. 1 for the baseline [3]. (b) Details the output projection block [18]. Blocks marked with \\ are updated during fine-tuning, blocks with remain frozen.",
+      "page": 4,
+      "index": 5,
+      "width": 522,
+      "height": 660
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-006.webp",
+      "caption": "TABLE III COMPARISON OF MAP, NDS, AND VARIOUS 3D OBJECT DETECTION ERROR METRICS IN DEPENDENCE ON GFLOPS AND LATENCY (MS), MEASURED WITH TWO INPUT RESOLUTIONS ON Dval NS FOR VARIOUS METHODS. IN EACH TABLE SEGMENT, BEST RESULTS BOLD, SECOND-BEST UNDERLINED.",
+      "page": 9,
+      "index": 6,
+      "width": 1087,
+      "height": 502
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-007.webp",
+      "caption": "TABLE IV COMPARISON OF MAP, NDS IN DEPENDENCE ON GFLOPS AND LATENCY (MS), ON Dval NS FOR OUR PROPOSED TOKEN COMPENSATOR (TC, FIG. 3(B)) VS. THE TOKEN COMPENSATOR BY DAR-TR-PEFT [23].",
+      "page": 9,
+      "index": 7,
+      "width": 524,
+      "height": 288
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-008.webp",
+      "caption": "Fig. 4. Our token router block used in Fig. 3(a), adopted from [23], [34]. The output projection block (details in Fig. 2(b)) remains frozen during the fine-tuning stage.",
+      "page": 5,
+      "index": 8,
+      "width": 518,
+      "height": 391
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13586v1/fig-009.webp",
+      "caption": "Fig. 3. (a) Proposed layer architecture of the image encoder E utilized in Fig. 1. (b) Proposed token compensator (TC) block. Blocks marked with \\ are updated during fine-tuning, blocks with remain frozen.",
+      "page": 5,
+      "index": 9,
+      "width": 529,
+      "height": 507
+    }
+  ]
+}
