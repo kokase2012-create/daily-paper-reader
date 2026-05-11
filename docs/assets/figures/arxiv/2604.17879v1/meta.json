@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.17879v1/fig-001.webp",
+      "caption": "Table 1. PERFORMANCE OF DIFFERENT METHODS ON BENCHMARK DATASETS. THE TOP TWO RESULTS ARE HIGHLIGHTED BOLD AND UNDERLINE,RESPECTIVELY.",
+      "page": 6,
+      "index": 1,
+      "width": 1054,
+      "height": 362
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17879v1/fig-002.webp",
+      "caption": "Figure 5. Visual comparisons of our BIRNet and the competing methods.",
+      "page": 6,
+      "index": 2,
+      "width": 1058,
+      "height": 216
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17879v1/fig-003.webp",
+      "caption": "Figure 2. Overall architecture of the proposed framework BASFNet. The framework consists of three key modules: FEEM, SCSM, and SFFIM, each of which utilizes enhanced feature fusion block (EFFB) for effective feature integration. EFFB enhances the outputs of these modules by leveraging their complementary strengths to boost overall performance.",
+      "page": 3,
+      "index": 3,
+      "width": 965,
+      "height": 989
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17879v1/fig-004.webp",
+      "caption": "Figure 4. Illustration of Enhanced Feature Fusion Block.",
+      "page": 5,
+      "index": 4,
+      "width": 306,
+      "height": 525
+    }
+  ]
+}

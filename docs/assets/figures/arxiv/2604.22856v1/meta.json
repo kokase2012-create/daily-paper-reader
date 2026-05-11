@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.22856v1/fig-001.webp",
+      "caption": "Fig. 4: Proposed Model Detection",
+      "page": 7,
+      "index": 1,
+      "width": 529,
+      "height": 300
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22856v1/fig-002.webp",
+      "caption": "TABLE VII: Ablation Study of Modified Components in YOLOv8n on KITTI Dataset",
+      "page": 10,
+      "index": 2,
+      "width": 1060,
+      "height": 256
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22856v1/fig-003.webp",
+      "caption": "TABLE II: Literature Review: Recent Detection Methods on KITTI",
+      "page": 3,
+      "index": 3,
+      "width": 1076,
+      "height": 306
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22856v1/fig-004.webp",
+      "caption": "Fig. 5: Metrics vs Epochs - Proposed",
+      "page": 8,
+      "index": 4,
+      "width": 529,
+      "height": 264
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22856v1/fig-005.webp",
+      "caption": "TABLE IV: Training Parameters for the Proposed Model",
+      "page": 8,
+      "index": 5,
+      "width": 1076,
+      "height": 196
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22856v1/fig-006.webp",
+      "caption": "Fig. 7: Comparison of confusion matrices between the base and proposed YOLOv8n models.",
+      "page": 9,
+      "index": 6,
+      "width": 529,
+      "height": 232
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22856v1/fig-007.webp",
+      "caption": "Fig. 3: Architecture of the Enhanced YOLOv8 Framework Integrating Ghost Modules, CBAM, and DCNv2",
+      "page": 5,
+      "index": 7,
+      "width": 474,
+      "height": 579
+    }
+  ]
+}

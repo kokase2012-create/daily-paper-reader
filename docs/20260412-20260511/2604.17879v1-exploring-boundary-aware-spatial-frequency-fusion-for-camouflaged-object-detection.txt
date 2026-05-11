@@ -1,0 +1,519 @@
+Title: Exploring Boundary-Aware Spatial-Frequency Fusion for Camouflaged Object Detection
+
+URL Source: https://arxiv.org/pdf/2604.17879v1
+
+Published Time: Tue, 21 Apr 2026 02:18:56 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Exploring Boundary-Aware Spatial-Frequency Fusion for Camouflaged Object Detection 
+
+## Song Yu a, Yang Hu a, HaoKang Ding a, ZhiFang Liao a, * and YuCheng Song a, ** aSchool of Computer Science and Engineering, Central South University, Changsha, China 
+
+Abstract. Camouflaged Object Detection is challenging due to the high degree of similarity between camouflaged objects and their sur-rounding backgrounds. Current COD methods mainly rely on edge extraction in the spatial domain and local pixel-level information, neglecting the importance of global structural features. Addition-ally, they fail to effectively leverage the importance of phase spec-trum information within frequency domain features. To this end, we propose a COD framework BASFNet based on boundary-aware fre-quency domain and spatial domain fusion.This method uses dual guided integration of frequency domain and spatial domain features. A phase-spectrum-based frequency-enhanced edge exploration mod-ule (FEEM) and a spatial core segmentation module (SCSM) are introduced to jointly capture the boundary and object features of camouflaged objects. These features are then effectively integrated through a spatial-frequency fusion interaction module (SFFIM). Fur-thermore, the boundary detection is further optimized through an boundary-aware training strategy. BASFNet outperforms existing state-of-the-art methods on three benchmark datasets, validating the effectiveness of the fusion of frequency and spatial domain informa-tion in COD tasks. 
+
+## 1 Introduction 
+
+Camouflage refers to a strategy in which organisms alter their ap-pearance to blend in with their surrounding environment, making it visually difficult to detect them. The research objective of Camou-flaged Object Detection (COD) is to identify camouflaged objects that seamlessly integrate with their environment. This research is of significant value in various fields, including species discovery [25], military applications [14], pest monitoring [33], and polyp segmen-tation [8]. In recent years, COD has received increasing attention in the field of computer vision [18]. With the development of deep learning, several studies [7, 23, 12] have utilized deep learning networks to extract multi-level features and perform multi-scale processing on images, significantly im-proving detection performance. However, the high similarity be-tween the camouflaged object and the background, especially in boundary recognition, still presents a challenge for accurately de-tecting camouflaged objects. To address this issue, several studies [42, 29, 11, 40, 36] have introduced edge information in the spatial domain to enhance the detection capabilities of models. By incorpo-rating edge features, these approaches aim to improve the model’s ability to detect camouflaged objects more accurately. By extracting  
+
+> ∗
+
+Corresponding Author. Email: zfliao@csu.edu.cn. PSR Image ORI Image 
+
+Figure 1. Frequency domain analysis of camouflaged images involves frequency decomposition and reconstruction. The first row, labeled "ORI Image," shows the original image, while the second row, "PSR Image," displays the reconstructed image containing only phase information. 
+
+pixel-level edge features of camouflaged objects, these methods as-sist the model in more accurately identifying the target. However, the core assumption of these methods is that edge fea-tures can precisely distinguish the target from the background. Most existing COD methods rely on edge information with pixel-level ac-curacy, but this approach has limitations in the COD task. First, in complex backgrounds, pixel-level edge features are prone to noise interference. Relying solely on high-resolution edge features often results in the model being unable to accurately locate the target boundaries. Secondly, these methods primarily rely on edge extrac-tion in the spatial domain and local pixel-level information, lacking a global perspective. This local information often fails to effectively capture global structures, leading to imprecise edge information and reduced detection accuracy. In contrast, frequency domain features, especially phase information, show unique advantages. As shown in Fig. 1, the image reconstructed using only phase information can in-tuitively capture the global structural contours and edge features in the image. These global structural features can effectively distinguish the target from the complex background, providing clearer structural information for blurred boundaries. At the same time, they enhance the expression of local features in the spatial domain, thereby com-pensating for the limitations of traditional spatial-domain methods. Additionally, by enhancing the boundary characteristics of camou-flaged objects, the issue of accurately locating the target boundaries in complex backgrounds can be addressed. This improvement helps the model better differentiate the target from the surrounding envi-ronment. Therefore, the strategy of combining spatial and frequency domain features, by comprehensively modeling the boundary char-acteristics of camouflaged objects, can effectively address the limita-tions of existing methods. This approach further enhances the ability to recognize boundaries. Based on the above discussion, we propose a new framework for 
+
+> arXiv:2604.17879v1 [cs.CV] 20 Apr 2026
+
+COD based on boundary-aware frequency domain and spatial do-main fusion, BASFNet. The model effectively detects camouflaged objects by jointly exploring frequency domain and spatial domain information. BASFNet consists of three core modules: frequency enhanced edge exploration module (FEEM), spatial core segmenta-tion module (SCSM) and spatial-frequency fusion interaction mod-ule (SFFIM). FEEM captures edge information in the frequency do-main by leveraging phase information to emphasize edges and con-tours, while also exploiting the frequency domain’s capability to model global dependencies. A boundary-aware training strategy is employed to further enhance the edge information, thereby improv-ing edge detection in camouflaged environments. The SCSM focuses on spatial feature extraction, utilizing a global-guided local learning strategy to effectively distinguish camouflaged objects from complex backgrounds. Finally, the SFFIM integrates fine edge features from FEEM with segmentation features from SCSM through a dynamic weighting mechanism, ensuring optimal feature fusion and produc-ing a segmentation map with accurate boundaries and complete ob-ject recognition. Our main contributions are as follows: 
+
+• We propose a new frequency and space dual guidance framework based on boundary perception, BASFNet, for camouflaged object detection. The framework achieves target recognition by jointly exploring information in the frequency domain and the spatial do-main. It mainly consists of three core modules: FEEM, SCSM and SFFIM. 
+
+• We propose a boundary-aware training strategy that uses extended edge information to assist the segmentation process, so that the model can better capture the edge features of camouflaged objects when segmenting them. 
+
+• Extensive experiments demonstrate that our method achieves state-of-the-art (SOTA) performance across most metrics on three benchmark COD datasets. 
+
+## 2 Related work 
+
+## 2.1 Camouflaged Object Detection 
+
+Early camouflaged object detection (COD) methods primarily re-lied on handcrafted low-level features, such as edges [27], color contrast [13], geometric cues [31], and texture descriptors [1, 15]. However, due to the low contrast between camouflaged objects and their backgrounds, these methods often fail in scenarios involving multiple objects, occlusion, or complex backgrounds. With the de-velopment of deep learning, convolutional neural network (CNN)-based approaches have significantly improved COD performance. Representative works such as SINet [7], ZoomNet [23], BGNet [34], and MGL [39] have explored strategies including progressive re-finement, multi-scale feature fusion, edge-guided supervision, and graph-structured feature modeling, greatly enhancing detection ef-fectiveness. Recently, the powerful modeling capabilities of Trans-former networks [10, 4] have also been introduced into the COD field. For example, Song et al. [28] proposed a two-stage “Focus-and-Scan” network (FSNet), leveraging the Transformer mechanism to enhance semantic modeling of camouflaged regions. Despite these advancements, most methods still primarily rely on local information such as texture and edges in the spatial domain, while neglecting the global structural information embedded in the frequency domain. To address this, we investigate the phase spectrum in the frequency domain and introduce a boundary-aware spatial-frequency fusion strategy to effectively integrate frequency and spa-tial features, thereby enhancing the accuracy of camouflaged object detection. 
+
+## 2.2 Boundary-Aware Feature Learning 
+
+In camouflaged object detection (COD), researchers have adopted the multi-task learning paradigm by incorporating boundary-aware tasks to enhance segmentation accuracy. Since camouflaged objects are often highly integrated with the background and exhibit vague boundaries, accurately capturing edge information is crucial for pre-cise localization and contour modeling. Most current COD methods enhance edge perception by incorporating boundary-guided modules or auxiliary edge branches, combined with explicit boundary super-vision. For example, Xiao et al. [34] proposed the Boundary-guided Context-aware Network (BCNet), which designs a boundary-guided feature interaction module to fuse multi-level features and model the complementarity between object semantics and boundary contours. Li et al. [17] proposed the Boundary and Localization Representation Network (BLRNet), which fuses high-level semantics with positional information to guide low-level features in accurately extracting edges and improving the localization and segmentation of camouflaged ob-jects. However, most existing methods rely on edge cues extracted from low-level features and focus on enhancing boundary awareness via guidance modules, but they lack thorough modeling of the accuracy, structural integrity, and collaboration between predicted boundaries and target regions. To address this, we propose a boundary-aware training strategy to enhance boundary recognition, and employ a Spatial-Frequency Fusion Interaction Module (SFFIM) to dynami-cally integrate spatial and frequency cues, thereby boosting the seg-mentation performance on camouflaged objects. 
+
+## 2.3 Frequency Domain Feature Learning 
+
+Frequency-domain feature learning has become an important re-search direction in visual understanding tasks, especially in scenarios where spatial-domain features fail to provide sufficient information. By applying the Fourier Transform (FFT) to images or feature maps, frequency-domain methods capture low-frequency components, fa-cilitating the extraction of global contours and structural information that are difficult to obtain in the spatial domain. In camouflaged ob-ject detection, frequency-domain features enhance the model’s abil-ity to recognize subtle structural differences between foreground and background, thus gaining increasing attention. In recent years, some approaches have attempted to improve COD performance from a fre-quency perspective. For example, He et al. [11] proposed the Feature Decomposition and Edge Reconstruction (FEDER) model, which employs learnable wavelets to decompose features into different fre-quency bands, thereby mitigating the high similarity between fore-ground and background. This method further focuses on the most informative frequency bands to extract subtle structural cues that help distinguish camouflaged targets. More recently, methods such as FSELNet [30] and DSNet [41] adopt a strategy of fusing frequency-domain and spatial-domain information, leveraging frequency mod-eling to enhance structural cue representation and combining it with spatial details to achieve more accurate target localization and seg-mentation. However, these methods mainly focus on modeling and enhanc-ing frequency-domain information while often overlooking the crit-ical role of the phase spectrum in structure modeling and contour Input Image 
+
+FEEM FEEM 
+
+SFFIM 
+
+> EFFB
+> Spatial
+> Attention
+> Channel
+> Attention
+> Conv1
+> Conv3  Conv3
+> Conv1
+> Conv1
+> ASPP
+> Conv3 Conv3 D=2 Conv1
+> Conv3 D=3  Conv3 D=3
+> Conv3
+> EFFB
+> RConv3
+> Local Fusion
+> Sigmoid
+> Global Fusion
+> RConv3
+> Conv3
+> Conv1
+> BatchNorm
+> BatchNorm
+> Sigmoid
+> BatchNorm
+> BatchNorm
+> Conv1
+> GlobalAvg
+> Pooling
+> Conv3
+> EFFB
+> EFFB
+> FFT
+> iFFT
+> High Frequency
+> GlobalAvg
+> Pooling
+> RConv3
+> Amplitude Attention
+> Conv3
+> Sigmoid
+> RConv3
+> Phase Feature Refinement
+> Conv3
+> Adaptive
+> Weighting
+> ...
+
+SFFIM 
+
+SCSM SCSM 
+
+Element-wise Add 
+
+Concatenation Element-wise Multiplication Element-wise Subtraction  
+
+> RConv3
+
+Relu, Convolution3x3 FFT Fast Fourier Transform  
+
+> iFFT
+
+Inverse Fast Fourier Transform Deep supervision SCSM Spatial Core Segmentation Module  
+
+> SFFIM
+
+Spatial-Frequency Fusion Interaction Module  
+
+> FEEM
+
+Frequency-Enhanced Edge Exploration Module Figure 2. Overall architecture of the proposed framework BASFNet. The framework consists of three key modules: FEEM, SCSM, and SFFIM, each of which utilizes enhanced feature fusion block (EFFB) for effective feature integration. EFFB enhances the outputs of these modules by leveraging their complementary strengths to boost overall performance. 
+
+discrimination. To address this issue, we propose a phase spectrum-based frequency enhancement module (FEEM), which adaptively mines structural boundary information in the frequency domain and integrates it into a boundary-aware COD framework. 
+
+## 3 Proposed Method 
+
+## 3.1 Framework Architecture 
+
+Camouflaged objects achieve high similarity with their surroundings through adaptive adjustments in color, texture, and shape, making them difficult to distinguish in the spatial domain, especially for methods that rely on local pixel-level modeling. To address this issue, BASFNet adopts multiple strategies: 1) Unlike previous approaches that mainly focus on frequency amplitude information, BASFNet introduces the phase-spectrum-driven FEEM module, which lever-ages the phase spectrum’s sensitivity to structural boundaries to ef-fectively extract fine-grained edge cues of camouflaged objects; 2) To enhance the complementary fusion of frequency and spatial fea-tures, we design the SFFIM module, which facilitates cross-domain interactive guidance and dynamic integration; 3) During training, BASFNet incorporates a boundary-aware training strategy that ap-plies explicit supervision on boundary regions, effectively improving the accuracy of edge localization. The overall architecture of BASFNet, shown in Fig. 2, consists of three key components: FEEM, SCSM and SFFIM. We use the Swin Transformer [19] as the backbone network. Given an input im-age I, the network extracts multi-scale features denoted as X =
+
+{xi, i = 1 , 2, 3, 4, 5}, which capture both global and local informa-tion of camouflaged objects. To ensure consistency across the dif-ferent branches while minimizing computational overhead, we apply a 1 × 1 convolution to standardize the feature channels to 64. The 
+
+x1 → x4 features are then fed into the edge frequency detection branch (composed of FEEM modules) and the spatial segmentation branch (composed of SCSM modules) in parallel, extracting edge and object information.The FEEM module emphasizes frequency domain edge features, particularly focusing on phase information, while the SCSM module specializes in local feature learning for spa-tial segmentation. Finally, the outputs from the FEEM and SCSM modules are passed to the SFFIM module, where the frequency and spatial information are fused and interactively refined to improve the final segmentation. This multi-level fusion strategy significantly en-hances the detection and segmentation performance of camouflaged objects in complex backgrounds. 
+
+## 3.2 Frequency-Enhanced Edge Exploration Module 
+
+Phase conveys more structural information than amplitude and is less susceptible to noise and contrast distortions [22]. In camou-flaged object detection (COD), traditional spatial feature extraction methods struggle with the high similarity between camouflaged ob-jects and their background, whereas frequency information enhances edge sensitivity. The Frequency-Enhanced Edge Exploration Module (FEEM) leverages Fourier transform to extract global frequency fea-tures, capturing high-frequency details and improving object bound-ary visibility. As shown in Fig. 2, we use the Enhanced Feature Fu-sion Block (EFFB) to integrate these features into an aggregated fea-ture f 1 
+
+> e
+
+. The Fast Fourier Transform (FFT) is then applied to obtain the amplitude spectrum A(f 1 
+
+> e
+
+) and phase spectrum P(f 1 
+
+> e
+
+). The am-plitude, which reflects broader image degradation, plays a key role in recovering detailed phase information and preserving structural de-tails. We enhance the amplitude features dynamically using a high-frequency enhancement module and an amplitude attention module, leveraging residual amplitude data for phase recovery. It can be ex-pressed as: 
+
+A  f 1
+
+> e
+
+ , P  f 1
+
+> e
+
+ = F  f 1
+
+> e
+
+ (1) 
+
+A′  f 1
+
+> e
+
+ = H  A  f 1
+
+> e
+
+ · A tt  H  A  f 1
+
+> e
+
+ (2) where F (·) represents the fast Fourier transform. H (·) represents the high-frequency enhancement module, which is a 3 × 3 convolu-tion with batch normalization operation. Att (·) represents the am-plitude attention module. Next, we guide the optimization of phase features through an adap-tive weighting module based on amplitude variations, thereby en-hancing the global descriptive power of the phase information. Fi-nally, the enhanced frequency domain features are mapped back to the spatial domain through an Fast Inverse Fourier Transform to pro-duce the final output features: 
+
+P′  f 1
+
+> e
+
+ = P  P  f 1
+
+> e
+
+ · W  A′  f 1
+
+> e
+
+ − A  f 1
+
+> e
+
+ (3) 
+
+F i+1  
+
+> f re
+
+= F−1  A′  f 1
+
+> e
+
+ , P′  f 1
+
+> e
+
+ + f 1 
+
+> e
+
+(4) where W (·)is an adaptive weighting module that dynamically ad-justs the weight according to the amplitude residual. P (·) is a phase feature Refinement module that further enhances the phase feature. 
+
+F−1 (·) is an Fast Inverse Fourier Transform. To enhance the boundary awareness capability of the FEEM mod-ule, we design a boundary-aware training strategy that combines phase information extraction with expanded edge supervision to as-sist in boundary learning for camouflaged object segmentation. As illustrated in Fig. 3, we first apply the Canny operator [2] to the camouflage object mask Gm to generate the initial edge map Ge.Then, we perform dilation on Ge using convolution kernels of dif-ferent sizes k × k (k ∈ { 1, 3, 5, 7, 9}), resulting in the dilated edge map Gde . This process broadens the boundary regions and introduces additional transition information between the object and background. During training, Gde serves as the supervision signal for the expanded edges, emphasizing regions with significant edge variations. This strategy enables the FEEM module to better capture boundary details and improves its edge detection ability under complex backgrounds. The impact of different kernel sizes on the performance of BSAFNet will be discussed in detail in Section 4.4. 
+
+## 3.3 Spatial Core Segmentation Module 
+
+As shown in Fig. 2, the Spatial Core Segmentation Module (SCSM) is designed to focus on object segmentation in the spatial domain and provides high-quality object features for the subsequent Frequency-Spatial Fusion Interaction Module (SFFIM). First, we use the En-hanced Feature Fusion Block (EFFB) to integrate these features into an aggregated feature f 1 
+
+> s
+
+. Next, Spatial Attention and Channel At-tention mechanisms are applied to highlight important features in the spatial and channel dimensions, respectively. These attentions adaptively weight salient features, enhancing the segmentation of the camouflaged object’s main region. The attention features are then summed to produce an enhanced representation. Subsequently, these features are decomposed into collaborative features through depth-wise separable convolutions, establishing non-linear associations: 
+
+P split = DW Conv  SpaIn  SA  f 1
+
+> s
+
+ + CA  f 1
+
+> s
+
+ (5) where SpaIn (·) is the input projection module that extends the input dimension by a factor of two for feature decoupling. DW Conv (·) is a depth separable convolution for efficient extraction and interaction, 
+
+SA (·) denotes the Spatial Attention mechanism, CA (·) denotes the Channel Attention mechanism. The result is then divided into two parts and processed simulta-neously through nonlinear activation, and then the result of the co-processing is projected back to the original feature space. Finally, all enhanced features are pooled and fed into the Atrous Spatial Pyra-mid Pooling (ASPP) module to capture multi-scale contextual infor-mation. The process is expressed as: 
+
+f 2 
+
+> s
+
+, f 3 
+
+> s
+
+= P split (6) 
+
+f 4 
+
+> s
+
+= SpaOut  GELU  f 2
+
+> s
+
+ · f 3
+
+> s
+
+ + f 1 
+
+> s
+
+(7) 
+
+F i+1  
+
+> spa
+
+= ASP P  f 4
+
+> s
+
+ (8) Ground Truth Original Edges Dilatant Edges  
+
+> canny operator dilation operator Figure 3. The process of producing edge ground truths in boundary-aware enhancement strategy.
+
+where SpaOut (·) is the output projection module that restores the dimension to the original feature dimension, and ASP P (·) is the atrous spatial pyramid pooling module that captures multi-scale con-textual information. 
+
+## 3.4 Spatial-Frequency Fusion Interaction Module 
+
+As shown in Fig. 2, the Spatial-Frequency Fusion Interaction Module (SFFIM) is a core component that aims to deeply fuse and interact features from the FEEM (edge frequency information) and SCSM (spatial segmentation information) modules, optimizing the final seg-mentation of camouflaged objects. The SFFIM achieves complemen-tarity between the frequency and spatial domains by efficiently fus-ing edge and segmentation features. Multi-level interaction ensures accurate modeling of both boundary and object regions, preserving fine edge details while enhancing object recognition and segmenta-tion. Initially, the SFFIM module receives the feature outputs from the FEEM, SCSM, and the previous SFFIM module, which are then integrated using the EFFB unit to generate the preliminary fusion features, F use 1 
+
+> f
+
+and F use 1 
+
+> s
+
+. Next, these fused features are input into two parallel processing branches. One branch uses the impor-tance distribution of local features to enhance fine-grained features through the Local Fusion block to capture local correlations between spatial and frequency features. The other branch aims to capture the complementary information of spatial and frequency features from a global perspective through the Global Fusion block. After the fea-tures from both branches are fused, all output features are further re-fined through the feature optimization module. This additional refine-ment enhances the quality of the fused features, leading to improved overall accuracy in camouflaged object detection. The process can be expressed as: 
+
+F use 2 
+
+> s
+
+= LF 
+
+h
+
+CBR 3×3
+
+
+
+F ispa 
+
+
+
++ F use 1
+
+> f
+
+i
+
+(9) 
+
+F use 2 
+
+> f
+
+= GF 
+
+h
+
+CBR 3×3
+
+
+
+F if re 
+
+
+
++ F use 1
+
+> s
+
+i
+
+(10) 
+
+F i+1  
+
+> f sue
+
+= Ref ine  F use 2 
+
+> s
+
++ F use 2
+
+> f
+
+ (11) where LF (·) represents the local fusion branch, and GF (·) repre-sents the global fusion branch. Ref ine (·) is a 3 × 3 convolution and batch normalization operation used to compress channel information and remove redundant features. 
+
+## 3.5 Enhanced Feature Fusion Block 
+
+As shown in Fig. 4, the Enhanced Feature Fusion Block (EFFB) is a module designed to integrate and refine multi-source heterogeneous features, aiming to enhance the collaborative representation capabil-ity of different modules such as FEEM, SCSM, and SFFIM. EFFB F X
+
+Output  
+
+> Conv3 Conv3
+> Conv3
+> BatchNorm
+> RConv3
+> Sigmoid
+> Enhance
+> Attention
+
+## EFFB  
+
+> Figure 4. Illustration of Enhanced Feature Fusion Block.
+
+extracts rich contextual features through parallel convolution oper-ations and employs an Enhance Attention module to guide the net-work’s focus toward more discriminative semantic regions. It selec-tively strengthens key feature channels, thereby improving the se-mantic completeness and discriminative power of the fused features. Specifically, EFFB first concatenates the feature map F 1 
+
+> f s
+
+from the FEEM or SCSM module with the feature map F 1 
+
+> f use
+
+from the SFFIM module to fuse their spatial structures and semantic representations. Then, the Enhance Attention mechanism is applied to generate the attention weights required for targeted enhancement. The fused fea-tures are subsequently further refined by integrating salient guidance features from FEEM or SCSM, ultimately producing feature maps with more complete semantic representation and finer boundary per-ception. This process can be formalized as: 
+
+Fenhance = Enhance Att  Cat  F 1
+
+> f s
+
+, F 1
+
+> f use
+
+ · F 1 
+
+> f s
+
+(12) 
+
+F use i+1  
+
+> f s
+
+= Fenhance + F use 1 
+
+> f s
+
++ F 1 
+
+> f use
+
+(13) where Cat (·, ·) denotes the concatenation operation, and 
+
+Enhance Att (·) represents the Enhance Attention module, achannel attention mechanism composed of a 3 × 3 convolution, Batch Normalization, and a Sigmoid activation function. 
+
+## 3.6 Loss Functions 
+
+To optimize the performance of BASFNet in camouflaged object de-tection tasks, we design a multi-branch hybrid loss function that bal-ances the requirements of edge detection and object segmentation, fully utilizing the complementarity of frequency and spatial domain features. The edge prediction Pe is optimized using a weighted BCE loss to emphasize the importance of accurate edge detection, espe-cially in challenging areas where the object boundaries are unclear or closely resemble the background. For the initial prediction Pinit and Table 1. PERFORMANCE OF DIFFERENT METHODS ON BENCHMARK DATASETS. THE TOP TWO RESULTS ARE HIGHLIGHTED BOLD AND UNDERLINE,RESPECTIVELY. 
+
+Method Pub/Years CAMO(250 images) COD10K(2026 images) NC4K(4121 images) 
+
+Sm ↑ Em ↑ F ωβ ↑ M ↓ Sm ↑ Em ↑ F ωβ ↑ M ↓ Sm ↑ Em ↑ F ωβ ↑ M ↓ 
+
+SINet-v2 [9] TPAMI’2021 0.820 0.882 0.743 0.070 0.815 0.887 0.680 0.037 0.840 0.903 0.805 0.048 ZoomNet [23] CVPR’2022 0.820 0.892 0.752 0.066 0.838 0.911 0.729 0.029 0.853 0.912 0.784 0.043 BSANet [42] AAAI’2022 0.796 0.851 0.717 0.079 0.818 0.891 0.699 0.034 0.841 0.903 0.778 0.048 BGNet [29] IJCAI’2022 0.812 0.870 0.749 0.073 0.831 0.901 0.722 0.033 0.851 0.907 0.788 0.044 FEDER [11] CVPR’2023 0.804 0.867 0.806 0.071 0.822 0.900 0.751 0.032 0.847 0.907 0.824 0.044 MGL [40] TIP’2023 0.774 0.848 0.684 0.085 0.813 0.882 0.682 0.034 0.831 0.892 0.751 0.051 FPNet [3] ACMMM’2023 0.852 0.905 0.806 0.056 0.850 0.913 0.748 0.029 - - - -FSPNet [12] CVPR’2023 0.856 0.899 0.799 0.050 0.851 0.895 0.735 0.026 0.879 0.915 0.816 0.035 LGPNet[32] CVIU’2024 0.817 0.873 - 0.070 0.832 0.899 - 0.032 0.856 0.908 - 0.044 HAITNet [26] ICME’2024 0.859 0.925 0.850 0.049 0.851 0.922 0.793 0.024 0.879 0.932 0.858 0.033 BIRNet [36] ICME’2024 0.870 0.926 0.829 0.044 0.862 0.928 0.773 0.024 0.886 0.936 0.841 0.032 CamoFormer [37] TPAMI’2024 0.872 0.929 0.831 0.046 0.869 0.932 0.786 0.023 0.892 0.939 0.847 0.030 DSAM [38] ACMMM’2024 0.832 0.913 0.794 0.061 0.846 0.921 0.760 0.033 0.871 0.932 0.826 0.040 DSNet [35] PR’2025 0.817 0.870 0.726 0.073 0.809 0.878 0.657 0.038 0.843 0.894 0.753 0.050 BSAFNet(OUR) 0.884 0.939 0.850 0.037 0.871 0.941 0.790 0.022 0.892 0.944 0.850 0.029 Image GT Ours CamoFormer-P BIRNet FSPNet FPNet FEDER BGNet ZoomNet SINet-v2 
+
+Figure 5. Visual comparisons of our BIRNet and the competing methods. 
+
+final prediction Pf inal , we apply the weighted binary cross-entropy loss ( LwBCE ) and weighted IOU loss ( LwIOU ) to handle class imbal-ance and improve segmentation accuracy: 
+
+Linit seg = LwBCE (Pinit , G m) + LwIOU (Pinit , G m) (14) 
+
+Lf inal seg = LwBCE (Pf inal , G m) + LwIOU (Pf inal , G m) (15) where Gm is the ground truth mask for the camouflaged object. Fi-nally, the overall loss function for BASFNet is: 
+
+Ltotal = Linit seg + Lf inal seg + γ · L wBCE 
+
+
+
+Pe, G de
+
+
+
+(16) where γ is a weight term that controls the importance of the final prediction in the segmentation task. Gde denotes the dilated version of the original edge map Ge. This operation expands the edge regions, enhancing their saliency and spatial coverage, which facilitates more effective boundary guidance in subsequent feature processing. 
+
+## 4 Experiments 
+
+## 4.1 Experiment Setup 
+
+Datasets. We used three public benchmark datasets for performance evaluation: CAMO [16], COD10K [7], and NC4K [20]. The CAMO dataset contains 1250 images of camouflaged objects, 1000 of which are used for training and the remaining 250 for testing. The COD10K dataset contains 5066 images of camouflaged objects, of which 3040 are used for training and 2026 are used for testing. NC4K is a larger COD test dataset, which contains 4121 camouflaged object images from the Internet. 
+
+Evalutaion Criteria. We used four widely used metrics to evaluate the performance, including Mean Absolute Error ( M) [24], weighted F-measure ( F ωβ ) [21], S-measure ( Sm) [5], and mean E-measure (Em) [6]. 
+
+## 4.2 Implementation Details 
+
+The proposed BASFNet is implemented in Pytorch on an NVIDIA GeForce RTX 4090. The pre-trained Swin Transformer model is used as the backbone network, with a learning rate of 1e-4, following a linear warm-up and decay strategy (decayed by a factor of 10 every 50 cycles). For data augmentation, random horizontal flipping is ap-plied, and all training images are resized to 384 × 384 . The model is trained for 100 epochs with a batch size of 8. 
+
+## 4.3 Comparison with state-of-the-art methods 
+
+To validate the effectiveness of BASFNet, we compare it with 14 rep-resentative camouflaged object detection methods, including SINet-v2 [9], ZoomNet [23], BSANet [42], BGNet [29], FEDER [11], MGL [40], FPNet [3], FSPNet [12], LGPNet [32], HAITNet [26], BIRNet [36], CamoFormer [37], DSAM [38], and DSNet [35]. To ensure fairness of the comparison, all prediction results are from the pre-trained models provided by the authors or generated through available source code. 
+
+Quantitative comparison. As shown in Table1, we compare the quantitative results of BASFNet with 14 state-of-the-art methods on the CAMO, COD10K, and NC4K datasets. The results demonstrate that BASFNet consistently outperforms all other methods across the Table 2. ABLATION EXPERIMENTS FOR DIFFERENT KEY COMPONENTS OF BASFNet.                                                                                            
+
+> Baseline SCSM FEEM SFFIM EFFB COD10K(2026 images) NC4K(4121 images)
+> Sm↑Em↑Fωβ↑M ↓ Sm↑Em↑Fωβ↑M ↓ √0.662 0.702 0.310 0.139 0.741 0.748 0.446 0.139
+> √√0.853 0.915 0.751 0.026 0.875 0.922 0.818 0.035
+> √√√0.863 0.928 0.763 0.024 0.888 0.936 0.832 0.032
+> √√√0.856 0.925 0.759 0.025 0.873 0.933 0.823 0.034
+> √√√0.863 0.933 0.768 0.024 0.887 0.938 0.835 0.032
+> √√√√0.865 0.935 0.776 0.023 0.889 0.942 0.843 0.030
+> √√√√√0.871 0.941 0.790 0.022 0.892 0.944 0.850 0.029
+
+Table 3. ABLAITON STUDY OF EDGE-AWARE TRAINING STRATEGY                                                               
+
+> Kernel Size( k)COD10K(2026 images) NC4K(4121 images)
+> Sm↑Em↑Fωβ↑M ↓ Sm↑Em↑Fωβ↑M ↓
+> k= 1 0.868 0.939 0.783 0.023 0.891 0.942 0.845 0.031
+> k= 3 0.870 0.941 0.788 0.022 0.891 0.943 0.849 0.030
+> k= 5 0.871 0.941 0.790 0.022 0.892 0.944 0.850 0.029
+> k= 7 0.862 0.933 0.771 0.024 0.889 0.940 0.841 0.031
+> k= 9 0.861 0.935 0.772 0.024 0.887 0.940 0.839 0.032
+
+four evaluation metrics, proving its superiority and robustness across different datasets. On the CAMO dataset, BASFNet achieves an av-erage improvement of 1.36 %, 1.10 %, 2.24 %, and 24.32 % over the second-best method CamoFormer [37] in terms of Sm, Em, F ωβ , and MAE, respectively. Compared to BIRNet [36], which incorporates boundary information to assist segmentation, our method improves 
+
+Sm, Em, and F ωβ by 1.61 %, 2.98 %, and 4.46 %, respectively, and re-duces M AE by 31.81 % on the CAMO dataset. Furthermore, com-pared to the frequency-based FPNet [3], BASFNet achieves average improvements of 2.41 %, 1.40 %, and 2.53 % in Sm, Em, and F ωβ , re-spectively, and reduces MAE by 15.91 % on the COD10K [7] dataset. This performance gain benefits from the complementary enhance-ments of FEEM, SCSM, and SFFIM in both frequency and spatial domains, which jointly optimize semantic representation and bound-ary modeling. 
+
+Visual comparison. Fig. 5 presents a visual comparison of our ap-proach with several representative COD methods. When tested in complex backgrounds, BASFNet performed better than other COD methods. For example, in the second row, our method successfully detects the entire camouflaged object boundary and interior region, while other models fail to fully recognize the target. This result high-lights our model’s ability to accurately capture target details in com-plex backgrounds, as well as its significant advantage in boundary refinement. 
+
+## 4.4 Ablation study 
+
+To analyze the individual impact of each module and evaluate its contribution to the overall performance of the model, we conducted ablation experiments on the two largest datasets, COD10K [7] and NC4K [20], to evaluate the impact of different modules on the overall performance. 
+
+Effectiveness of Model Components. We conducted an ablation study on the components of BASFNet, and the results are summa-rized in Table 2. The model with SCSM, FEEM, SFFIM, and EFFB modules removed from BASFNet is used as the baseline. After in-troducing the SCSM module into the baseline, the model’s Sm on COD10K significantly increased from 0.662 to 0.853, an improve-ment of 22.39 %; Em improved by 23.27 %; F ωβ increased dramati-cally by 85.35 %; and M dropped to 0.026, indicating more accurate detection of camouflaged objects with clearer boundaries. With the further addition of the FEEM module, the performance on the NC4K dataset improved, with F ωβ increasing from 0.818 to 0.832, demon-strating that frequency-guided enhancement can further optimize the perception of edges and salient regions. The SFFIM module brought the most significant improvement in boundary detection ability: on NC4K, Em rose from 0.936 to 0.942, and MAE further decreased to 0.030, highlighting the importance of the spatial-frequency fusion module in modeling camouflaged edge information. Finally, the ad-dition of the EFFB module resulted in optimal performance across all metrics. On COD10K, F ωβ reached 0.790, a 1.77 % improvement over the configuration without this module, while MAE further dropped to 0.022, indicating finer reconstruction of edge details. Similarly, the performance on NC4K steadily improved, with Sm reaching 0.892, 
+
+F ωβ rising to 0.850, and MAE decreasing to 0.029. These results demonstrate the effectiveness of our proposed modules in detecting camouflaged objects. 
+
+Effectiveness of the Boundary-Aware Training Strategy. As de-scribed in Section 3.2, we propose a boundary-aware training strat-egy to enhance the boundary perception capability of the FEEM module. To investigate the usefulness of boundary expansion, we conduct an ablation study by applying dilation operations with dif-ferent kernel sizes on the edge maps used in training. As shown in Table 3, we experiment with kernel sizes k ∈ { 1, 3, 5, 7, 9}. When 
+
+k = 1 , the edge map remains in its original, unexpanded form. The model achieves the best performance when k = 5 , demonstrating that appropriately expanded edge regions can serve as strong supervi-sion signals, effectively guiding the model to produce more accurate boundary predictions. 
+
+## 5 Conlusion 
+
+In this study, we propose a novel framework BASFNet, which intro-duces a boundary-aware spatial-frequency fusion strategy. BASFNet effectively integrates frequency and spatial domain features, and the model can more accurately capture the boundary details of cam-ouflaged objects and show significant robustness in complex back-grounds. In addition, the combination of boundary-aware training strategies enables the model to better focus on camouflaged object boundaries, significantly improving the overall segmentation perfor-mance. The experimental results demonstrate the superiority and ef-fectiveness of BASFNet in COD tasks and highlight the effectiveness of fusing frequency and spatial information in COD tasks. 
+
+## References 
+
+[1] N. U. Bhajantri and P. Nagabhushan. Camouflage defect identification: a novel approach. In 9th International Conference on Information Tech-nology (ICIT’06) , pages 145–148. IEEE, 2006. [2] J. Canny. A computational approach to edge detection. IEEE Transac-tions on pattern analysis and machine intelligence , (6):679–698, 1986. [3] R. Cong, M. Sun, S. Zhang, X. Zhou, W. Zhang, and Y. Zhao. Frequency perception network for camouflaged object detection. In Proceedings of the 31st ACM International Conference on Multimedia , pages 1179– 1189, 2023. [4] A. Dosovitskiy, L. Beyer, A. Kolesnikov, D. Weissenborn, X. Zhai, T. Unterthiner, M. Dehghani, M. Minderer, G. Heigold, S. Gelly, et al. An image is worth 16x16 words: Transformers for image recognition at scale. arXiv preprint arXiv:2010.11929 , 2020. [5] D.-P. Fan, M.-M. Cheng, Y. Liu, T. Li, and A. Borji. Structure-measure: A new way to evaluate foreground maps. In Proceedings of the IEEE international conference on computer vision , pages 4548–4557, 2017. [6] D.-P. Fan, C. Gong, Y. Cao, B. Ren, M.-M. Cheng, and A. Borji. Enhanced-alignment measure for binary foreground map evaluation. 
+
+arXiv preprint arXiv:1805.10421 , 2018. [7] D.-P. Fan, G.-P. Ji, G. Sun, M.-M. Cheng, J. Shen, and L. Shao. Cam-ouflaged object detection. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 2777–2787, 2020. [8] D.-P. Fan, G.-P. Ji, T. Zhou, G. Chen, H. Fu, J. Shen, and L. Shao. Pranet: Parallel reverse attention network for polyp segmentation. In 
+
+International conference on medical image computing and computer-assisted intervention , pages 263–273. Springer, 2020. [9] D.-P. Fan, G.-P. Ji, M.-M. Cheng, and L. Shao. Concealed object detec-tion. IEEE transactions on pattern analysis and machine intelligence ,44(10):6024–6042, 2021. [10] K. Han, Y. Wang, H. Chen, X. Chen, J. Guo, Z. Liu, Y. Tang, A. Xiao, C. Xu, Y. Xu, et al. A survey on vision transformer. IEEE transactions on pattern analysis and machine intelligence , 45(1):87–110, 2022. [11] C. He, K. Li, Y. Zhang, L. Tang, Y. Zhang, Z. Guo, and X. Li. Camou-flaged object detection with feature decomposition and edge reconstruc-tion. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 22046–22055, 2023. [12] Z. Huang, H. Dai, T.-Z. Xiang, S. Wang, H.-X. Chen, J. Qin, and H. Xiong. Feature shrinkage pyramid for camouflaged object detec-tion with transformers. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 5557–5566, 2023. [13] I. Huerta, D. Rowe, M. Mozerov, and J. Gonzàlez. Improving back-ground subtraction based on a casuistry of colour-motion segmentation problems. In Iberian conference on pattern recognition and image anal-ysis , pages 475–482. Springer, 2007. [14] K.-S. Hwang and J. Ma. Military camouflaged object detection with deep learning using dataset development and combination. The Journal of Defense Modeling and Simulation , page 15485129241233299, 2024. [15] C. Kavitha, B. P. Rao, and A. Govardhan. An efficient content based image retrieval using color and texture of image sub blocks. Interna-tional Journal of Engineering Science and Technology (IJEST) , 3(2): 1060–1068, 2011. [16] T.-N. Le, T. V. Nguyen, Z. Nie, M.-T. Tran, and A. Sugimoto. Anabranch network for camouflaged object segmentation. Computer vision and image understanding , 184:45–56, 2019. [17] S. Li, X. Li, Z. Li, H. Ma, J. Sheng, and B. Li. Dual guidance enhancing camouflaged object detection via focusing boundary and localization representation. In 2024 IEEE International Conference on Multimedia and Expo (ICME) , pages 1–6. IEEE, 2024. [18] Y. Liang, G. Qin, M. Sun, X. Wang, J. Yan, and Z. Zhang. A systematic review of image-level camouflaged object detection with deep learning. 
+
+Neurocomputing , 566:127050, 2024. [19] Z. Liu, Y. Lin, Y. Cao, H. Hu, Y. Wei, Z. Zhang, S. Lin, and B. Guo. Swin transformer: Hierarchical vision transformer using shifted win-dows. In Proceedings of the IEEE/CVF international conference on computer vision , pages 10012–10022, 2021. [20] Y. Lv, J. Zhang, Y. Dai, A. Li, B. Liu, N. Barnes, and D.-P. Fan. Si-multaneously localize, segment and rank the camouflaged objects. In 
+
+Proceedings of the IEEE/CVF conference on computer vision and pat-tern recognition , pages 11591–11601, 2021. [21] R. Margolin, L. Zelnik-Manor, and A. Tal. How to evaluate foreground maps? In Proceedings of the IEEE conference on computer vision and pattern recognition , pages 248–255, 2014. [22] A. V. Oppenheim and J. S. Lim. The importance of phase in signals. 
+
+Proceedings of the IEEE , 69(5):529–541, 1981. [23] Y. Pang, X. Zhao, T.-Z. Xiang, L. Zhang, and H. Lu. Zoom in and out: A mixed-scale triplet network for camouflaged object detection. In Proceedings of the IEEE/CVF Conference on computer vision and pattern recognition , pages 2160–2170, 2022. [24] F. Perazzi, P. Krähenbühl, Y. Pritch, and A. Hornung. Saliency filters: Contrast based filtering for salient region detection. In 2012 IEEE con-ference on computer vision and pattern recognition , pages 733–740. IEEE, 2012. [25] R. Pérez-de la Fuente, X. Delclòs, E. Peñalver, M. Speranza, J. Wierz-chos, C. Ascaso, and M. S. Engel. Early evolution and ecology of cam-ouflage in insects. Proceedings of the National Academy of Sciences ,109(52):21414–21419, 2012. [26] T. H. Phung, H.-J. Chen, and H.-H. Shuai. Hierarchically aggregated identification transformer network for camouflaged object detection. In 
+
+2024 IEEE International Conference on Multimedia and Expo (ICME) ,pages 1–6. IEEE, 2024. [27] P. Siricharoen, S. Aramvith, T. H. Chalidabhongse, and S. Siddhichai. Robust outdoor human segmentation based on color-based statistical approach and edge combination. In The 2010 international conference on green circuits and systems , pages 463–468. IEEE, 2010. [28] Z. Song, X. Kang, X. Wei, H. Liu, R. Dian, and S. Li. Fsnet: Focus scanning network for camouflaged object detection. IEEE Transactions on Image Processing , 32:2267–2278, 2023. [29] Y. Sun, S. Wang, C. Chen, and T.-Z. Xiang. Boundary-guided camou-flaged object detection. arXiv preprint arXiv:2207.00794 , 2022. [30] Y. Sun, C. Xu, J. Yang, H. Xuan, and L. Luo. Frequency-spatial entan-glement learning for camouflaged object detection. In European Con-ference on Computer Vision , pages 343–360. Springer, 2024. [31] A. Tankus and Y. Yeshurun. Convexity-based visual camouflage break-ing. Computer Vision and Image Understanding , 82(3):208–237, 2001. [32] J. Tong, Y. Bi, C. Zhang, H. Bi, and Y. Yuan. Local to global purifi-cation strategy to realize collaborative camouflaged object detection. 
+
+Computer Vision and Image Understanding , 241:103932, 2024. [33] X. Wu, C. Zhan, Y.-K. Lai, M.-M. Cheng, and J. Yang. Ip102: A large-scale benchmark dataset for insect pest recognition. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition ,pages 8787–8796, 2019. [34] J. Xiao, T. Chen, X. Hu, G. Zhang, and S. Wang. Boundary-guided context-aware network for camouflaged object detection. Neural Com-puting and Applications , 35(20):15075–15093, 2023. [35] H. Yang, Y. Zhu, K. Sun, H. Ding, and X. Lin. Camouflaged object de-tection via dual-branch fusion and dual self-similarity constraints. Pat-tern Recognition , 157:110895, 2025. [36] J. Yang, Q. Zhang, Y. Zhao, Y. Li, and Z. Liu. Bi-directional boundary-object interaction and refinement network for camouflaged object detec-tion. In 2024 IEEE International Conference on Multimedia and Expo (ICME) , pages 1–6. IEEE, 2024. [37] B. Yin, X. Zhang, D.-P. Fan, S. Jiao, M.-M. Cheng, L. Van Gool, and Q. Hou. Camoformer: Masked separable attention for camouflaged ob-ject detection. IEEE Transactions on Pattern Analysis and Machine Intelligence , 2024. [38] Z. Yu, X. Zhang, L. Zhao, Y. Bin, and G. Xiao. Exploring deeper! segment anything model with depth perception for camouflaged object detection. In Proceedings of the 32nd ACM International Conference on Multimedia , pages 4322–4330, 2024. [39] Q. Zhai, X. Li, F. Yang, C. Chen, H. Cheng, and D.-P. Fan. Mutual graph learning for camouflaged object detection. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition ,pages 12997–13007, 2021. [40] Q. Zhai, X. Li, F. Yang, Z. Jiao, P. Luo, H. Cheng, and Z. Liu. Mgl: Mutual graph learning for camouflaged object detection. IEEE Trans-actions on Image Processing , 32:1897–1910, 2022. [41] S. Zhang, D. Kong, Y. Xing, Y. Lu, L. Ran, G. Liang, H. Wang, and Y. Zhang. Frequency-guided spatial adaptation for camouflaged object detection. IEEE Transactions on Multimedia , 27:72–83, 2025. [42] H. Zhu, P. Li, H. Xie, X. Yan, D. Liang, D. Chen, M. Wei, and J. Qin. I can find you! boundary-guided separated attention network for cam-ouflaged object detection. In Proceedings of the AAAI conference on artificial intelligence , volume 36, pages 3608–3616, 2022.

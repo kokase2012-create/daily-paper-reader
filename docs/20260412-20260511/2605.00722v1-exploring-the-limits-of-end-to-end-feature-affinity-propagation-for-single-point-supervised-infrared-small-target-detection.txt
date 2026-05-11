@@ -1,0 +1,428 @@
+Title: Exploring the Limits of End-to-End Feature-Affinity Propagation for Single-Point Supervised Infrared Small Target Detection
+
+URL Source: https://arxiv.org/pdf/2605.00722v1
+
+Published Time: Mon, 04 May 2026 00:56:49 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# Exploring the Limits of End-to-End Feature-Affinity Propagation for Single-Point Supervised Infrared Small Target Detection 
+
+Qiancheng Zhou 
+
+zhou 3721@shu.edu.cn 
+
+Wenhua Zhang *
+
+wenhua-zhang@shu.edu.cn 
+
+May 4, 2026 
+
+# Abstract 
+
+Single-point supervised infrared small target detection (IRSTD) drastically reduces dense annotation costs. Current state-of-the-art (SOTA) methods achieve high precision by recovering mask supervision through explicit, offline pseudo-label construction, such as multi-stage active learning and physics-driven mask generation. In this paper, we study a minimalist alternative: generating point-to-mask supervision online through in-batch, point-anchored feature-affinity propagation. We instantiate this paradigm as GSACP, an end-to-end testbed that directly supervises the detector using hard-margin feature affinity gated by local image priors, entirely eliminating external label-evolution loops. This compact design, however, exposes an optimization bottleneck. Because the affinity target is generated from the same feature representation being optimized, training forms a self-referential loop. We theoretically formalize this as Self-Referential Propa-gation Drift , a representation-supervision entanglement that can sharpen true boundaries or distort the feature space to satisfy its own targets. To systematically isolate these failure modes, we apply a protocolized single-variable ablation procedure spanning local EMA teacher decoupling, hard-background contrastive separation, and adaptive support geometry. On the SIRST3 dataset, our optimized variant, GSACP-Final, establishes a new ultra-low false-alarm operating regime. It achieves a highly competitive 0.6674 mIoU while demonstrating a 38% relative reduction in false-positive artifacts ( Fa ) compared with PAL, a strong multi-stage state-of-the-art baseline. While PAL retains a marginal lead in mask overlap, this gap corroborates our central hypothesis: explicit outer-loop pseudo-labeling acts as an irreplaceable temporal regularizer. By systematically de-constructing the end-to-end paradigm, we map its performance boundaries and show that in-batch feature propagation provides a compact alternative for deployment scenarios where false-alarm suppression is paramount. 
+
+# 1 Introduction 
+
+Infrared small target detection (IRSTD) aims to localize low-contrast targets that often occupy only a few pixels. Full mask annotation is notoriously expensive and subjective, as apparent boundaries are blurred by sensor noise and atmospheric scatter-ing. Single-point supervision mitigates this burden: annotators mark one point per target, leaving the learning system to infer the spatial mask support. Recent breakthroughs have largely stabilized this underdeter-mined problem through explicit, multi-stage pseudo-mask con-struction. LESPS [11] evolves labels iteratively to avoid map-ping degeneration. PAL [12] employs a three-stage progressive active learning pipeline with pseudo-mask refinement, stand-ing as a strong multi-stage state-of-the-art baseline. Point-to-Mask [3] densifies sparse points through offline physics-driven procedures. While highly effective, these methods share a com-mon architectural burden: the pseudo-labels are generated out-side the immediate gradient path of the detector. This raises a fundamental question: Is explicit, outer-loop pseudo-mask construction strictly necessary? Can mask-level supervision be robustly generated within each mini-batch from the detector’s own feature affinity? To answer this, we intro-duce GSACP, a compact testbed that extracts seed features from point annotations, computes hard-margin feature affinity, and trains the detector directly from the resulting in-batch targets. The practical motivation for this minimalist approach is il-lustrated in Fig. 1. In real-world Infrared Search-and-Track (IRST) systems, false positives are not mere pixel errors; they spawn persistent phantom tracks that overwhelm threat-decision stages. Therefore, the False Alarm rate ( Fa ) is a deployment-critical axis, not a secondary metric. Our investigation reveals that the purely end-to-end route en-counters a profound theoretical barrier. The target affinity A is generated from the same representation Fθ that the loss updates. The model can minimize the objective either by sharpening the true target boundary or by illegitimately reshaping the feature space so the self-generated target becomes easier to satisfy. We formalize this as Self-Referential Propagation Drift , a form of representation-supervision entanglement. To study this trade-off, we decompose the self-coupled loop into candidate intervention axes and evaluate them under a con-trolled ablation protocol. The outer loop in methods like PAL is not merely pipeline overhead; it is a critical temporal reg-ularizer. By stripping it away, GSACP defines an orthogonal, low-Fa operating regime: achieving 0.6674 mIoU with an ex-1  
+
+> arXiv:2605.00722v1 [cs.CV] 1 May 2026 Figure 1: Operational motivation. The left panel illustrates the qualitative trade-off: PAL recovers fuller masks but may activate off-target clutter, while GSACP-Final is conservative and cleaner. The right panel shows why this matters operationally: false positives propagate into track clutter and downstream decision load.
+
+ceptionally low Fa=15 .33 , reducing false alarms by 38% com-pared with PAL ( Fa=24 .75 ). 
+
+Contributions. 
+
+1. We formalize GSACP, an in-batch feature-affinity propa-gation paradigm for single-point supervised IRSTD, elim-inating outer-loop dependencies. 2. We mathematically derive Self-Referential Propagation Drift as a representation-supervision entanglement phe-nomenon, linking it to late-stage halo expansion and os-cillation. 3. We decompose the self-coupled loop into structured inter-vention axes and identify useful as well as pathological de-sign boundaries. 4. We define a new Pareto frontier for IRSTD: GSACP trades a marginal mask overlap for a 38% reduction in false-positive artifacts, offering a compact deployment solution for false-alarm-sensitive radar systems. 
+
+# 2 Related Work 
+
+Point-supervised IRSTD. LESPS [11] introduced label evo-lution to prevent point-trained networks from collapsing to the annotated pixel. MCLC [6] constructs target probability maps offline through Monte Carlo linear clustering. PAL [12] ex-tends this line into progressive active learning with explicit pseudo-mask refinement. Point-to-Mask [3] introduces physics-driven adaptive mask generation, while SPIRE [9] explores cen-troid/probabilistic response supervision. These methods differ substantially in implementation, but they share a stabilizing sep-aration between label construction and detector optimization. 
+
+Affinity propagation in weak supervision. AffinityNet [1], Deep Seeded Region Growing [4], and APro [7] show that affinity can expand weak localization cues into dense support. GSACP adopts affinity propagation as an established primitive, then studies the IRSTD-specific single-point setting under ex-treme foreground/background imbalance and characterizes the self-coupling that appears when the affinity target is generated in-batch by the optimized representation itself. 
+
+Pseudo-label reliability and confirmation bias. Semi-supervised segmentation has repeatedly shown that pseudo-label confidence is not uniformly reliable. U2PL [10] separates reliable from unreliable pixels; ELN [5] learns error localiza-tion; When Confidence Fails [8] studies the limits of threshold-based selection; CW-BASS [2] combines confidence weighting, boundary awareness, and decay. These results align with our observations: global vetoes and naive positive sampling are less stable, while local reliability and hard-background separation are more robust. 
+
+# 3 Method 
+
+3.1 Point-Anchored Hard-Margin Affinity 
+
+Let image I ∈ R3×H×W have point annotations P = {pk},and let fθ produce a feature map Fθ (I) ∈ RC×H×W and a logit mask ˆY . For pixel i, the seed affinity is computed via cosine similarity: 
+
+si = max 
+
+> p∈P
+
+⟨Fθ,i , F θ,p ⟩∥Fθ,i ∥2∥Fθ,p ∥2
+
+. (1) To suppress weak feature similarity and control false alarms, we sharpen the similarity with a hard margin: 
+
+ai =
+
+ max(0 , s i − mhard )1 − mhard 
+
+2
+
+, mhard = 0 .7. (2) Too-small margins repeatedly cause catastrophic full-image ex-pansion. The affinity support is further gated by a local image prior combining spatial distance and intensity differences: 
+
+wi = exp 
+
+
+
+− ∥xi − xp∥22
+
+2σ2
+
+> s
+
+
+
+exp 
+
+
+
+− (Ii − Ip)2
+
+2σ2
+
+> c
+
+
+
+, (3) yielding the in-batch propagation target: 
+
+Ai = aiwi. (4) 
+
+3.2 Objective Function 
+
+The GSACP-Base model optimizes a composite objective: 
+
+L = 2 Lseed + λprop Lprop + 2 Lbg + Lsparse + Lcons . (5) 2Lseed applies point-wise BCE exclusively at the annotated seeds. Lbg suppresses high-probability background pixels via Online Hard Example Mining (OHEM). Lsparse penalizes the global affinity mass to encourage compactness. Lcons enforces consistency between the detector probability and the stopped-gradient affinity target. The core propagation term encourages high affinity within the local prior: 
+
+Lprop =
+
+P 
+
+> i
+
+wi(1 − ai)2
+
+P 
+
+> i
+
+wi + ϵ . (6) 
+
+3.3 Self-Referential Propagation Drift 
+
+The fundamental structural loop of our paradigm is: 
+
+Fθ → A = g(Fθ , S ) → L ( ˆY , A ) → Fθ′ . (7) Unlike PAL, where pseudo-labels are generated offline and held fixed across training intervals, GSACP immediately trains on targets produced by its own current representation. Crucially, we formalize the instability of this design by de-composing the feature-level gradient. With the detector loss de-noted by Ldet and propagation weight λprop , the gradient with respect to the feature map Fθ is: 
+
+∇Fθ L = ∂Ldet 
+
+∂ ˆY∂ ˆY∂F θ
+
+| {z }
+
+> Desired Update
+
++ λprop 
+
+∂Lprop 
+
+∂A ∂A ∂F θ
+
+| {z }
+
+> Drift-Inducing Term
+
+. (8) The second term exposes a critical vulnerability: Self-Referential Propagation Drift . The optimizer discovers a short-cut. Instead of tightening the prediction boundary ˆY to match the object, it distorts the background features in Fθ to move closer to the seed features. This artificially inflates the affin-ity target A, reducing Lprop without genuinely improving the mask. For clarity, Eq. (8) is written in scalar partial-derivative form as a conceptual summary of the two update paths; the em-pirical signatures of this drift are discussed in Sec. 5, where late-stage mIoU rollback, eroding foreground/background margins, and halo expansion are documented. 
+
+# 4 Deconstructing the End-to-End Paradigm 
+
+Guided by the gradient entanglement exposed in Eq. (8), we ask which part of the loop should be frozen, restricted, or repelled. We therefore decompose the end-to-end system into orthogonal intervention axes rather than treating the full loop as a monolith. 
+
+4.1 Design-Space Decomposition 
+
+Given the highly non-convex and fragile nature of end-to-end weakly supervised training, we treat stability as a structured de-sign problem rather than a single hyperparameter choice. The decomposition contains three mechanism axes: temporal de-coupling of the target source, feature-space separation between seeds and hard background, and geometric restriction of the propagated support. 
+
+4.2 GSACP-LTD: Local Teacher Decoupling 
+
+The most naive response to Eq. (8) is to fully detach the target (∂A/∂F θ = 0 ). However, full detachment removes the align-ment pressure that allows seed affinity to expand. The loop must be slowed locally, not cut globally. We introduce GSACP-LTD (Local Teacher Decoupling). A smooth cosine decay schedule relaxes λprop in late stages. Con-currently, an Exponential Moving Average (EMA) teacher θT
+
+supplies a temporally lagged source only inside seed-centered ambiguous disks (PredMix): 
+
+˜Ai =
+
+(
+
+(1 − αt)sg[ Ai] + αtσ(fθT (I)i), i ∈ ∪ pDp,
+
+sg[ Ai], otherwise . (9) Global teacher replacement fails by suppressing feature plastic-ity. By restricting inertia locally, GSACP-LTD preserves useful alignment while damping late-stage drift. 
+
+4.3 GSACP-HBC: Hard-Background Contrast 
+
+Since drift is amplified when high-response background pixels masquerade as seed features, we must explicitly separate them. In tiny-target IRSTD, the most reliable set is not a mined posi-tive region, but the abundant hard background. We introduce GSACP-HBC . Let zp be the normalized seed feature and Nhard be the top-K OHEM background pixels. We apply a negative-only contrastive penalty: 
+
+Lctr = 1
+
+|N hard |
+
+X
+
+> i∈N hard
+
+[max(0 , ⟨zp, z i⟩ − mneg )] 2 . (10) Symmetric positive aggregation is highly unstable in the few-pixel regime because it can over-tighten the foreground core and collapse mask geometry. Negative separation, by contrast, pushes clutter away from the seed prototype while preserving the seed anchor. 
+
+4.4 GSACP-ASG: Adaptive Support Gate 
+
+A fixed spatial support radius is stable but scale-agnostic; a free adaptive radius consistently cheats by drifting toward large ha-los. Let R denote candidate radii and let Qr and Cr be the predicted support quality and reliability. We introduce GSACP-ASG with a radius-specific gate: 
+
+r⋆ = arg max  
+
+> r∈R
+
+Qr s.t. Cr ≥ τr . (11) By applying stricter confidence thresholds for larger radii, we prevent extreme radius decisions from dominating the affinity geometry. 
+
+# 5 Experiments and Results 
+
+5.1 Setup and Main Results 
+
+We evaluate on the SIRST3 dataset using the MSDA backbone. Training-time supervision is the only controlled variable against 3Figure 2: PAL versus GSACP: The Gradient Flow Perspective. PAL separates pseudo-mask construction from detector training through an offline outer loop (temporal regularization). GSACP generates the affinity target in-batch from the same representation that consumes the gradient, creating a vulnerable, self-coupled supervision loop that leads to representation-supervision entanglement.    
+
+> Figure 3: GSACP deconstruction architecture. Point seeds extract normalized seed features; hard-margin cosine affinity is multiplied by spatial/color priors. To untangle self-referential drift, we introduce Local Teacher Decoupling (LTD), Hard-Background Contrastive (HBC) branches, and Adaptive Support Gates (ASG) as independent intervention axes.
+
+PAL. Because the single-stage variants exhibit late-stage oscil-lation, the reported GSACP-Final row corresponds to the sta-bilized late plateau rather than a transient peak checkpoint. In practice, this means we summarize the stable late region rather than a single best-epoch spike, which keeps the reported num-bers less sensitive to checkpoint-level fluctuation while preserv-ing the best late-stage operating point. 
+
+Automated ablation protocol. The deconstruction in Sec. 4 is evaluated through a strict single-variable audit system. Each run changes one mechanism, uses the same SIRST3/MSDA evaluation path, and is logged independently before the next hypothesis is formed. Across 116 variants, this ledger provides the source evidence for the failure map in Table 2 and the evo-lution path in Fig. 6. A code-execution LLM is used only as a bookkeeping auditor for this state machine: it enforces the one-change rule, records outcomes, and prevents unlogged manual trial-and-error. It does not alter the detector architecture, dataset protocol, or metric computation. Table 1 and Fig. 4 demonstrate the fundamental Pareto trade-off. We transparently report that PAL, a strong multi-stage state-of-the-art baseline, retains a higher peak mIoU. Far from invali-dating our findings, this gap corroborates our central hypothesis: explicit outer-loop pseudo-masking acts as a temporal regular-izer for mask morphometry. GSACP, by stripping away this outer loop, sacrifices boundary overlap but gains a streamlined single-stage architecture that suppresses background clutter. 
+
+5.2 Pushing the Limit via Late-Stage Flatness 
+
+Because single-stage end-to-end models oscillate in late training due to the self-referential loop, we hypothesize that compatible late checkpoints capture complementary local optima. Equal averaging of the ASG late plateau reaches 0.6647 mIoU, while greedy two-checkpoint averaging reaches 0.6672 . A sweep-4Method Target Construction Outer loops mIoU nIoU Pd Fa ( ×10 −6)MCLC [6] MC clustering (offline) 1 0.5600 0.6209 0.9090 93.61 LESPS [11] label evolution iterative 0.5357 0.5034 0.9243 29.05 PAL [12] progressive active masks 3 0.6933 0.7153 0.9754 24.75 GSACP-Base in-batch hard affinity 0 0.6598 – 0.9728 13.11 GSACP-Decay propagation decay 0 0.6633 0.6652 0.9721 22.16 GSACP-LTD local teacher decouple 0 0.6670 0.6670 0.9688 15.06 GSACP-HBC hard-bg contrast 0 0.6654 0.6654 0.9734 18.35 GSACP-ASG adaptive support gate 0 0.6598 0.6598 0.9681 17.66 
+
+GSACP-Final ASG + HBC + late flatness 0 0.6674 0.6826 0.9681 15.33 
+
+Table 1: Main SIRST3/MSDA comparison. Reported rows are taken from the PAL supplement; local rows are controlled runs selected from the late plateau. PAL maximizes mask overlap via multi-stage outer loops, while GSACP-Final delineates a compact single-stage paradigm that sacrifices a marginal mIoU but substantially reduces false alarms. 0.60 0.62 0.64 0.66 0.68 0.70     
+
+> Validation mIoU higher is better
+> 10
+> 12
+> 14
+> 16
+> 18
+> 20
+> 22
+> 24
+> 26
+> False alarms Fa (×10  6) lower is better
+> PAL
+> GSACP-Final
+> GSACP-Base
+> GSACP-Decay
+> Full Detach
+> Positive Proto
+> Free Radius
+> 38% Fa
+> (0.026 mIoU)
+> PAL (multi-stage)
+> GSACP-Final (ours)
+> GSACP variants
+> Dead-end ablations
+> Empirical Pareto frontier
+
+Figure 4: Accuracy/False-Alarm Pareto frontier. The dashed line represents the empirical operational frontier. GSACP establishes an ultra-low Fa deployment regime completely orthogonal to PAL’s ag-gressive mask expansion. 
+
+aware interpolation of the same late plateau gives GSACP-Final, which reaches 0.6674 mIoU without additional inference cost. This gain is deliberately reported as late-stage flatness exploita-tion rather than a new training-time mechanism. 550 100 150 200 250 300 350 400 
+
+Epoch 
+
+> 0.500
+> 0.525
+> 0.550
+> 0.575
+> 0.600
+> 0.625
+> 0.650
+> 0.675
+> 0.700
+> Validation mIoU
+> peak 0.6764
+> peak 0.6633
+> rollback
+> drift zone
+
+(a) mIoU trajectory        
+
+> PAL (outer-loop)
+> GSACP-Decay (end-to-end)
+> 50 100 150 200 250 300 350 400
+
+Epoch 
+
+> 0.06
+> 0.04
+> 0.02
+> 0.00
+> 0.02
+> Margin (cosine distance)
+> margin oscillates
+> across zero
+
+(b) Foreground/background margin        
+
+> fg/bg margin
+> margin erosion
+> 130 140 150 160 170 180 190 200
+
+Epoch 
+
+> 0.06
+> 0.05
+> 0.04
+> 0.03
+> 0.02
+> 0.01
+> 0.00
+> 0.01
+> 0.02
+> Margin
+> loss stagnation
+> margin collapse
+
+(c) Drift mechanism proxy 
+
+> margin
+> propagation loss
+> 0.014
+> 0.016
+> 0.018
+> 0.020
+> 0.022
+> 0.024
+> Propagation loss
+
+Figure 5: Training dynamics expose self-referential propagation drift. PAL improves robustly over a long outer-loop window. In contrast, GSACP variants peak earlier and subsequently roll back. When the foreground/background margin (cosine distance) drops below zero, the mask overlap degrades despite propagation loss stagnating at a low level, which is a key signature of representation-supervision entanglement. 
+
+5.3 The Failure Map of End-to-End Propagation 
+
+Our protocolized ablation study identified numerous pathologi-cal boundary cases, defining the limits of this paradigm. Table 2 serves as a failure map for future researchers. 6Axis / Intervention Intended Benefit Pathological Behavior (The Failure Mode) Full Gradient Detach Cut self-referential loop entirely. Removes useful feature alignment; seed affinity fails to expand beyond 
+
+1 pixel; propagation loss stalls near 0.5.
+
+Global EMA Teacher Provide stable target everywhere. Destabilizes early support formation; suppresses the necessary feature plasticity required for compact affinity. 
+
+Positive Prototype Pull foreground pixels together. Over-tightens the tiny target core; causes catastrophic boundary collapse due to noisy positive sampling. 
+
+Free Adaptive Radius Allow dynamic target scaling. Consistently cheats the loss by drifting toward maximum possible radii, recreating massive halo artifacts. 
+
+Shallow Feature Fusion Inject boundary details into affinity. Raw shallow fusion blindly imports sensor clutter into the affinity com-putation, destroying background reliability. Table 2: The failure map of end-to-end propagation. Extracted from over 100 automated ablations, these negative results define the geometric and representational boundaries that cause in-batch supervision to fail. 
+
+Figure 6: Protocolized ablation as a mechanism decision tree. The constructive trunk (green) compounds successful stabilization variants toward GSACP-Final. The dead-end branches (red) document critical insights into why certain straightforward interventions collapse. 
+
+7Figure 7: SIRST3 qualitative comparison: masks, error focus, and 3D response surfaces. Red marks denote false-positive artifacts; blue annotations indicate conservative under-fill. As evidenced by the rightmost 3D probability landscapes, PAL aggressively expands masks but activates off-target bright clutter peaks. GSACP-Final exhibits highly compact, single-peak responses, preserving system integrity against false alarms. 
+
+85.4 Cross-Dataset Generalization 
+
+To separate SIRST3 fit from transfer behavior, we evaluate the SIRST3-trained checkpoints on NUDT-SIRST, NUAA-SIRST, and IRSTD-1K using the same MSDA backbone and the same source-domain normalization statistics. This transfer setting is intentionally strict: no target-domain fine-tuning, no re-training, and no checkpoint construction on the external datasets. The resulting scores are produced by the external-dataset evaluator and reported in Table 3. They should be read as zero-shot transfer measurements rather than in-domain leaderboard numbers. NUAA contains one known image/mask size mis-match, which the evaluation script exposes explicitly through a 
+
+--resize mask flag. GSACP-Final transfers competitively: it trails PAL on NUDT-SIRST mIoU, but improves NUAA-SIRST and IRSTD-1K mIoU, increases Pd on all three external datasets, and reduces Fa on NUAA-SIRST and IRSTD-1K. 
+
+5.5 Size-Stratified Robustness and Efficiency 
+
+To verify that the low-Fa regime is not achieved by discard-ing small targets, we stratify GSACP-Final by ground-truth target area over 1,079 SIRST3 validation images. The full-validation summary reproduces the headline numbers: 0.6675 
+
+global mIoU, 0.6827 sample-mean nIoU, 0.9681 centroid Pd, and 15 .34 matched Fa. Tiny, small, and medium targets retain high Pd; the main weakness is conservative large-target support. PAL and GSACP use the same MSDA detector at deploy-ment. GSACP’s affinity propagation, EMA-source mixing, hard-background mining, and radius-specific support scoring are training-time supervision paths; post-training soups produce one averaged checkpoint and therefore do not increase inference cost. On one RTX 4090, MSDA has 4.805 M parameters and measures 24 .79 ms for a 1×3×256 ×256 input, 55 .46 ms for a 16 ×3×256 ×256 batch, and 24 .62 ms for a 1×3×512 ×512 
+
+input. 
+
+# 6 Discussion and Conclusion 
+
+This work contributes a mechanistic deconstruction of the purely end-to-end feature propagation paradigm for IRSTD rather than another pseudo-labeling pipeline. We map the pre-cise failure mode— Self-Referential Propagation Drift —where the model can reduce the loss by distorting its own feature space instead of improving the boundary. Through a rigorous, protocolized automated ablation study, we isolate Local Teacher Decoupling, Hard-Background Con-trast, Adaptive Support Gates, and late-stage flatness as ef-fective partial remedies, while also showing their limits. The absence of an outer loop imposes a ceiling on mask overlap, but GSACP-Final still establishes a useful low-false-alarm op-erating point and transfers competitively under strict zero-shot evaluation. This makes it a compact baseline for deployment-sensitive IRSTD settings and a clear mechanistic counterpoint to multi-stage curricula. 
+
+# References 
+
+[1] Jiwoon Ahn and Suha Kwak. Learning pixel-level semantic affinity with image-level supervision for weakly supervised semantic segmentation. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition , 2018. [2] Anonymous. Confidence-weighted boundary-aware learning for semi-supervised se-mantic segmentation. arXiv preprint arXiv:2502.15152 , 2025. [3] Weihua Gao, Wenlong Niu, Jie Tang, Man Yang, Jiafeng Zhang, and Xiaodong Peng. Point-to-mask: From arbitrary point annotations to mask-level infrared small target detection. arXiv preprint arXiv:2603.16257 , 2026. [4] Zilong Huang, Xinggang Wang, Jiasi Wang, Wenyu Liu, and Jingdong Wang. Weakly-supervised semantic segmentation network with deep seeded region growing. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition ,2018. [5] Donghyeon Kwon and Suha Kwak. Semi-supervised semantic segmentation with error localization network. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2022. [6] Boyang Li, Yingqian Wang, Longguang Wang, Fei Zhang, Ting Liu, Zaiping Lin, Wei An, and Yulan Guo. Monte carlo linear clustering with single-point supervi-sion is enough for infrared small target detection. In Proceedings of the IEEE/CVF International Conference on Computer Vision , 2023. [7] Weide Li, Tianwei Yuan, Xiaoxiao Liu, Yuxin Liu, and Xihui Liu. Label-efficient segmentation via affinity propagation. In Advances in Neural Information Processing Systems , 2023. [8] Zhen Liu et al. When confidence fails: Revisiting pseudo-label selection in semi-supervised semantic segmentation. In Proceedings of the IEEE/CVF International Conference on Computer Vision , 2025. [9] Rixiang Ni, Boyang Li, Jun Chen, Yonghao Li, Feiyu Ren, Yuji Wang, Haoyang Yuan, Wujiao He, and Wei An. Rethinking irstd: Single-point supervision guided encoder-only framework is enough for infrared small target detection. arXiv preprint arXiv:2604.05363 , 2026. [10] Yuchao Wang, Haochen Wang, Yujun Shen, Jingjing Fei, Wei Li, Guoqiang Jin, Li-wei Wu, Rui Zhao, and Xinyi Le. Semi-supervised semantic segmentation using unreliable pseudo-labels. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2022. [11] Xinyi Ying, Li Liu, Yingqian Wang, Ruojing Li, Nuo Chen, Zaiping Lin, Weidong Sheng, and Shilin Zhou. Mapping degeneration meets label evolution: Learning infrared small target detection with single point supervision. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2023. [12] Chuang Yu, Yunpeng Wang, Jin Wang, and Li Liu. From easy to hard: Progressive active learning framework for infrared small target detection with single point su-pervision. In Proceedings of the IEEE/CVF International Conference on Computer Vision , 2025. 
+
+9Model Dataset mIoU nIoU Pd Fa ( ×10 −6) Margin Best mIoU PAL-Repro NUDT-SIRST 0.7111 0.7147 0.9415 4.24 0.0934 0.7144 
+
+GSACP-Final NUDT-SIRST 0.6845 0.6957 0.9914 5.06 0.0182 0.6883 PAL-Repro NUAA-SIRST 0.6646 0.6823 0.8462 19.99 0.0838 0.6676 GSACP-Final NUAA-SIRST 0.7265 0.7508 0.9681 9.08 0.0804 0.7316 
+
+PAL-Repro IRSTD-1K 0.6326 0.6192 0.8934 22.12 -0.0884 0.6330 GSACP-Final IRSTD-1K 0.6358 0.6326 0.9551 16.10 -0.0924 0.6519 
+
+Table 3: Zero-shot cross-dataset transfer on external SIRST benchmarks. Both models are trained solely on SIRST3 and evaluated at the source threshold 0.55 ; ‘Best mIoU’ indicates a diagnostic threshold sweep without target-domain fine-tuning. tiny       
+
+> n= 153
+> small
+> n= 286
+> medium
+> n= 521
+> large
+> n= 119
+> Target area bin
+> 0.66
+> 0.67
+> 0.68
+> 0.69
+> 0.70
+> 0.71
+> 0.72
+> Mean IoU
+> 0.683 0.681 0.681
+> 0.691
+
+(a) Mask overlap     
+
+> tiny
+> n= 153
+> small
+> n= 286
+> medium
+> n= 521
+> large
+> n= 119
+> Target area bin
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> 1.2
+> 1.4
+> 1.6
+> Pred / GT area
+> ideal = 1.0
+> 1.50
+> 1.29
+> 1.18
+> 0.88
+
+(b) Support compactness     
+
+> tiny
+> n= 153
+> small
+> n= 286
+> medium
+> n= 521
+> large
+> n= 119
+> Target area bin
+> 0.90
+> 0.92
+> 0.94
+> 0.96
+> 0.98
+> 1.00
+> Pd
+> 0.987
+> 0.979
+> 0.967
+> 0.937
+
+(c) Centroid detection 
+
+Figure 8: GSACP-Final target-size stratification (1,079 SIRST3 val. images). The ultra-low false alarm rate is not achieved trivially by dropping small targets (Pd remains high across tiny and small bins). The residual accuracy gap is predominantly explained by the conservative compact support generated for large targets. GT size bin Count IoU Area ratio Pd tiny (0–10 px) 153 0.6833 1.5000 0.9874 small (11–30 px) 286 0.6813 1.2859 0.9786 medium (31–80 px) 521 0.6813 1.1778 0.9673 large (81+ px) 119 0.6910 0.8756 0.9372 Table 4: Size-stratified GSACP-Final behavior. Area ratio is pre-dicted support divided by ground-truth support. 
+
+10
