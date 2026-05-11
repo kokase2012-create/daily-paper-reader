@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-001.webp",
+      "caption": "Fig. 1. Example of solar panel polygons (right) from OSM and the corresponding aerial image (left). Panels labeled in OSM but not visible in Bing Maps (lower-left) indicate outdated tiles and discrepancies between aerial imagery and OSM data.",
+      "page": 1,
+      "index": 1,
+      "width": 516,
+      "height": 285
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-002.webp",
+      "caption": "Fig. 2. Workflow for solar panel detection and geolocation for a single building. GIS denotes geographic information system.",
+      "page": 2,
+      "index": 2,
+      "width": 968,
+      "height": 412
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-003.webp",
+      "caption": "Fig. 3. Example of building geometries retrieved from OSM.",
+      "page": 2,
+      "index": 3,
+      "width": 475,
+      "height": 275
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-004.webp",
+      "caption": "Fig. 4. Sources of aerial images and example imagery for the same building in Zürich. Google and Bing Maps are proprietary. JOSM and OpenAerialMap provide open imagery.",
+      "page": 3,
+      "index": 4,
+      "width": 475,
+      "height": 365
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-005.webp",
+      "caption": "Fig. 5. Example of georeferencing solar panel pixels for a single building.",
+      "page": 3,
+      "index": 5,
+      "width": 475,
+      "height": 573
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-006.webp",
+      "caption": "Fig. 6. Relationship between sun irradiation and solar panel orientation.",
+      "page": 4,
+      "index": 6,
+      "width": 475,
+      "height": 421
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-007.webp",
+      "caption": "Fig. 8. Cleaned solar panel detection result by SAM3 for Berg am Irchel, Switzerland. Interactive map: https://slzhang-git.github.io/GeoSolarDataAI/ City town level detection/Cleaned Berg Switzerland20260424.html, accessed 2026-04-26.",
+      "page": 5,
+      "index": 7,
+      "width": 475,
+      "height": 392
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-008.webp",
+      "caption": "Fig. 7. OSM inventory of solar panels for Bülach. Only six panels (right) are publicly available in OSM. For Berg am Irchel, no panels are labeled, indicating very limited OSM coverage for this area.",
+      "page": 5,
+      "index": 8,
+      "width": 475,
+      "height": 287
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02738v1/fig-009.webp",
+      "caption": "Fig. 9. Cleaned solar panel detection result by SAM3 for Bülach, Switzerland. Interactive map: https://slzhang-git.github.io/GeoSolarDataAI/City town level detection/Cleaned Bulach Switzerland20260426.html, accessed 2026-04-26.",
+      "page": 5,
+      "index": 9,
+      "width": 475,
+      "height": 387
+    }
+  ]
+}

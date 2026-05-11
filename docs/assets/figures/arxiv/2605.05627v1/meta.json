@@ -1,0 +1,110 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-001.webp",
+      "caption": "Figure 4: Map of the different data collection locations present in WilDReF-Q-V2. Sites visited for WilDReF-Q are shown in a black",
+      "page": 11,
+      "index": 1,
+      "width": 1016,
+      "height": 696
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-002.webp",
+      "caption": "Table 1 Segmentation performance based on the data and model used. The metrics ± standard deviation are presented. Best results for each model are highlighted in bold.",
+      "page": 15,
+      "index": 2,
+      "width": 826,
+      "height": 261
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-003.webp",
+      "caption": "Figure 1: Overview of our model training pipeline, combining 199 manually-labelled, 25 106 pseudo-labelled real images, and 2101 synthetic labelled images. The pseudo-labelled real images are equivalent to over 550 000 image crops of 1 MP. The top left (purple outline) represents our primary contribution, the Gen4Regen dataset, which serves to demonstrate that image generators can now produce photorealistic images and corresponding annotations as viable training data for semantic segmentation. For this, we leverage the Nano Banana Pro model to produce 2101 synthetic, drone-view images and masks of boreal forest regeneration. This component is key in addressing the scarcity of labelled data and class imbalance.",
+      "page": 2,
+      "index": 3,
+      "width": 1016,
+      "height": 494
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-004.webp",
+      "caption": "Figure D15: Comparison with the main VLM-based image generation models",
+      "page": 34,
+      "index": 4,
+      "width": 1015,
+      "height": 578
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-005.webp",
+      "caption": "Figure 3: Class distribution in the labelled training datasets. The labelled dataset of real images exhibits a strong class imbalance, despite our efforts to find appropriate images to annotate in the 25 000+ captured UAV images.",
+      "page": 10,
+      "index": 5,
+      "width": 1016,
+      "height": 517
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-006.webp",
+      "caption": "Figure 5: Proportion of pixels per class seen by the model during training. These statistics are a result of the number of real vs. generated pixels, image sampling strategy, and the 40:60 synthetic:labelled image mixing ratio. Overall, the classes are better balanced during training when exposed to images from our Gen4Regen dataset.",
+      "page": 14,
+      "index": 6,
+      "width": 1016,
+      "height": 517
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-007.webp",
+      "caption": "Figure 2: UAV image (top left) with its corresponding manually labelled semantic segmentation mask (bottom left), compared to a prompt-generated image (top right) and its associated prompt-generated mask (bottom right) produced using Nano Banana Pro. The manually annotated mask is intentionally coarser to reduce labelling costs. In contrast, the generated mask captures significantly finer detail, delineating individual plant structures with high precision. Furthermore, the synthetic image (top right) highlights the level of photorealism achievable with image generators.",
+      "page": 3,
+      "index": 7,
+      "width": 1016,
+      "height": 819
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-008.webp",
+      "caption": "Figure D14: Image generated with Nano Banana Pro using the following variable values:",
+      "page": 33,
+      "index": 8,
+      "width": 1016,
+      "height": 498
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-009.webp",
+      "caption": "Figure 7: Selected qualitative examples using the DINOv2 model, for combinations of training data.",
+      "page": 17,
+      "index": 9,
+      "width": 1016,
+      "height": 1227
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-010.webp",
+      "caption": "Figure D13: Image generated with Nano Banana Pro using the following variable values:",
+      "page": 32,
+      "index": 10,
+      "width": 1016,
+      "height": 498
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-011.webp",
+      "caption": "Figure D12: Image generated with Nano Banana Pro using the following variable values:",
+      "page": 31,
+      "index": 11,
+      "width": 1016,
+      "height": 498
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-012.webp",
+      "caption": "Figure 8: F1 score based on the number of AI-generated images used during training. The DINOv2 model was used, and the 40:60 synthetic:labelled ratio was respected for all experiments. The Interquartile Range (IQR) are based on eight training runs, with different seeds, that were executed for each of the experiments. The x-axis is in log space, and the y-axis is broken, given the large gap between approaches.",
+      "page": 20,
+      "index": 12,
+      "width": 1016,
+      "height": 494
+    },
+    {
+      "url": "assets/figures/arxiv/2605.05627v1/fig-013.webp",
+      "caption": "Figure 6: Per-species F1 score comparing the DINOv2 model trained using only hand-labelled data, versus the approach when training on hand-labelled, pseudo-labelled and Gen4Regen datasets. The use of these extra labels is able to greatly improve the F1 score of species that were previously suffering from class imbalance, while maintaining performance on other species.",
+      "page": 16,
+      "index": 13,
+      "width": 988,
+      "height": 370
+    }
+  ]
+}

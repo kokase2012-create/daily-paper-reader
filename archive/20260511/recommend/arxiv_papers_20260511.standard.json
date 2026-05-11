@@ -1,0 +1,988 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-11T20:41:36.352091+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 4,
+    "deep_divecandidates": 9,
+    "deep_cap": 9,
+    "deep_selected": 9,
+    "quick_candidates": 14,
+    "quick_skim_target": 14,
+    "quick_selected": 14
+  },
+  "deep_dive": [
+    {
+      "id": "2605.07213v1",
+      "source": "arxiv",
+      "title": "LoHGNet: Infrared Small Target Detection through Lorentz Geometric Encoding with High-Order Relation Learning",
+      "abstract": "Infrared small target detection (IRSTD) remains challenging due to the scarcity of useful target cues and the presence of severe background clutter. Most current methods rely on conventional feature learning and local interaction modeling, where features are represented in Euclidean space. However, such designs may still be limited in describing the subtle differences of weak targets and the contextual relations between targets and backgrounds. To address these limitations, we propose LoHGNet, an IRSTD network that integrates Lorentz geometric encoding with high-order relation learning. By introducing Lorentz manifold based feature learning, LoHGNet offers a different feature representation from conventional IRSTD methods and provides new discriminative cues for IRSTD. Specifically, a Lorentz encoding branch is constructed with the Geometric Attention Guided Lorentz Residual Convolution Module (GA-LRCM) to perform feature modeling under hyperbolic geometric constraints and enhance the hierarchical geometric representation capability of weak targets. Subsequently, the hyperbolic features are mapped into the Euclidean tangent space through logarithmic mapping, and a High-Order Relation Learning Module (HORL) is designed to model the high-order contextual dependencies between targets and backgrounds via hypergraph construction, thereby improving target discrimination in complex backgrounds. Experimental results on three datasets demonstrate that the proposed LoHGNet achieves competitive performance in both detection accuracy and adaptability to complex scenes. The code will be available at https://github.com/Kingwin97.",
+      "authors": [
+        "Qianwen Ma",
+        "Yang Xu",
+        "Shangwei Deng",
+        "Xiaobo Li",
+        "Haofeng Hu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-08T04:00:34+00:00",
+      "link": "https://arxiv.org/pdf/2605.07213v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Infrared small target detection using Lorentz geometric encoding",
+      "llm_evidence_cn": "利用洛伦兹几何编码进行红外小目标检测",
+      "llm_evidence": "利用洛伦兹几何编码进行红外小目标检测",
+      "canonical_evidence": "利用洛伦兹几何编码进行红外小目标检测",
+      "llm_tldr_en": "Introduces LoHGNet for infrared small target detection using Lorentz manifold feature learning.",
+      "llm_tldr_cn": "提出LoHGNet，通过洛伦兹流形特征学习解决红外小目标检测中的弱目标识别问题。",
+      "llm_tldr": "提出LoHGNet，通过洛伦兹流形特征学习解决红外小目标检测中的弱目标识别问题。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.07388v1",
+      "source": "arxiv",
+      "title": "A Marine Debris Detection Framework for Ocean Robots via Self-Attention Enhancement and Feature Interaction Optimization",
+      "abstract": "Marine debris detection for ocean robot is crucial for ecological protection, yet performance is often degraded by low-quality images with blur, complex backgrounds, and small targets. To address these challenges, we propose YOLO-MD, an enhanced YOLO-based detection framework. A Dual-Branch Convolutional Enhanced Self-Attention (DB-CASA) module is designed to strengthen spatial-channel interactions, improving feature representation in degraded images. Additionally, a lightweight shift-based operation is introduced to enhance fine-grained feature extraction for objects of varying scales while maintaining parameter efficiency. We further propose SFG-Loss to mitigate class imbalance and optimization instability via dynamic sample reweighting. Experiments on the UODM dataset demonstrate that YOLO-MD achieves 0.875 precision, 0.822 F1-score, and 0.849 mAP50, outperforming the latest state-of-the-art methods. The effectiveness of this method has also been verified through real-world robotic edge deployment experiments.",
+      "authors": [
+        "Yuyang Li",
+        "Jiashu Han",
+        "Yinyi Lai",
+        "Wenbin Kang",
+        "Zenghui Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-08T07:43:01+00:00",
+      "link": "https://arxiv.org/pdf/2605.07388v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini",
+        "query:yolo小目标"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "YOLO-MD framework for small targets with self-attention and fine-grained feature extraction",
+      "llm_evidence_cn": "基于YOLO-MD框架的小目标检测，采用自注意力与细粒度特征提取",
+      "llm_evidence": "基于YOLO-MD框架的小目标检测，采用自注意力与细粒度特征提取",
+      "canonical_evidence": "基于YOLO-MD框架的小目标检测，采用自注意力与细粒度特征提取",
+      "llm_tldr_en": "Proposes YOLO-MD to improve small target detection in degraded marine images using self-attention.",
+      "llm_tldr_cn": "提出YOLO-MD框架，通过自注意力增强和细粒度特征提取提升退化图像中的小目标检测。",
+      "llm_tldr": "提出YOLO-MD框架，通过自注意力增强和细粒度特征提取提升退化图像中的小目标检测。",
+      "llm_tags": [
+        "query:yolo"
+      ],
+      "matched_query_tag": "query:yolo",
+      "matched_query_text": "针对小目标的YOLO检测模型改进与特征增强策略",
+      "matched_requirement_id": "req-31",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.06927v1",
+      "source": "arxiv",
+      "title": "XiYOLO: Energy-Aware Object Detection via Iterative Architecture Search and Scaling",
+      "abstract": "Object detection on heterogeneous edge devices must satisfy strict energy, latency, and memory constraints while still providing reliable perception for downstream autonomy. Existing energy-aware NAS methods often target limited deployment settings, while real energy remains difficult to optimize because it is highly device-dependent and costly to measure. We address these challenges with an energy-adaptive framework that combines an energy-aware XiResOFA search space, a two-stage energy estimator, and iterative search to identify a single energy-efficient base architecture. We then apply compound scaling to transform this base design into the XiYOLO family across deployment budgets, enabling interpretable accuracy-energy tradeoffs under sparse hardware measurements. Experiments on PascalVOC, COCO, and real-device deployment show that XiYOLO achieves a stronger energy-accuracy tradeoff than YOLO baselines. On PascalVOC, the medium XiYOLO model reaches 86.15 mAP50 while reducing energy relative to YOLOv12m by 20.6% on GPU and 35.9% on NPU. On COCO, XiYOLO reduces energy relative to YOLOv12 by up to 53.7% on GPU and 51.6% on NPU at the small scale. The proposed two-stage estimator also improves sample efficiency over a joint predictor under few-shot adaptation with only 2-20 target-device samples.",
+      "authors": [
+        "Tony Tran",
+        "Richie R. Suganda",
+        "Bin Hu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-05-07T20:38:06+00:00",
+      "link": "https://arxiv.org/pdf/2605.06927v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini",
+        "query:yolo小目标"
+      ],
+      "llm_score": 9.5,
+      "llm_evidence_en": "YOLO-based object detection family and architecture search",
+      "llm_evidence_cn": "基于YOLO的目标检测系列与架构搜索",
+      "llm_evidence": "基于YOLO的目标检测系列与架构搜索",
+      "canonical_evidence": "基于YOLO的目标检测系列与架构搜索",
+      "llm_tldr_en": "Develops XiYOLO, an energy-efficient object detection family optimized via architecture search.",
+      "llm_tldr_cn": "开发了 XiYOLO，这是一个通过架构搜索优化的能效型目标检测系列。",
+      "llm_tldr": "开发了 XiYOLO，这是一个通过架构搜索优化的能效型目标检测系列。",
+      "llm_tags": [
+        "query:yolo"
+      ],
+      "matched_query_tag": "query:yolo",
+      "matched_query_text": "YOLO目标检测算法的改进与应用",
+      "matched_requirement_id": "req-23",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.07099v1",
+      "source": "arxiv",
+      "title": "InfoGeo: Information-Theoretic Object-Centric Learning for Cross-View Generalizable UAV Geo-Localization",
+      "abstract": "Cross-view geo-localization (CVGL) is fundamental for precise localization and navigation in GPS-denied environments, aiming to match ground or UAV imagery with satellite views. While existing approaches rely on global feature alignment, they often suffer from substantial domain shifts induced by varying regional textures and weather conditions. This issue becomes even more pronounced in UAV-based scenarios, where the broader perspective inevitably introduces dense, fine-grained objects, creating significant visual clutter. To address this, we draw inspiration from Object-Centric Learning (OCL) and propose InfoGeo, an information-theoretic framework designed to enhance robustness and generalization. InfoGeo reformulates the optimization as an information bottleneck process with two core objectives: (i) maximizing view-invariant information by aligning the object-centric structural relations across views, and (ii) minimizing view-specific noisy signals through cross-view knowledge constraints. Extensive evaluations across diverse benchmarks and challenging scenarios demonstrate that InfoGeo significantly outperforms state-of-the-art methods.",
+      "authors": [
+        "Hongyang Zhang",
+        "Maonnan Wang",
+        "Ziyao Wang",
+        "Hongrui Yin",
+        "Man OnPun"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-08T01:28:49+00:00",
+      "link": "https://arxiv.org/pdf/2605.07099v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini",
+        "query:yolo小目标"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "UAV scenarios with dense fine-grained objects and visual clutter",
+      "llm_evidence_cn": "包含密集细粒度物体和视觉杂波的无人机场景",
+      "llm_evidence": "包含密集细粒度物体和视觉杂波的无人机场景",
+      "canonical_evidence": "包含密集细粒度物体和视觉杂波的无人机场景",
+      "llm_tldr_en": "Enhances UAV geo-localization by using object-centric learning to handle dense objects and visual clutter.",
+      "llm_tldr_cn": "通过以物体为中心的学习处理密集物体和视觉杂波，增强无人机地理定位能力。",
+      "llm_tldr": "通过以物体为中心的学习处理密集物体和视觉杂波，增强无人机地理定位能力。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "dense tiny object detection in drone scenes",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.06855v1",
+      "source": "arxiv",
+      "title": "Monocular passive event-based range-finding of airborne objects using the Scheimpflug principle",
+      "abstract": "Passive 3D sensing is increasingly critical for early detection and tracking of small aerial vehicles (UAVs), where traditional active ranging can be tactically undesirable. We present SCHeimpflug for Optical Ranging TechnologY (SCHORTY), a single-aperture passive and active ranging architecture that exploits the Scheimpflug principle to encode range along a tilted object space plane by tilting the sensor relative to the imaging optics. SCHORTY requires only a one-time geometric calibration to map pixel coordinates to range and is inherently sensor and waveband agnostic. We implement SCHORTY using both a visible frame-based camera and an event-based camera (EBC) with closely matched pixel sizes for comparable horizontal resolutions and range binning. Controlled flights of an octocopter and a fixed-wing UAV equipped with GPS provide ground truth distances out to 1.1 km. Experimental results show that SCHORTY achieves deterministic range assignment limited primarily by the projected pixel size, which grows squared distance, while avoiding computationally intensive inverse reconstructions common in coded aperture and PSF engineered systems. In the EBC configuration, EBC-SCHORTY inherently suppresses static background and emphasizes motion, improving UAV detectability in cluttered natural scenes and under turbulence and motion blur. Additionally, we observe an asymmetric defocus blur about the object plane that depends on UAV trajectory, suggesting an extra cue for localization and trajectory inference. These results demonstrate SCHORTY as a practical and Size, Weight, and Power (SWaP) efficient passive ranging solution for medium-range UAV observation and motivate future integration with 2.5D/3D PSF engineering and event-based deconvolution to enhance 3D sensing performance.",
+      "authors": [
+        "Nathan Meraz",
+        "Ronan Taneja",
+        "Rachel Chan",
+        "Alisha Whitehead",
+        "Gabriella Mayrend",
+        "Megan Birch",
+        "Joseph L. Greene"
+      ],
+      "primary_category": "physics.optics",
+      "categories": [
+        "physics.optics"
+      ],
+      "published": "2026-05-07T18:55:00+00:00",
+      "link": "https://arxiv.org/pdf/2605.06855v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "Detection and tracking of small aerial vehicles (UAVs)",
+      "llm_evidence_cn": "小型无人机（UAV）的探测与追踪",
+      "llm_evidence": "小型无人机（UAV）的探测与追踪",
+      "canonical_evidence": "小型无人机（UAV）的探测与追踪",
+      "llm_tldr_en": "Presents a passive range-finding architecture for early detection and tracking of small airborne objects like UAVs.",
+      "llm_tldr_cn": "提出一种基于Scheimpflug原理的被动测距架构，用于小型无人机等空中目标的早期探测与追踪。",
+      "llm_tldr": "提出一种基于Scheimpflug原理的被动测距架构，用于小型无人机等空中目标的早期探测与追踪。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.03429v1",
+      "source": "arxiv",
+      "title": "StreakMind: AI detection and analysis of satellite streaks in astronomical images with automated database integration",
+      "abstract": "Artificial satellites and space debris increasingly contaminate astronomical images, affecting scientific surveys and producing large volumes of streaked exposures. Manual inspection is no longer feasible at scale, and reliable detection and characterisation of streaks has become essential for both data-quality control and the monitoring of objects in Earth orbit. We present StreakMind, an automated pipeline designed to detect Near-Earth Objects and satellite streaks in astronomical images, characterise their geometry, and cross-identify them with known orbital objects. The system integrates all inference results into a structured database suitable for large surveys. A YOLO OBB model was trained on a hybrid dataset of 2335 images and applied to processed FITS frames. Geometric refinement, inter-frame association, satellite cross-identification, and Gaussian-based confidence scoring were then used to produce final identifications stored in a relational database. Observations from La Sagra Observatory were used to develop and test the method. On the test set, the model achieved a precision of 94 percent and a recall of 97 percent. It reliably detected faint streaks, delivered consistent geometric reconstructions, and performed robust satellite cross-identification. StreakMind demonstrates strong potential for large-scale automated analysis of linear streaks produced by both Near-Earth Objects and artificial satellites, contributing to space situational awareness.",
+      "authors": [
+        "Rafael Carrillo Navarro",
+        "René Duffard",
+        "Pablo García-Martín",
+        "Javier Romero",
+        "Nicolás Morales",
+        "Luis Gonçalves"
+      ],
+      "primary_category": "astro-ph.IM",
+      "categories": [
+        "astro-ph.IM",
+        "cs.LG"
+      ],
+      "published": "2026-05-05T07:11:58+00:00",
+      "link": "https://arxiv.org/pdf/2605.03429v1",
+      "tags": [
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "keyword:yolo小目标"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "YOLO OBB model for detecting satellite streaks in astronomical images",
+      "llm_evidence_cn": "使用YOLO OBB模型检测天文图像中的卫星条纹",
+      "llm_evidence": "使用YOLO OBB模型检测天文图像中的卫星条纹",
+      "canonical_evidence": "使用YOLO OBB模型检测天文图像中的卫星条纹",
+      "llm_tldr_en": "Presents StreakMind, a YOLO-based pipeline for detecting and analyzing satellite streaks.",
+      "llm_tldr_cn": "介绍StreakMind，一个基于YOLO的卫星条纹检测与分析流水线。",
+      "llm_tldr": "介绍StreakMind，一个基于YOLO的卫星条纹检测与分析流水线。",
+      "llm_tags": [
+        "query:yolo"
+      ],
+      "matched_query_tag": "query:yolo",
+      "matched_query_text": "YOLO目标检测算法的改进与应用",
+      "matched_requirement_id": "req-23",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.15168v1",
+      "source": "arxiv",
+      "title": "Dual Pose-Graph Semantic Localization for Vision-Based Autonomous Drone Racing",
+      "abstract": "Autonomous drone racing demands robust real-time localization under extreme conditions: high-speed flight, aggressive maneuvers, and payload-constrained platforms that often rely on a single camera for perception. Existing visual SLAM systems, while effective in general scenarios, struggle with motion blur and feature instability inherent to racing dynamics, and do not exploit the structured nature of racing environments. In this work, we present a dual pose-graph architecture that fuses odometry with semantic detections for robust localization. A temporary graph accumulates multiple gate observations between keyframes and optimizes them into a single refined constraint per landmark, which is then promoted to a persistent main graph. This design preserves the information richness of frequent detections while preventing graph growth from degrading real-time performance. The system is designed to be sensor-agnostic, although in this work we validate it using monocular visual-inertial odometry and visual gate detections. Experimental evaluation on the TII-RATM dataset shows a 56% to 74% reduction in ATE compared to standalone VIO, while an ablation study confirms that the dual-graph architecture achieves 10% to 12% higher accuracy than a single-graph baseline at identical computational cost. Deployment in the A2RL competition demonstrated that the system performs real-time onboard localization during flight, reducing the drift of the odometry baseline by up to 4.2 m per lap.",
+      "authors": [
+        "David Perez-Saura",
+        "Miguel Fernandez-Cortizas",
+        "Alvaro J. Gaona",
+        "Pascual Campoy"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-16T15:47:15+00:00",
+      "link": "https://arxiv.org/pdf/2604.15168v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Semantic detections for robust localization in autonomous drone racing",
+      "llm_evidence_cn": "用于自主无人机竞速鲁棒定位的语义检测",
+      "llm_evidence": "用于自主无人机竞速鲁棒定位的语义检测",
+      "canonical_evidence": "用于自主无人机竞速鲁棒定位的语义检测",
+      "llm_tldr_en": "Presents a dual pose-graph architecture fusing odometry and semantic detection for drone localization.",
+      "llm_tldr_cn": "提出一种融合里程计与语义检测的双位姿图架构，用于无人机在极端环境下的鲁棒定位。",
+      "llm_tldr": "提出一种融合里程计与语义检测的双位姿图架构，用于无人机在极端环境下的鲁棒定位。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机视觉感知研究",
+      "matched_requirement_id": "req-7",
+      "selection_source": "carryover_cache",
+      "paper_id": "2604.15168v1"
+    },
+    {
+      "id": "2605.02738v1",
+      "source": "arxiv",
+      "title": "AI and Open-data Driven Scalable Solar Power Profiling",
+      "abstract": "Solar photovoltaic (PV) deployment is expanding rapidly, yet detailed, up-to-date information on the spatial distribution and capacity of rooftop PV remains limited. This paper presents an open, scalable framework for detecting solar panels from open data and generating city-level solar power profiles. We leverage foundation vision AI models to detect solar panel geometries from open-source satellite imagery. This avoids manual data labeling and case-specific model training while maintaining robustness across heterogeneous imagery. Detected solar panels are converted into georeferenced polygons, yielding spatially explicit and incrementally extensible inventories. By integrating open weather data, we translate panel footprints into regional solar power profiles. The framework reduces dependency on proprietary imagery, manual labeling, and closed-source models, and offers a transparent and scalable approach for solar planning and analysis. We released the data and an API resulted from this work. For any user-specified building location, our API retrieves aerial imagery, detects rooftop solar panels, and returns georeferenced polygons. This empowers researchers and developers to scan user-defined areas to build solar panel maps and associated solar production profiles, thus facilitating advanced analysis like distributed solar production integration, local power flow optimization, energy tariff design, and infrastructure planning.",
+      "authors": [
+        "Shiliang Zhang",
+        "Sabita Maharjan",
+        "Damla Turgut"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-04T15:37:52+00:00",
+      "link": "https://arxiv.org/pdf/2605.02738v1",
+      "tags": [
+        "keyword:visdrone"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "Detecting small solar panel geometries from satellite imagery using vision AI",
+      "llm_evidence_cn": "利用视觉AI从卫星图像中检测小型太阳能电池板几何形状",
+      "llm_evidence": "利用视觉AI从卫星图像中检测小型太阳能电池板几何形状",
+      "canonical_evidence": "利用视觉AI从卫星图像中检测小型太阳能电池板几何形状",
+      "llm_tldr_en": "This paper uses foundation vision models to detect small-scale solar panels from satellite imagery for power profiling.",
+      "llm_tldr_cn": "本文利用基础视觉模型从卫星图像中检测小型太阳能电池板，用于电力概况分析。",
+      "llm_tldr": "本文利用基础视觉模型从卫星图像中检测小型太阳能电池板，用于电力概况分析。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "针对小尺寸目标的检测方法研究",
+      "matched_requirement_id": "req-15",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.08059v1",
+      "source": "arxiv",
+      "title": "6D Pose Estimation via Keypoint Heatmap Regression with RGB-D Residual Neural Networks",
+      "abstract": "In this paper, we propose a modular framework for 6D pose estimation based on keypoint heatmap regression. Our approach combines YOLOv10m for object detection with a ResNet18-based network that predicts 2D heatmaps from RGB images. Keypoints extracted from these heatmaps are used to estimate the 6D object pose via the PnP RANSAC algorithm. We compare different keypoint selection strategies to assess their impact on pose accuracy. Additionally, we extend the baseline by incorporating depth data using a cross-fusion architecture, which enables interaction between RGB and depth features at multiple stages. We further explore general training improvements, such as experimenting with activation functions and learning rate scheduling strategies to improve model performance. Our best RGB-only model achieved a mean ADD-based accuracy of 84.50%, while the RGB-D fusion model reached 92.41% on the LINEMOD dataset. The code is available at https://github.com/ameermasood/HeatNet.",
+      "authors": [
+        "Ismail Aljosevic",
+        "Amir Masoud Almasi",
+        "Ana Parovic",
+        "Ashkan Shafiei"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-05-08T17:47:02+00:00",
+      "link": "https://arxiv.org/pdf/2605.08059v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "combines YOLOv10m for object detection in pose estimation",
+      "llm_evidence_cn": "结合YOLOv10m进行姿态估计中的目标检测",
+      "llm_evidence": "结合YOLOv10m进行姿态估计中的目标检测",
+      "canonical_evidence": "结合YOLOv10m进行姿态估计中的目标检测",
+      "llm_tldr_en": "Proposes a 6D pose estimation framework using YOLOv10m for detection and keypoint heatmap regression.",
+      "llm_tldr_cn": "提出一个使用YOLOv10m进行检测和关键点热图回归的6D姿态估计框架。",
+      "llm_tldr": "提出一个使用YOLOv10m进行检测和关键点热图回归的6D姿态估计框架。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "与YOLO算法相关的目标检测研究",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.01888v1",
+      "source": "arxiv",
+      "title": "AFFormer: Adaptive Feature Fusion Transformer for V2X Cooperative Perception under Channel Impairments",
+      "abstract": "Accurate 3D object detection is essential for ensuring the safety of autonomous vehicles. Cooperative perception, which leverages vehicle-to-everything (V2X) communication to share perceptual data, enhances detection but is vulnerable to channel impairments, such as noise, fading, and interference. To strengthen the reliability of intelligent transportation systems, this work improves the robustness of V2X cooperative perception under communication conditions that reflect common channel impairments. This paper proposes an Adaptive Feature Fusion Transformer (AFFormer), a Transformer-based framework that mitigates the adverse effects of corrupted features by modeling temporal, inter-agent, and spatial correlations. AFFormer introduces three key modules: Multi-Agent and Temporal Aggregation for context-aware fusion across agents and over time, Dual Spatial Attention for efficient modeling of spatial dependencies, and Uncertainty-Guided Fusion for entropy-driven refinement of fused features. A teacher-student knowledge distillation strategy further enhances robustness by aligning fused features with reliable early-collaboration supervision. AFFormer is validated on the V2XSet and DAIR-V2X datasets, where it consistently outperforms existing methods under both ideal and impaired communication conditions, demonstrating improved robustness to communication-induced feature degradation while maintaining a competitive efficiency-accuracy trade-off.",
+      "authors": [
+        "Xi Zhou",
+        "Tao Huang",
+        "Qing-Long Han",
+        "Rana Abbas",
+        "Mostafa Rahimi Azghadi"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-05-03T14:10:03+00:00",
+      "link": "https://arxiv.org/pdf/2605.01888v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "adaptive feature fusion transformer for 3D object detection",
+      "llm_evidence_cn": "用于3D目标检测的自适应特征融合Transformer",
+      "llm_evidence": "用于3D目标检测的自适应特征融合Transformer",
+      "canonical_evidence": "用于3D目标检测的自适应特征融合Transformer",
+      "llm_tldr_en": "AFFormer improves 3D object detection robustness in V2X systems using adaptive feature fusion.",
+      "llm_tldr_cn": "AFFormer通过自适应特征融合提升了V2X系统中3D目标检测的鲁棒性。",
+      "llm_tldr": "AFFormer通过自适应特征融合提升了V2X系统中3D目标检测的鲁棒性。",
+      "llm_tags": [
+        "query:yolo"
+      ],
+      "matched_query_tag": "query:yolo",
+      "matched_query_text": "multi-scale feature fusion strategies for small object detection",
+      "matched_requirement_id": "req-26",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.03456v2",
+      "source": "arxiv",
+      "title": "VL-SAM-v3: Memory-Guided Visual Priors for Open-World Object Detection",
+      "abstract": "Open-world object detection aims to localize and recognize objects beyond a fixed closed-set label space. It is commonly divided into two categories, i.e., open-vocabulary detection, which assumes a predefined category list at test time, and open-ended detection, which requires generating candidate categories during the inference. Existing methods rely primarily on coarse textual semantics and parametric knowledge, which often provide insufficient visual evidence for fine-grained appearance variation, rare categories, and cluttered scenes. In this paper, we propose VL-SAM-v3, a unified framework that augments open-world detection with retrieval-grounded external visual memory. Specifically, once candidate categories are available, VL-SAM-v3 retrieves relevant visual prototypes from a non-parametric memory bank and transforms them into two complementary visual priors, i.e., sparse priors for instance-level spatial anchoring and dense priors for class-aware local context. These priors are integrated with the original detection prompts via Memory-Guided Prompt Refinement, enabling a shared retrieval-and-refinement mechanism that supports open-vocabulary and open-ended inference.Extensive zero-shot experiments on LVIS show that VL-SAM-v3 consistently improves detection performance under both open-vocabulary and open-ended inference, with particularly strong gains on rare categories.Moreover, experiments with a stronger open-vocabulary detector (i.e., SAM3) validate the generality of the proposed retrieval-and-refinement mechanism.",
+      "authors": [
+        "Chih-Chung Liu",
+        "Zhiwei Lin",
+        "Yongtao Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-05T07:44:03+00:00",
+      "link": "https://arxiv.org/pdf/2605.03456v2",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "open-world object detection for cluttered scenes",
+      "llm_evidence_cn": "针对杂乱场景的开放世界目标检测",
+      "llm_evidence": "针对杂乱场景的开放世界目标检测",
+      "canonical_evidence": "针对杂乱场景的开放世界目标检测",
+      "llm_tldr_en": "Augments open-world detection with retrieval-grounded external visual memory.",
+      "llm_tldr_cn": "通过检索增强的外部视觉记忆来提升开放世界目标检测性能。",
+      "llm_tldr": "通过检索增强的外部视觉记忆来提升开放世界目标检测性能。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "用于图像中识别目标的深度学习检测模型",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.01924v1",
+      "source": "arxiv",
+      "title": "SimPB++: Simultaneously Detecting 2D and 3D Objects from Multiple Cameras",
+      "abstract": "Simultaneous perception of 2D objects in perspective view and 3D objects in Bird's Eye View (BEV) is challenging for multi-camera autonomous driving. Existing two-stage pipelines use 2D results only as a one-time cue for 3D detection. We propose SimPB++, which simultaneously detects 2D objects in perspective and 3D objects in BEV from multiple cameras. It unifies both tasks into an end-to-end model with a hybrid decoder architecture, coupling multi-view 2D and 3D decoders interactively. Two novel modules enable deep interaction: Dynamic Query Allocation adaptively assigns 2D queries to 3D candidates, and Adaptive Query Aggregation refines 3D representations using multi-view 2D features, forming a cyclic 3D-2D-3D refinement. For multi-view 2D detection, we use Query-group Attention for intra-group communication. We also design a Crop-and-Scale strategy for long-range perception and a Propagating Denoising strategy with an auxiliary RoI detector. SimPB++ supports mixed supervision with 2D-only and fully annotated data, reducing reliance on expensive 3D labels. Experiments show state-of-the-art performance on nuScenes for both tasks and strong long-range detection (up to 150m) on Argoverse2.",
+      "authors": [
+        "Yingqi Tang",
+        "Zhaotie Meng",
+        "Erkang Cheng",
+        "Haibin Ling"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-03T15:10:38+00:00",
+      "link": "https://arxiv.org/pdf/2605.01924v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 7.5,
+      "llm_evidence_en": "Simultaneous 2D and 3D object detection from multiple cameras",
+      "llm_evidence_cn": "多摄像头同步2D和3D目标检测",
+      "llm_evidence": "多摄像头同步2D和3D目标检测",
+      "canonical_evidence": "多摄像头同步2D和3D目标检测",
+      "llm_tldr_en": "SimPB++ unifies 2D and 3D object detection in an end-to-end model with interactive decoders for autonomous driving.",
+      "llm_tldr_cn": "SimPB++通过混合解码器架构将多视角2D和3D目标检测统一在端到端模型中。",
+      "llm_tldr": "SimPB++通过混合解码器架构将多视角2D和3D目标检测统一在端到端模型中。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.07549v1",
+      "source": "arxiv",
+      "title": "Probabilistic Object Detection with Conformal Prediction",
+      "abstract": "Conformal Prediction (CP) is a distribution-free method for constructing prediction sets with marginal finite-sample coverage guarantees, making it a suitable framework for reliable uncertainty quantification in safety-critical object detection. However, object detection introduces structured multi-output predictions, complicating the application of classical CP theory developed for single outputs. In addition, standard, unscaled CP produces fixed-width prediction intervals across inputs, leading to unnecessary width for low-uncertainty predictions. While scaled CP addresses this by adapting the interval width to an input-dependent uncertainty estimate, prior work has neither systematically compared unscaled and scaled CP for multi-class object detection, nor integrated CP with a complementary uncertainty quantification method in this setting. We fill this gap by: (i) applying CP coordinate-wise to bounding box corners with a Bonferroni correction for box-level guarantees; (ii) scaling the resulting intervals using per-prediction aleatoric uncertainty estimates derived from a probabilistic object detector trained with loss attenuation, evaluated in uncalibrated and two calibrated variants; (iii) extending to a two-step pipeline that constructs prediction sets for the class using RAPS and conditions the conformalized bounding boxes on the predicted class set. Across three autonomous driving datasets (KITTI, BDD, CODA), including a cross-domain setting under distribution shift, scaled CP consistently improves interval sharpness over unscaled CP, achieving up to 19% higher IoU and 39% lower interval scores, without sacrificing coverage. Class-wise calibration further improves coverage for both variants with a negligible effect on sharpness. Together, these improvements yield more actionable uncertainty estimates for real-time, real-world object detection.",
+      "authors": [
+        "Christopher Ries",
+        "Moussa Kassem Sbeyti",
+        "Nicolas Bianco",
+        "Nadja Klein"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-05-08T10:23:43+00:00",
+      "link": "https://arxiv.org/pdf/2605.07549v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 6.5,
+      "llm_evidence_en": "probabilistic object detection framework for uncertainty quantification",
+      "llm_evidence_cn": "用于不确定性量化的概率目标检测框架",
+      "llm_evidence": "用于不确定性量化的概率目标检测框架",
+      "canonical_evidence": "用于不确定性量化的概率目标检测框架",
+      "llm_tldr_en": "Proposes a conformal prediction framework for reliable uncertainty quantification in multi-class object detection.",
+      "llm_tldr_cn": "提出了一种用于多类目标检测中可靠不确定性量化的符合预测框架。",
+      "llm_tldr": "提出了一种用于多类目标检测中可靠不确定性量化的符合预测框架。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.02284v1",
+      "source": "arxiv",
+      "title": "Beyond Known Objects: A Novel Framework for Open-Set Object Detection using Negative-Aware Norm",
+      "abstract": "Open-Set Object Detection (OSOD) is crucial for autonomous driving, where perception systems must recognize and localize both known and previously unseen objects in complex, dynamic environments. While recent approaches deliver promising results, they often require retraining the detector extensively to learn objectness, which describes the likelihood that a bounding box tightly encloses a valid object, regardless of whether its category was learned during training. Deviating from existing work, we hypothesize that standard off-the-shelf detectors may already contain helpful cues for objectness, owing to their training on numerous and diverse known categories. Building on this idea, we propose NAN-SPOT, a training-light framework that does not require to retrain the base object detector and estimates objectness by leveraging a hidden layer metric called Negative-Aware Norm (NAN), requiring only minutes of training on just hundreds of images. To support comprehensive evaluation, we introduce COCO-Open, an expanded version of the existing COCO-Mixed dataset, increasing unknown object annotations from 433 to 1853, making it the most exhaustively labeled dataset for OSOD to the best of our knowledge. Experimental results demonstrate that NAN-SPOT achieves even better performance on unknown object detection than methods requiring heavy training, without compromising performance on known objects. This efficiency and robustness make NAN-SPOT a promising step towards open-world perception in autonomous driving.",
+      "authors": [
+        "Yuchen Zhang",
+        "Yao Lu",
+        "Johannes Betz"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-04T07:18:37+00:00",
+      "link": "https://arxiv.org/pdf/2605.02284v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "open-set object detection for autonomous driving",
+      "llm_evidence_cn": "用于自动驾驶的开放集目标检测",
+      "llm_evidence": "用于自动驾驶的开放集目标检测",
+      "canonical_evidence": "用于自动驾驶的开放集目标检测",
+      "llm_tldr_en": "NAN-SPOT is a training-light framework for open-set object detection using negative-aware norms.",
+      "llm_tldr_cn": "NAN-SPOT是一个利用负感知范数进行开放集目标检测的轻量化训练框架。",
+      "llm_tldr": "NAN-SPOT是一个利用负感知范数进行开放集目标检测的轻量化训练框架。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.02328v1",
+      "source": "arxiv",
+      "title": "Improving Imbalanced Multi-Label Chest X-Ray Diagnosis via CBAM-Enhanced CNN Backbones",
+      "abstract": "Chest radiography is a widely used imaging modality for thoracic disease diagnosis, yet its conventional interpretation remains time-consuming and heavily dependent on expert knowledge. While deep learning has improved diagnostic efficiency through automated feature extraction, challenges such as class imbalance and the localization of multiple co-existing pathologies remain unsolved. In this paper, inspired by the strength of Convolutional Block Attention Module (CBAM) in feature refinement and the capability of CNN blocks in feature extraction, we propose a strategy to integrate CBAM into traditional CNN blocks to enhance performance in multi-label classification tasks. Our method achieves a mean AUC of 0.8695 on ChestXray14 dataset, outperforming several state-of-the-art baselines.Our source code is available at: https://github.com/NNNguyenDuyyy/FETC_CBAM_Enhanced_CNN.git",
+      "authors": [
+        "Duy Nguyen Huu",
+        "Duy Hoang Khuong",
+        "Ngu Huynh Cong Viet"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-04T08:28:03+00:00",
+      "link": "https://arxiv.org/pdf/2605.02328v1",
+      "tags": [
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:yolo小目标"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "CBAM attention mechanism for feature refinement in medical imaging",
+      "llm_evidence_cn": "CBAM注意力机制用于医学图像特征精炼",
+      "llm_evidence": "CBAM注意力机制用于医学图像特征精炼",
+      "canonical_evidence": "CBAM注意力机制用于医学图像特征精炼",
+      "llm_tldr_en": "Integrates CBAM attention into CNN backbones to improve multi-label classification in chest X-rays.",
+      "llm_tldr_cn": "将CBAM注意力机制集成到CNN骨干网络中，以改进胸部X射线的检测分类。",
+      "llm_tldr": "将CBAM注意力机制集成到CNN骨干网络中，以改进胸部X射线的检测分类。",
+      "llm_tags": [
+        "query:yolo"
+      ],
+      "matched_query_tag": "query:yolo",
+      "matched_query_text": "注意力机制在YOLO小目标检测中的应用与优化",
+      "matched_requirement_id": "req-27",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.05344v1",
+      "source": "arxiv",
+      "title": "Open-SAT: LLM-Guided Query Embedding Refinement for Open-Vocabulary Object Retrieval in Satellite Imagery",
+      "abstract": "In satellite applications, user queries often take the form of open-ended natural language, extending beyond a fixed set of predefined categories. This open-vocabulary nature poses significant challenges for retrieving relevant image tiles, as the retrieval system must generalize to a wide range of unseen objects and concepts. While vision-language models (VLMs) such as CLIP are widely used for text-image retrieval, even fine-tuned variants often struggle to accurately align such queries with satellite imagery. To address this, we propose Open-SAT, a training-free query embedding refinement algorithm that operates at inference time to improve alignment between user queries and satellite image content. Open-SAT uses VLMs to compute embeddings for image tiles, which are stored in a vector database for efficient retrieval. At query time, it leverages Large Language Models (LLMs) to refine the text embeddings by incorporating contextual information about objects of interest and their surroundings. A threshold-free retrieval mechanism further enhances accuracy and efficiency. Experimental results in three public benchmarks demonstrate that Open-SAT improves the F1 score by up to 16.04%, while retrieving a comparable number of image tiles. These results demonstrate the effectiveness of Open-SAT in open-vocabulary satellite image retrieval, leveraging LLM guidance without the need for additional training or supervision.",
+      "authors": [
+        "Md Adnan Arefeen",
+        "Biplob Debnath",
+        "Ravi K. Rajendran",
+        "Murugan Sankaradas",
+        "Srimat T. Chakradhar"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.IR"
+      ],
+      "published": "2026-05-06T18:12:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.05344v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo mini",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo mini",
+        "query:yolo小目标"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Object retrieval and query refinement in satellite imagery",
+      "llm_evidence_cn": "卫星图像中的目标检索与查询优化",
+      "llm_evidence": "卫星图像中的目标检索与查询优化",
+      "canonical_evidence": "卫星图像中的目标检索与查询优化",
+      "llm_tldr_en": "Refines query embeddings for open-vocabulary object retrieval in satellite imagery using LLMs.",
+      "llm_tldr_cn": "利用大语言模型优化查询嵌入，实现卫星图像中的开放词汇目标检索。",
+      "llm_tldr": "利用大语言模型优化查询嵌入，实现卫星图像中的开放词汇目标检索。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机航拍图像处理",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.02616v1",
+      "source": "arxiv",
+      "title": "Global-Local Feature Decoding with Adapter-Guided SAMv2 for Salient Object Detection",
+      "abstract": "Salient Object Detection (SOD) remains an essential yet underexplored task in the era of large-scale vision models. Although foundation models like SAM exhibit strong generalization, their potential for SOD is not fully realized, and training or fully fine-tuning them is computationally expensive and prone to overfitting under limited data. To overcome these challenges, we introduce GLASSNet, a Global-Local feature decoding framework that uses SAMv2 as a frozen encoder paired with a lightweight, spatially aware convolutional adapter-reducing learnable encoder parameters by over 97%. To enhance saliency quality, GLASSNet employs a dual-decoder architecture: one decoder captures global, long-range semantics with an expanded receptive field, while the other captures fine local details such as edges and textures. Fusing these complementary cues yields saliency maps that combine global coherence with local precision, producing accurate final masks. Extensive experiments on standard SOD and camouflaged object detection benchmarks show that GLASSNet surpasses state-of-the-art methods, demonstrating the power of frozen foundation models combined with targeted adaptation and global-local decoding.",
+      "authors": [
+        "Morteza Moradi",
+        "Mohammad Moradi",
+        "Simone Palazzo",
+        "Ali Borji",
+        "Concetto Spampinato"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-04T14:04:38+00:00",
+      "link": "https://arxiv.org/pdf/2605.02616v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "deep learning model for salient object detection",
+      "llm_evidence_cn": "用于显著性目标检测的深度学习模型",
+      "llm_evidence": "用于显著性目标检测的深度学习模型",
+      "canonical_evidence": "用于显著性目标检测的深度学习模型",
+      "llm_tldr_en": "Introduces GLASSNet for salient object detection using a global-local feature decoding framework.",
+      "llm_tldr_cn": "引入 GLASSNet，利用全局-局部特征解码框架进行显著性目标检测。",
+      "llm_tldr": "引入 GLASSNet，利用全局-局部特征解码框架进行显著性目标检测。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "用于图像中识别目标的深度学习检测模型",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.05627v1",
+      "source": "arxiv",
+      "title": "Leveraging Image Generators to Address Training Data Scarcity: The Gen4Regen Dataset for Forest Regeneration Mapping",
+      "abstract": "Sustainable forest management relies on precise species composition mapping, yet traditional ground surveys are labour-intensive and geographically constrained. While Uncrewed Aerial Vehicles (UAVs) offer scalable data collection, the transition to deep learning-based interpretation is bottlenecked by the severe scarcity of expert-annotated imagery, particularly in complex, visually heterogeneous regeneration zones. This paper addresses the dual challenges of data scarcity and extreme class imbalance in the semantic segmentation of fine-grained forest regeneration species by providing a scalable framework that reduces reliance on manual photo-interpretation for high-resolution, millimetre-level aerial imagery. Importantly, we leverage the large-scale vision-language Nano Banana Pro model to simultaneously generate high-fidelity images and their corresponding pixel-aligned semantic masks from prompts. We introduce WilDReF-Q-V2, an expansion of a natural forest dataset with 13 977 new unlabelled and 50 labelled real images, as well as the Gen4Regen dataset, featuring 2101 pairs of synthetic images and semantic masks. Our methodology integrates real-world data with AI-generated images, highlighting that AI-generated data is highly complementary to real-world data, with unified training yielding an F1 score improvement of over 15 %pt compared to purely supervised baselines. Furthermore, we demonstrate that even small quantities of prompt-generated data significantly improve performance for underrepresented species, some of which saw per-species F1 score gains of up to 30 %pt. We conclude that vision-language models can serve as agile data generators, effectively bootstrapping perception tasks for niche AI domains where expert labels are scarce or unavailable. Our datasets, source code, and models will be available at https://norlab-ulaval.github.io/gen4regen.",
+      "authors": [
+        "Gabriel Jeanson",
+        "David-Alexandre Duclos",
+        "William Larrivée-Hardy",
+        "Noé Cochet",
+        "Matěj Boxan",
+        "Anthony Deschênes",
+        "François Pomerleau",
+        "Philippe Giguère"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-05-07T03:28:56+00:00",
+      "link": "https://arxiv.org/pdf/2605.05627v1",
+      "tags": [
+        "keyword:visdrone"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "UAV aerial image processing for fine-grained species mapping",
+      "llm_evidence_cn": "无人机航拍图像处理用于细粒度物种制图",
+      "llm_evidence": "无人机航拍图像处理用于细粒度物种制图",
+      "canonical_evidence": "无人机航拍图像处理用于细粒度物种制图",
+      "llm_tldr_en": "Uses image generators to create synthetic UAV data for forest species mapping to solve data scarcity.",
+      "llm_tldr_cn": "利用图像生成器创建合成无人机数据，解决森林物种制图中的数据稀缺问题。",
+      "llm_tldr": "利用图像生成器创建合成无人机数据，解决森林物种制图中的数据稀缺问题。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "无人机航拍图像处理",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.04282v1",
+      "source": "arxiv",
+      "title": "Hardware-Aware Neural Feature Extraction for Resource-Constrained Devices",
+      "abstract": "Visual SLAM is a core component of spatial computing systems, yet deploying learned local feature extractors on microcontroller-class hardware remains challenging due to memory, bandwidth, and quantization constraints. While modern neural descriptors provide strong robustness, their practical adoption is often hindered by system-level bottlenecks that are not captured by FLOP-based efficiency metrics. In this work, we introduce Gideon, a hardware-aware neural feature extractor explicitly designed for resource-constrained devices. Our approach combines relational knowledge distillation from a SuperPoint teacher with differentiable neural architecture search (DNAS) under strict memory and operator constraints. Unlike conventional design pipelines, we treat quantization stability and dynamic-range compactness as first-class objectives. We show that architectural choices such as replacing Batch Normalization with affine layers significantly improve INT8 robustness, and that descriptor dimensionality directly governs quantization resilience. Deployed on STM32N6, Gideon achieves 9.003 ms inference time (111 fps) while remaining below a 1.5 MB memory footprint. Remarkably, INT8 quantization induces negligible degradation and occasionally matches full-precision performance. These results demonstrate that robust learned feature extraction can be reconciled with embedded hardware constraints through holistic hardware-algorithm co-design.",
+      "authors": [
+        "Francesco Tosini",
+        "Simone Pedroni",
+        "Christian Veronesi",
+        "Pietro Bartoli",
+        "Marco Paracchini",
+        "Marco Marcon",
+        "Diana Trojaniello"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-05T20:32:00+00:00",
+      "link": "https://arxiv.org/pdf/2605.04282v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Hardware-aware neural feature extraction for resource-constrained devices",
+      "llm_evidence_cn": "针对资源受限设备的硬件感知神经特征提取",
+      "llm_evidence": "针对资源受限设备的硬件感知神经特征提取",
+      "canonical_evidence": "针对资源受限设备的硬件感知神经特征提取",
+      "llm_tldr_en": "Introduces Gideon, a hardware-aware feature extractor for resource-constrained devices using knowledge distillation.",
+      "llm_tldr_cn": "引入Gideon，一种通过知识蒸馏为资源受限设备设计的硬件感知特征提取器。",
+      "llm_tldr": "引入Gideon，一种通过知识蒸馏为资源受限设备设计的硬件感知特征提取器。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "小目标检测的特征提取方法",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.07146v1",
+      "source": "arxiv",
+      "title": "UniV2D: Bridging Visual Restoration and Semantic Perception for Underwater Salient Object Detection",
+      "abstract": "Underwater salient object detection (USOD) plays a vital role in marine vision tasks but remains fundamentally challenging due to severe visual degradation, such as selective absorption and medium scattering. Conventional pipelines typically adopt a sequential \"enhance-then-detect\" paradigm. However, isolating low-level visual restoration from high-level semantic perception often leads to semantic inconsistency, where the restored images may not be optimal for detection and can even introduce task-irrelevant noise. To break this sequential bottleneck, we propose UniV2D, a Unified Vision-to-Detection Network that jointly optimizes visual restoration and salient object detection within a mutually beneficial framework. Unlike traditional methods that rely on disjointed pipelines or rigid physical priors, UniV2D introduces a semantic-driven learning paradigm: high-level saliency semantics actively guide the restoration process, while the restored visual cues reciprocally enhance saliency perception. Specifically, UniV2D features a hierarchical dual-branch architecture. It first employs a self-calibrated decoder to predict initial saliency masks alongside a mask-aware restoration module to reconstruct image content. Subsequently, a saliency-guided refinement module equipped with cross-level modulation is utilized to align structural fidelity with semantic consistency. Extensive experiments across multiple benchmarks demonstrate that UniV2D significantly outperforms state-of-the-art methods in both quantitative and qualitative evaluations, establishing a new standard for joint underwater perception.",
+      "authors": [
+        "Laibin Chang",
+        "Shaodong Wang",
+        "Yunke Wang",
+        "Xu Zhang",
+        "Kui Jiang",
+        "Chang Xu",
+        "Bo Du"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-08T02:31:45+00:00",
+      "link": "https://arxiv.org/pdf/2605.07146v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Underwater salient object detection using a unified vision-to-detection network.",
+      "llm_evidence_cn": "使用统一视觉检测网络进行水下显著目标检测。",
+      "llm_evidence": "使用统一视觉检测网络进行水下显著目标检测。",
+      "canonical_evidence": "使用统一视觉检测网络进行水下显著目标检测。",
+      "llm_tldr_en": "Proposes UniV2D to jointly optimize visual restoration and salient object detection in underwater scenes.",
+      "llm_tldr_cn": "提出UniV2D，共同优化水下场景中的视觉修复和显著目标检测。",
+      "llm_tldr": "提出UniV2D，共同优化水下场景中的视觉修复和显著目标检测。",
+      "llm_tags": [
+        "query:smalldet"
+      ],
+      "matched_query_tag": "query:smalldet",
+      "matched_query_text": "tiny object detection",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.04606v1",
+      "source": "arxiv",
+      "title": "Reference-based Category Discovery: Unsupervised Object Detection with Category Awareness",
+      "abstract": "Traditional one-shot detection methods have addressed the closed-set problem in object detection, but the high cost of data annotation remains a critical challenge. General unsupervised methods generate pseudo boxes without category labels, thus failing to achieve category-aware classification. To overcome these limitations, we propose Reference-based Category Discovery (RefCD), an unsupervised detector that enables category-aware\\footnotemark[1] detection without any manually annotated labels. It leverages feature similarity between predicted objects and unlabeled reference images. Unlike previous unsupervised methods that lack category guidance and one-shot methods which require labeled data, RefCD introduces a carefully designed feature similarity loss to explicitly guide the learning of potential category-specific features. Additionally, RefCD supports category-agnostic detection without reference images, serving as a unified framework. Comprehensive quantitative and qualitative analysis of category-aware and category-agnostic detection results demonstrates its effectiveness, and RefCD can learn category information in an unsupervised paradigm even without category labels.",
+      "authors": [
+        "Yichen Li",
+        "Qiankun Liu",
+        "Ying Fu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-05-06T07:54:30+00:00",
+      "link": "https://arxiv.org/pdf/2605.04606v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "unsupervised object detection with category awareness",
+      "llm_evidence_cn": "具有类别意识的无监督目标检测",
+      "llm_evidence": "具有类别意识的无监督目标检测",
+      "canonical_evidence": "具有类别意识的无监督目标检测",
+      "llm_tldr_en": "RefCD is an unsupervised detector that achieves category-aware detection without manually annotated labels.",
+      "llm_tldr_cn": "RefCD是一种无监督检测器，无需人工标注即可实现具有类别意识的目标检测。",
+      "llm_tldr": "RefCD是一种无监督检测器，无需人工标注即可实现具有类别意识的目标检测。",
+      "llm_tags": [
+        "query:visdrone"
+      ],
+      "matched_query_tag": "query:visdrone",
+      "matched_query_text": "目标检测任务研究",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.07530v1",
+      "source": "arxiv",
+      "title": "Search-based Robustness Testing of Laptop Refurbishing Robotic Software",
+      "abstract": "The Danish Technological Institute (DTI) focuses on transferring advanced technologies (including robots) to the industry and the public sector. One key application is laptop refurbishment using specialized robots, aimed at promoting reuse, reducing electronic waste, and supporting the European Circular Economy Action Plan. The software of such robots often includes features that use object detection models to detect objects for various purposes, such as identifying screws for laptop disassembly or detecting stickers to remove them. Ensuring the robustness of such models to small input variations remains a critical challenge, and addressing it is important to avoid potential damage to laptops during refurbishment. In this paper, we propose PROBE, a search-based robustness testing approach that leverages multi-objective optimization to identify minimal, localized perturbations that expose failures in object detection models used in the software of laptop refurbishing robots. PROBE employs NSGA-II to systematically explore the perturbation space, optimizing for failure induction considering both localization and confidence, and perturbation magnitude, while enabling the discovery of diverse failure cases. Results show that PROBE is 3$\\times$ to 7$\\times$ more effective than random search in generating failure-inducing perturbations, while requiring smaller perturbation magnitudes, and that the generated perturbations transfer across models. We further show that metamorphic relations provide additional insights into model robustness, enabling the assessment of stability even in non-failing cases.",
+      "authors": [
+        "Erblin Isaku",
+        "Hassan Sartaj",
+        "Shaukat Ali",
+        "Malaika Din Hashmi",
+        "Francois Picard"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.SE"
+      ],
+      "published": "2026-05-08T10:02:45+00:00",
+      "link": "https://arxiv.org/pdf/2605.07530v1",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:visdrone",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "The paper uses object detection models to identify small objects like screws and stickers for robotic disassembly.",
+      "llm_evidence_cn": "该论文使用目标检测模型来识别机器人拆解中的螺丝和贴纸等小物体。",
+      "llm_evidence": "该论文使用目标检测模型来识别机器人拆解中的螺丝和贴纸等小物体。",
+      "canonical_evidence": "该论文使用目标检测模型来识别机器人拆解中的螺丝和贴纸等小物体。",
+      "llm_tldr_en": "Proposes a robustness testing framework for robotic software using object detection for small industrial parts.",
+      "llm_tldr_cn": "提出了一种针对工业小零件目标检测机器人软件的鲁棒性测试框架。",
+      "llm_tldr": "提出了一种针对工业小零件目标检测机器人软件的鲁棒性测试框架。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "针对小尺寸目标的检测方法研究",
+      "matched_requirement_id": "req-15",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "biorxiv-10-64898-2026-05-07-723432-v1",
+      "source": "biorxiv",
+      "title": "LIME: a fully automated pipeline for high-throughput quantification of leaf lesions",
+      "abstract": "Accurate quantification of leaf lesion severity is essential for plant disease research and phenotyping but is often limited by subjective visual scoring and time-intensive manual image analysis. We present LIME, a fully automated, open-source image analysis pipeline for high-throughput quantification of leaf lesions from disease assay images. LIME integrates zero-shot leaf segmentation using the Segment Anything Model with a convolutional neural network for lesion area estimation. Applied to Arabidopsis thaliana leaves infected with Sclerotinia sclerotiorum, the proposed approach achieved a mean absolute percentage error of 12.9%, comparable to observed intrarater variability in manual scoring. Stratified evaluation across lesion-size groups demonstrated consistent prediction accuracy for small, intermediate, and large lesions, and comparative analysis showed that the deep learning-based model substantially outperformed color-based baseline methods. Under GPU-accelerated execution, LIME processed complete assays containing approximately 200 leaves in 15 minutes, representing an approximate 13-fold reduction in processing time relative to manual annotation. Together, these results indicate that LIME enables objective, reproducible, and scalable quantification of leaf lesion severity in standardized plant pathology assays. The pipeline is released as an open-source tool to support quantitative phenotyping studies.",
+      "authors": [
+        "Tan, D."
+      ],
+      "primary_category": "plant biology",
+      "categories": [
+        "plant biology"
+      ],
+      "published": "2026-05-10T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.64898/2026.05.07.723432v1.full.pdf",
+      "tags": [
+        "keyword:SmallDet",
+        "keyword:yolo小目标",
+        "query:SmallDet",
+        "query:visdrone",
+        "query:yolo小目标"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "segmentation and area estimation of small leaf lesions",
+      "llm_evidence_cn": "叶片小病斑的分割与面积估算",
+      "llm_evidence": "叶片小病斑的分割与面积估算",
+      "canonical_evidence": "叶片小病斑的分割与面积估算",
+      "llm_tldr_en": "LIME is an automated pipeline for leaf lesion quantification using SAM and CNNs.",
+      "llm_tldr_cn": "LIME是一个利用SAM和CNN进行叶片病斑定量分析的自动化流水线。",
+      "llm_tldr": "LIME是一个利用SAM和CNN进行叶片病斑定量分析的自动化流水线。",
+      "llm_tags": [
+        "query:yolo-mini"
+      ],
+      "matched_query_tag": "query:yolo-mini",
+      "matched_query_text": "针对小尺寸目标的检测方法研究",
+      "matched_requirement_id": "req-15",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

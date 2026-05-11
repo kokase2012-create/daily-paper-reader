@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.15168v1/fig-001.webp",
+      "caption": "Fig. 3: XY trajectory comparison on ellipse and lemniscate tracks. Ground truth (dashed black), OpenVINS VIO (orange), and our corrected localization (blue). Gray rectangles indicate the racing gates used as landmarks.",
+      "page": 4,
+      "index": 1,
+      "width": 529,
+      "height": 489
+    },
+    {
+      "url": "assets/figures/arxiv/2604.15168v1/fig-002.webp",
+      "caption": "Fig. 1: Drone flight during A2RL competition. The racing drone is equipped with a monocular camera for visual-inertial odometry and gate detection.",
+      "page": 1,
+      "index": 2,
+      "width": 529,
+      "height": 308
+    }
+  ]
+}

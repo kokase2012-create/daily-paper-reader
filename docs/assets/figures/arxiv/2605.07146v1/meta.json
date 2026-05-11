@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.07146v1/fig-001.webp",
+      "caption": "Figure 1. Comparison of different paradigms for joint Underwater Image Enhancement (UIE) and Salient Object Detection (USOD). (a) Two-stage methods decouple UIE and USOD into independent networks, resulting in limited cross-task synergy. (b) Priorbased methods (e.g., WaterDiffusion) require auxiliary physical priors and computationally expensive iterative sampling. (c) Our UniV2D establishes a unified framework for simultaneous UIE and USOD, achieving explicit task interaction and efficient oneshot inference.",
+      "page": 1,
+      "index": 1,
+      "width": 479,
+      "height": 387
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07146v1/fig-002.webp",
+      "caption": "Figure 6. Qualitative comparisons between UniV2D and SOTA methods across diverse underwater degradation types (e.g., greenish, bluish, and turbid conditions). Best and second-best SSIM/PSNR scores are highlighted in red and green, respectively.",
+      "page": 6,
+      "index": 2,
+      "width": 1032,
+      "height": 403
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07146v1/fig-003.webp",
+      "caption": "Figure 7. Qualitative comparisons between UniV2D and SOTA methods across diverse biological categories and object scales (e.g., diver, lionfish, turtle, and shipwreck). Orange regions represent predicted salient masks, while the white contours indicate ground-truth annotations.",
+      "page": 7,
+      "index": 3,
+      "width": 1032,
+      "height": 389
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07146v1/fig-004.webp",
+      "caption": "Figure 2. Overview of the proposed UniV2D. It features a semantic-driven dual-branch design, consisting of Self-Calibrated Saliency Masking (SCSM) and Mask-Aware Content Restoration (MACR) modules for initial task estimation, followed by the Cross-Level Feature Modulation (CLFM) module for joint task-reciprocal refinement of both tasks.",
+      "page": 3,
+      "index": 4,
+      "width": 1034,
+      "height": 368
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07146v1/fig-005.webp",
+      "caption": "Figure 8. Efficiency evaluation of each compared method in terms of inference time. The center region indicates the summed time of two tasks at the corresponding position.",
+      "page": 8,
+      "index": 5,
+      "width": 495,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07146v1/fig-006.webp",
+      "caption": "Figure 3. Architecture of the SCSM module. It employs spatial reweighting and token-guided calibration to produce an initial saliency mask from hierarchical features.",
+      "page": 4,
+      "index": 6,
+      "width": 479,
+      "height": 259
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07146v1/fig-007.webp",
+      "caption": "Table 3. Efficiency evaluation of each compared method in terms of Parameters (M) and FLOPs (G).",
+      "page": 9,
+      "index": 7,
+      "width": 531,
+      "height": 270
+    }
+  ]
+}
